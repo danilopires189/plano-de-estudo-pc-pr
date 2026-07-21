@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edital Verticalizado – Gran Concursos</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#0D134C;--navy-mid:#1a2060;--mint:#AFE8D0;--mint-d:#7dcfb0;
+  --lime:#BAFF38;--rust:#C8102E;--rust-dark:#a50e25;--amber:#EFBD7B;
+  --white:#fff;--bg:#eef0f7;--border:#e2e5f0;
+  --text:#0D134C;--text-mid:#4a5080;--text-soft:#8a90b8;
+  --green:#22c55e;--green-bg:#dcfce7;--red:#ef4444;--red-bg:#fee2e2;
+  --yellow:#f59e0b;--yellow-bg:#fef3c7;--sidebar-w:240px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;max-width:100%;overflow-x:hidden;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar-w);height:100vh;height:100dvh;min-height:0;background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:200;overflow:hidden;box-shadow:4px 0 24px rgba(13,19,76,.2);}
+.sb-info{margin:14px 14px 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;}
+.si-row{display:flex;flex-direction:column;gap:2px;}
+.si-lbl{font-size:8px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.38);}
+.si-val{font-family:'Nunito',sans-serif;font-weight:700;font-size:12px;color:white;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.si-div{height:1px;background:rgba(255,255,255,.07);}
+.sb-cd{margin:10px 14px 0;background:linear-gradient(135deg,var(--rust),var(--rust-dark));border-radius:10px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;}
+.cd-lbl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.75);}
+.cd-date{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px;}
+.cd-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:26px;color:white;line-height:1;}
+.cd-dias{font-size:9px;color:rgba(255,255,255,.65);margin-top:1px;text-align:right;}
+.sb-nav{padding:14px 10px;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;}
+.sb-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.25);}
+.sb-nav-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.28);padding:0 8px;margin-bottom:5px;margin-top:10px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:rgba(255,255,255,.55);transition:all .15s;user-select:none;margin-bottom:2px;text-decoration:none;}
+.nav-item:hover{background:rgba(255,255,255,.08);color:white;}
+.nav-item.active{background:var(--rust);color:white;}
+.nav-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.sb-footer{padding:14px;border-top:1px solid rgba(255,255,255,.08);}
+.btn-save{width:100%;padding:10px;background:var(--mint);color:var(--navy);border:none;border-radius:10px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-save:hover{background:var(--mint-d);}
+.btn-backup{width:100%;padding:8px;background:transparent;border:1px solid rgba(255,255,255,.2);border-radius:8px;font-family:'Inter',sans-serif;font-weight:600;font-size:11px;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:5px;color:rgba(255,255,255,.6);}
+.btn-backup:hover{background:rgba(255,255,255,.08);color:white;border-color:rgba(255,255,255,.4);}
+.backup-modal{position:fixed;inset:0;background:rgba(13,19,76,.4);z-index:600;display:none;align-items:center;justify-content:center;}
+.backup-modal.open{display:flex;}
+.backup-box{background:white;border-radius:16px;padding:24px;width:min(360px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow-y:auto;box-shadow:0 20px 60px rgba(13,19,76,.25);display:flex;flex-direction:column;gap:14px;}
+.backup-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;color:var(--navy);}
+.backup-sub{font-size:12px;color:var(--text-soft);margin-top:-8px;line-height:1.5;}
+.backup-actions{display:flex;flex-direction:column;gap:8px;}
+.backup-btn-exp{padding:11px;background:var(--navy);color:white;border:none;border-radius:10px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .18s;}
+.backup-btn-exp:hover{background:var(--navy-mid);}
+.backup-btn-imp{padding:11px;background:var(--bg);color:var(--navy);border:1.5px solid var(--border);border-radius:10px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .18s;}
+.backup-btn-imp:hover{border-color:var(--navy);}
+.backup-btn-close{padding:9px;background:transparent;border:none;color:var(--text-soft);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;}
+.backup-warn{font-size:11px;color:var(--text-soft);background:var(--yellow-bg);border:1px solid #fde68a;border-radius:8px;padding:8px 12px;line-height:1.5;}
+
+/* ── TABS ── */
+.content{margin-left:var(--sidebar-w);width:calc(100% - var(--sidebar-w));max-width:calc(100vw - var(--sidebar-w));min-width:0;display:flex;flex-direction:column;align-items:stretch;}
+.topstrip{background:white;border-bottom:1px solid var(--border);padding:0 28px;height:54px;width:100%;max-width:100%;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.05);overflow:hidden;}
+.page-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:17px;color:var(--navy);}
+.strip-right{display:flex;align-items:center;gap:12px;min-width:0;}
+.tab-bar{display:flex;gap:2px;min-width:0;overflow-x:auto;}
+.tab-btn{padding:6px 16px;border-radius:8px;border:none;background:transparent;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;color:var(--text-soft);cursor:pointer;transition:all .15s;}
+.tab-btn:hover{background:var(--bg);color:var(--navy);}
+.tab-btn.active{background:var(--navy);color:white;}
+.strip-actions{display:flex;gap:8px;}
+.btn{padding:7px 15px;border-radius:8px;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;border:none;transition:all .18s;display:flex;align-items:center;gap:5px;}
+.btn-navy{background:var(--navy);color:white;}.btn-navy:hover{background:var(--navy-mid);}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--text-mid);}.btn-ghost:hover{border-color:var(--navy);color:var(--navy);}
+
+/* ── PAGES ── */
+.page{display:none;width:100%;max-width:100%;margin:0 auto;padding:22px 28px;flex-direction:column;gap:20px;min-width:0;}
+.page.active{display:flex;}
+.sec-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-soft);margin-bottom:12px;}
+
+/* ── PROGRESSO CARD ── */
+.prog-card{background:var(--navy);border-radius:16px;padding:20px 24px;display:flex;align-items:center;gap:28px;box-shadow:0 6px 24px rgba(13,19,76,.2);min-width:0;max-width:100%;}
+.prog-main{flex:1;}
+.prog-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;}
+.prog-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.45);}
+.prog-sub{font-size:11px;color:rgba(255,255,255,.45);margin-top:4px;}
+.prog-pct{font-family:'Nunito',sans-serif;font-weight:900;font-size:38px;color:var(--mint);line-height:1;}
+.prog-bar{height:8px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--mint),var(--lime));border-radius:99px;transition:width .6s;min-width:0;}
+.prog-stats{display:flex;gap:20px;flex-shrink:0;}
+.ps{text-align:center;}.ps-v{font-family:'Nunito',sans-serif;font-weight:900;font-size:26px;line-height:1;color:white;}
+.ps-v.g{color:var(--mint);}.ps-v.r{color:var(--amber);}.ps-v.b{color:#aab4ff;}.ps-v.lime{color:var(--lime);}
+.ps-l{font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.38);margin-top:3px;}
+
+/* ── TRACKER ROW ── */
+.tracker-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;width:100%;max-width:100%;min-width:0;}
+
+/* ── CRONÔMETRO ── */
+.crono-card{background:white;border-radius:16px;border:1.5px solid var(--border);padding:20px 22px;display:flex;flex-direction:column;gap:14px;min-width:0;max-width:100%;}
+.crono-display{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.crono-time{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(34px,5vw,52px);color:var(--navy);letter-spacing:2px;line-height:1;transition:color .3s;max-width:100%;overflow-wrap:anywhere;}
+.crono-time.running{color:var(--rust);}
+.crono-time.paused{color:var(--amber);}
+.crono-status{font-size:11px;font-weight:600;color:var(--text-soft);letter-spacing:1px;text-transform:uppercase;}
+.crono-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.crono-btn{padding:9px 20px;border-radius:10px;border:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:6px;}
+.crono-btn.start{background:var(--green);color:white;box-shadow:0 4px 12px rgba(34,197,94,.3);}
+.crono-btn.start:hover{background:#16a34a;}
+.crono-btn.pause{background:var(--amber);color:var(--navy);}
+.crono-btn.pause:hover{filter:brightness(.92);}
+.crono-btn.stop{background:var(--red-bg);color:var(--red);border:1.5px solid #fca5a5;}
+.crono-btn.stop:hover{background:#fee2e2;}
+.crono-session-info{background:var(--bg);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:6px;}
+.crono-disc-select{display:flex;gap:8px;min-width:0;}
+.crono-disc-select select,.crono-disc-select input{flex:1;padding:7px 10px;border-radius:8px;border:1.5px solid var(--border);font-size:12px;font-family:'Inter',sans-serif;color:var(--navy);outline:none;background:white;transition:border-color .18s;}
+.crono-disc-select select:focus,.crono-disc-select input:focus{border-color:var(--navy);}
+.crono-today-row{display:flex;justify-content:space-between;align-items:center;}
+.crono-today-lbl{font-size:11px;font-weight:600;color:var(--text-soft);}
+.crono-today-val{font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--navy);}
+.crono-divider{height:1px;background:var(--border);}
+.crono-manual{display:flex;flex-direction:column;gap:10px;}
+.crono-manual-title{font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.8px;}
+.man-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;min-width:0;}
+.man-grid-wide{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:-2px;min-width:0;}
+.man-field{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.man-field label{font-size:9px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px;}
+.man-inp{padding:7px 10px;border-radius:8px;border:1.5px solid var(--border);font-size:13px;font-family:'Inter',sans-serif;color:var(--navy);outline:none;background:var(--bg);width:100%;transition:border-color .18s;}
+#man-data{min-height:42px;padding:10px 12px;font-size:15px;font-weight:700;}
+.man-inp:focus{border-color:var(--navy);background:white;}
+.man-topic-row{display:none;flex-direction:column;gap:3px;}
+.man-topic-row.visible{display:flex;}
+.crono-add-btn{width:100%;padding:9px;background:var(--navy);color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:all .18s;margin-top:2px;}
+.crono-add-btn:hover{background:var(--navy-mid);}
+
+/* ── CALENDÁRIO ── */
+.cal-card{background:white;border-radius:16px;border:1.5px solid var(--border);padding:20px 22px;display:flex;flex-direction:column;gap:14px;min-width:0;max-width:100%;}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;}
+.cal-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--navy);}
+.cal-nav-btns{display:flex;gap:4px;}
+.cal-nav-btn{width:28px;height:28px;border-radius:7px;border:1.5px solid var(--border);background:white;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s;color:var(--text-mid);}
+.cal-nav-btn:hover{border-color:var(--navy);color:var(--navy);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;min-width:0;}
+.cal-dow{text-align:center;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-soft);padding:4px 0;}
+.cal-day{border-radius:8px;padding:5px 4px;min-height:56px;border:1.5px solid transparent;cursor:pointer;transition:all .15s;background:var(--bg);}
+.cal-day:hover{border-color:var(--border);background:white;}
+.cal-day.today{border-color:var(--rust) !important;background:#fff5f6;}
+.cal-day.has-data{background:white;border-color:var(--border);}
+.cal-day.other-month{opacity:.3;pointer-events:none;}
+.cal-day-num{font-size:11px;font-weight:700;color:var(--text-mid);text-align:right;margin-bottom:3px;}
+.cal-day.today .cal-day-num{color:var(--rust);font-weight:900;}
+.cal-day-h{font-size:9px;font-weight:700;color:var(--green);}
+.cal-day-q{font-size:9px;font-weight:600;color:var(--navy);opacity:.7;}
+.cal-day-disc{font-size:8px;color:var(--text-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+.cal-legend{display:flex;gap:12px;flex-wrap:wrap;}
+.cal-leg{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-soft);}
+.cal-leg-dot{width:8px;height:8px;border-radius:50%;}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(13,19,76,.35);z-index:500;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:white;border-radius:16px;padding:24px;width:min(380px,calc(100vw - 32px));max-width:100%;box-shadow:0 20px 60px rgba(13,19,76,.25);display:flex;flex-direction:column;gap:14px;}
+.modal-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;color:var(--navy);}
+.modal-sub{font-size:12px;color:var(--text-soft);margin-top:-8px;}
+.modal-field{display:flex;flex-direction:column;gap:4px;}
+.modal-field label{font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.7px;}
+.modal-inp{padding:9px 12px;border-radius:9px;border:1.5px solid var(--border);font-size:14px;font-family:'Inter',sans-serif;color:var(--navy);outline:none;background:var(--bg);width:100%;transition:border-color .18s;}
+.modal-inp:focus{border-color:var(--navy);background:white;}
+.modal-topic-field{display:none;flex-direction:column;gap:4px;}
+.modal-topic-field.visible{display:flex;}
+.modal-actions{display:flex;gap:8px;margin-top:4px;}
+.modal-btn-save{flex:1;padding:10px;background:var(--navy);color:white;border:none;border-radius:10px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;}
+.modal-btn-save:hover{background:var(--navy-mid);}
+.modal-btn-cancel{padding:10px 16px;background:transparent;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-mid);}
+.modal-btn-cancel:hover{border-color:var(--red);color:var(--red);}
+
+/* ── METAS ── */
+.metas-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.meta-card{background:white;border-radius:14px;padding:16px;border:1.5px solid var(--border);}
+.mc-top{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.mc-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.mc-name{font-size:11px;font-weight:700;color:var(--text-mid);}
+.mc-inputs{display:flex;gap:7px;align-items:flex-end;margin-bottom:11px;}
+.mc-ig{display:flex;flex-direction:column;gap:3px;flex:1;}
+.mc-ig label{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-soft);}
+.mc-inp{width:100%;padding:6px 8px;border-radius:8px;border:1.5px solid var(--border);font-size:17px;font-weight:800;font-family:'Nunito',sans-serif;color:var(--navy);outline:none;text-align:center;background:var(--bg);}
+.mc-inp:focus{border-color:var(--navy);background:white;}
+.mc-inp[readonly]{background:var(--green-bg);border-color:#bbf7d0;color:var(--green);cursor:default;}
+.mc-arrow{color:var(--text-soft);font-size:13px;padding-bottom:7px;}
+.mc-bar{height:5px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:5px;}
+.mc-fill{height:100%;border-radius:99px;transition:width .5s;min-width:0;}
+.mc-labels{display:flex;justify-content:space-between;font-size:10px;}
+.mc-pct{font-weight:700;}
+.mc-auto-badge{font-size:9px;background:var(--green-bg);color:var(--green);border-radius:4px;padding:1px 5px;font-weight:700;margin-left:4px;}
+
+/* ── FILTROS ── */
+.filter-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.flbl{font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.5px;}
+.fbtn{padding:5px 13px;border-radius:99px;border:1.5px solid var(--border);background:white;font-size:12px;font-weight:600;color:var(--text-mid);cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;}
+.fbtn:hover{border-color:var(--navy);color:var(--navy);}.fbtn.active{background:var(--navy);border-color:var(--navy);color:white;}
+
+/* ── DISCIPLINAS ── */
+.disc-list{display:flex;flex-direction:column;gap:12px;}
+.disc-card{background:white;border-radius:14px;border:1.5px solid var(--border);overflow:hidden;}
+.disc-hdr{display:flex;align-items:center;padding:14px 18px;cursor:pointer;user-select:none;gap:12px;border-left:5px solid var(--dc,var(--navy));transition:background .12s;}
+.disc-hdr:hover{background:#f9faff;}
+.dc-dot{width:10px;height:10px;border-radius:50%;background:var(--dc,var(--navy));flex-shrink:0;}
+.dc-info{flex:1;}
+.dc-name{font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--navy);}
+.dc-meta{display:flex;align-items:center;gap:8px;margin-top:4px;}
+.dc-sub{font-size:11px;color:var(--text-soft);}
+.dc-mini-bar{flex:1;max-width:110px;height:4px;background:var(--border);border-radius:99px;overflow:hidden;}
+.dc-mini-fill{height:100%;background:var(--dc,var(--navy));border-radius:99px;transition:width .5s;}
+.dc-stats{display:flex;gap:10px;align-items:center;flex-shrink:0;}
+.dcs{text-align:center;min-width:34px;}
+.dcs-v{font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;line-height:1;}
+.dcs-v.g{color:var(--green);}.dcs-v.r{color:var(--red);}.dcs-v.b{color:var(--navy);opacity:.7;}
+.dcs-l{font-size:8px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-soft);margin-top:1px;}
+.pct-pill{padding:4px 11px;border-radius:99px;font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;min-width:50px;text-align:center;}
+.pct-pill.g{background:var(--green-bg);color:#15803d;}.pct-pill.y{background:var(--yellow-bg);color:#b45309;}.pct-pill.r{background:var(--red-bg);color:#b91c1c;}.pct-pill.n{background:var(--bg);color:var(--text-soft);}
+.dc-chevron{color:var(--text-soft);font-size:13px;transition:transform .25s;flex-shrink:0;}
+.disc-card.open .dc-chevron{transform:rotate(180deg);}
+.disc-body{display:none;padding:0 18px 16px;}
+.disc-card.open .disc-body{display:block;}
+.ctable{width:100%;border-collapse:collapse;font-size:13px;}
+.ctable thead tr{background:var(--bg);}
+.ctable th{padding:8px 10px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-soft);text-align:left;border-bottom:1.5px solid var(--border);white-space:nowrap;}
+.ctable th.c{text-align:center;}
+.ctable tbody tr{border-bottom:1px solid #f0f2f9;}
+.ctable tbody tr:last-child{border-bottom:none;}
+.ctable tbody tr:hover{background:#f9faff;}
+.ctable tbody tr.done{background:#f0fdf4;}
+.ctable tbody tr.done:hover{background:#dcfce7;}
+.ctable td{padding:9px 10px;vertical-align:middle;}
+.td-ck{width:42px;text-align:center;}
+.cbx{appearance:none;-webkit-appearance:none;width:19px;height:19px;border:2px solid var(--border);border-radius:5px;cursor:pointer;position:relative;transition:all .18s;background:white;}
+.cbx:checked{background:var(--green);border-color:var(--green);}
+.cbx:checked::after{content:'';position:absolute;top:1px;left:4px;width:6px;height:10px;border:2px solid white;border-top:none;border-left:none;transform:rotate(45deg);}
+.td-topic{min-width:180px;}.topic-nm{font-weight:500;color:var(--text);line-height:1.4;}
+tr.done .topic-nm{color:var(--text-mid);}
+.topic-dt{font-size:10px;color:var(--green);font-weight:600;margin-top:2px;display:none;}
+tr.done .topic-dt{display:block;}
+.td-dt{font-size:11px;color:var(--text-soft);white-space:nowrap;min-width:120px;}
+.td-q{min-width:148px;}
+.q-row{display:flex;align-items:center;gap:5px;}
+.qwrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.qwrap label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.qwrap.ac label{color:var(--green);}.qwrap.er label{color:var(--red);}
+.qinp{width:46px;text-align:center;padding:5px 3px;border-radius:7px;border:1.5px solid var(--border);font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;color:var(--navy);outline:none;background:white;}
+.qinp:focus{border-color:var(--navy);}
+.qsep{color:var(--border);font-size:13px;}
+.td-tot{text-align:center;min-width:50px;}.tot-v{font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--text-mid);}
+.td-pct{text-align:center;min-width:62px;}
+.grow td{background:#f4f5fc;font-size:10px;font-weight:700;color:var(--text-soft);letter-spacing:.5px;text-transform:uppercase;padding:6px 10px;border-bottom:1px solid var(--border);border-top:1.5px solid var(--border);}
+.grow td:first-child{border-left:3px solid var(--dc,var(--navy));}
+
+/* ── HISTÓRICO ── */
+.hist-filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:4px;}
+.hist-table-wrap{background:white;border-radius:14px;border:1.5px solid var(--border);overflow:hidden;}
+.hist-table{width:100%;border-collapse:collapse;font-size:13px;}
+.hist-table th{padding:10px 14px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-soft);text-align:left;border-bottom:1.5px solid var(--border);background:var(--bg);white-space:nowrap;}
+.hist-table td{padding:11px 14px;border-bottom:1px solid #f0f2f9;vertical-align:middle;}
+.hist-table tbody tr:last-child td{border-bottom:none;}
+.hist-table tbody tr:hover{background:#f9faff;}
+.hist-disc-badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;background:var(--bg);color:var(--text-mid);}
+.hist-empty{text-align:center;padding:48px;color:var(--text-soft);font-size:14px;}
+.hist-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:4px;}
+.hist-sum-card{background:white;border-radius:12px;border:1.5px solid var(--border);padding:14px 16px;}
+.hsc-val{font-family:'Nunito',sans-serif;font-weight:900;font-size:24px;color:var(--navy);line-height:1;}
+.hsc-lbl{font-size:10px;font-weight:600;color:var(--text-soft);margin-top:4px;}
+.btn-del{background:none;border:none;cursor:pointer;color:var(--text-soft);font-size:14px;padding:4px 6px;border-radius:5px;transition:all .15s;}
+.btn-del:hover{color:var(--red);background:var(--red-bg);}
+
+/* ── CHARTS → STATS PANEL ── */
+.stats-panel{background:white;border-radius:16px;border:1.5px solid var(--border);padding:18px 20px;display:flex;flex-direction:column;gap:16px;}
+.stats-panel-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.stats-panel-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;color:var(--navy);}
+.cf-select{padding:5px 10px;border-radius:8px;border:1.5px solid var(--border);font-size:11px;font-family:'Inter',sans-serif;color:var(--navy);outline:none;background:var(--bg);}
+.cf-select:focus{border-color:var(--navy);}
+.stats-big-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.stat-big{background:var(--bg);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;border:1.5px solid var(--border);}
+.stat-big-val{font-family:'Nunito',sans-serif;font-weight:900;font-size:28px;line-height:1;}
+.stat-big-lbl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-soft);}
+.stat-big-sub{font-size:10px;color:var(--text-soft);margin-top:2px;}
+.stats-disc-row{display:flex;flex-direction:column;gap:8px;}
+.stat-disc-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border-radius:10px;border:1.5px solid var(--border);}
+.stat-disc-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.stat-disc-name{font-size:12px;font-weight:600;color:var(--navy);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.stat-disc-nums{display:flex;gap:12px;flex-shrink:0;align-items:center;}
+.stat-disc-num{text-align:center;}
+.stat-disc-num-val{font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;line-height:1;}
+.stat-disc-num-lbl{font-size:8px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-soft);}
+.stat-disc-bar-wrap{flex:1;max-width:100px;height:5px;background:var(--border);border-radius:99px;overflow:hidden;}
+.stat-disc-bar-fill{height:100%;border-radius:99px;transition:width .5s;}
+.chart-empty{text-align:center;padding:32px;color:var(--text-soft);font-size:13px;}
+
+/* ── REVISÕES ── */
+.rev-section{display:flex;flex-direction:column;gap:16px;}
+.rev-group{background:white;border-radius:14px;border:1.5px solid var(--border);overflow:hidden;}
+.rev-group-hdr{padding:10px 16px;background:var(--bg);border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:8px;}
+.rev-group-icon{font-size:15px;}
+.rev-group-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;color:var(--navy);}
+.rev-group-count{margin-left:auto;font-size:11px;font-weight:600;color:var(--text-soft);}
+.rev-disc-block{border-left:4px solid var(--dc,var(--navy));}
+.rev-disc-hdr{padding:10px 16px;display:flex;align-items:center;gap:8px;background:#fafbff;border-bottom:1px solid var(--border);}
+.rev-disc-dot{width:9px;height:9px;border-radius:50%;background:var(--dc,var(--navy));flex-shrink:0;}
+.rev-disc-name{font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;color:var(--navy);}
+.rev-disc-cnt{font-size:11px;color:var(--text-soft);margin-left:auto;}
+.rev-topic-row{display:flex;align-items:center;padding:9px 16px 9px 28px;border-bottom:1px solid #f0f2f9;gap:10px;transition:background .12s;}
+.rev-topic-row:last-child{border-bottom:none;}
+.rev-topic-row:hover{background:#f9faff;}
+.rev-topic-name{font-size:12px;font-weight:500;color:var(--text);flex:1;line-height:1.4;}
+.rev-topic-meta{font-size:10px;color:var(--text-soft);margin-top:2px;}
+.rev-badges{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+.rev-badge{padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;border:1.5px solid transparent;white-space:nowrap;}
+.rev-badge.pending{background:var(--yellow-bg);color:#b45309;border-color:#fde68a;}
+.rev-badge.done{background:var(--green-bg);color:#15803d;border-color:#bbf7d0;}
+.rev-badge.overdue{background:var(--red-bg);color:#b91c1c;border-color:#fca5a5;}
+.rev-done-btn{border:1.5px solid var(--green);background:var(--green);color:white;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:800;font-family:'Inter',sans-serif;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.rev-done-btn:hover{filter:brightness(.94);transform:translateY(-1px);}
+.rev-done-btn.is-done{background:white;color:var(--green);border-color:#bbf7d0;}
+.rev-empty{text-align:center;padding:48px 20px;color:var(--text-soft);font-size:13px;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--navy);color:white;padding:11px 18px;border-radius:12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(13,19,76,.3);transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;}
+.toast.show{transform:translateY(0);opacity:1;}
+::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+@media(max-width:900px){
+  :root{--sidebar-w:0px;}
+  .sidebar{display:none;}
+  .content{margin-left:0;width:100%;max-width:100vw;overflow:hidden;}
+  .topstrip{padding:0 16px;gap:12px;}
+  .page{padding:18px 16px;}
+  .metas-grid,.hist-summary{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media(max-width:760px){
+  .topstrip{height:auto;min-height:0;padding:10px 12px 8px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 10px;overflow:visible;}
+  .page-title{font-size:15px;align-self:center;}
+  .strip-right{display:contents;}
+  .strip-actions{grid-column:2;grid-row:1;}
+  .strip-actions .btn{min-height:38px;padding:7px 12px;}
+  .topstrip.edital-actions .page-title{display:none;}
+  .topstrip.edital-actions .strip-actions{grid-column:1/-1;justify-content:space-between;}
+  .tab-bar{grid-column:1/-1;grid-row:2;width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;overflow:visible;padding-bottom:2px;}
+  .tab-bar::-webkit-scrollbar{display:none;}
+  .tab-btn{min-width:0;min-height:38px;padding:7px 3px;font-size:10px;white-space:nowrap;}
+  .page{padding:14px 12px;gap:16px;}
+  .page>*,.tracker-row>*{min-width:0;max-width:100%;}
+  .tracker-row{grid-template-columns:minmax(0,1fr);gap:14px;}
+  .prog-card{flex-direction:column;align-items:stretch;gap:16px;padding:17px 16px;border-radius:14px;}
+  .prog-pct{font-size:34px;}
+  .prog-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+  .ps-v{font-size:22px;}
+  .ps-l{font-size:7px;}
+  .crono-card,.cal-card,.stats-panel{padding:16px 14px;border-radius:14px;}
+  .crono-time{font-size:clamp(36px,12vw,48px);letter-spacing:1px;}
+  .crono-btn{min-height:42px;padding:9px 16px;justify-content:center;}
+  .crono-disc-select{flex-direction:column;}
+  .man-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .man-grid .man-field:first-child{grid-column:1/-1;}
+  .man-grid-wide{grid-template-columns:minmax(0,1fr);}
+  .man-inp,select,textarea{font-size:16px;}
+  .cal-day{min-height:46px;padding:4px 3px;}
+  .cal-day-disc{display:none;}
+  .stats-big-row{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .stat-big{padding:12px;}
+  .stat-big-val{font-size:24px;}
+  .disc-hdr{padding:12px 10px;gap:8px;flex-wrap:wrap;}
+  .edital-toolbar{flex-direction:column;align-items:stretch!important;gap:10px;}
+  .edital-toolbar .filter-row{gap:6px;}
+  .dc-info{min-width:0;}
+  .dc-name{font-size:13px;overflow-wrap:anywhere;}
+  .dc-stats{order:3;width:100%;padding-left:18px;justify-content:space-between;}
+  .disc-body{padding:0 10px 12px;overflow-x:auto;}
+  .ctable{min-width:760px;}
+  .hist-table-wrap{overflow-x:auto;}
+  .hist-table{min-width:760px;}
+  .hist-empty{padding:36px 18px;}
+  .stat-disc-item{align-items:flex-start;flex-wrap:wrap;}
+  .stat-disc-name{flex-basis:calc(100% - 24px);}
+  .stat-disc-bar-wrap{order:3;max-width:none;}
+  .rev-topic-row{padding:10px 12px;align-items:flex-start;flex-wrap:wrap;}
+  .rev-topic-name{flex-basis:100%;}
+  .rev-badges{width:100%;flex-wrap:wrap;}
+  .toast{left:12px;right:12px;bottom:12px;justify-content:center;text-align:center;}
+  .modal-overlay,.backup-modal{padding:12px;align-items:flex-end;}
+  .modal-box,.backup-box{padding:20px 16px;border-radius:16px;}
+}
+@media(max-width:420px){
+  .metas-grid,.hist-summary{grid-template-columns:minmax(0,1fr);}
+  .prog-stats{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .crono-today-row{gap:10px;}
+  .crono-today-val{font-size:13px;white-space:nowrap;}
+  .filter-row .flbl{width:100%;}
+}
+/* Ajuste de largura dos campos de lista suspensa */
+select{min-width:0;max-width:100%;}
+.crono-session-info{min-width:0;max-width:100%;}
+.crono-disc-select select,.crono-disc-select input{min-width:0;width:100%;max-width:100%;text-overflow:ellipsis;}
+.stats-panel{min-width:0;max-width:100%;}
+.stats-panel-header{min-width:0;}
+.stats-panel-header > div:last-child{min-width:0;max-width:100%;flex-wrap:wrap;}
+.cf-select{min-width:0;max-width:100%;text-overflow:ellipsis;}
+#chart-disc{flex:1 1 150px;width:min(220px,100%);}
+#chart-period{flex:0 1 140px;width:min(160px,100%);}
+@media(max-width:760px){.stats-panel-header > div:last-child{width:100%;}.cf-select,#chart-disc,#chart-period{flex:1 1 100%;width:100%;}}</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-info" id="sb-info"></div>
+  <div class="sb-cd">
+    <div><div class="cd-lbl">Data da Prova</div><div class="cd-date" id="cd-date">—</div></div>
+    <div><div class="cd-num" id="cd-num">—</div><div class="cd-dias">dias</div></div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-nav-lbl">Seções</div>
+    <a class="nav-item active" href="#" onclick="switchTab('estudos');return false;">⏱️ &nbsp;Cronômetro</a>
+    <a class="nav-item" href="#" onclick="switchTab('estudos');scrollToId('sec-metas');return false;">🎯 &nbsp;Metas de Estudo</a>
+    <a class="nav-item" href="#" onclick="switchTab('edital');return false;">📋 &nbsp;Edital</a>
+    <a class="nav-item" href="#" onclick="switchTab('revisoes');return false;">🔁 &nbsp;Revisões</a>
+    <a class="nav-item" href="#" onclick="switchTab('historico');return false;">📅 &nbsp;Histórico</a>
+    <div class="sb-nav-lbl" style="margin-top:14px">Disciplinas</div>
+    <div id="nav-discs"></div>
+  </nav>
+  <div class="sb-footer">
+    <button class="btn-save" onclick="saveData()">💾 Salvar Progresso</button>
+    <div style="display:flex;gap:6px;margin-top:8px">
+      <button class="btn-backup" onclick="openBackupModal()" style="flex:1">⬆️ Exportar backup</button>
+      <button class="btn-backup" onclick="triggerImport()" style="flex:1">⬇️ Restaurar</button>
+    </div>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importBackup(this)">
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="content">
+  <div class="topstrip">
+    <div class="page-title">Edital Verticalizado</div>
+    <div class="strip-right">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('estudos')">⏱ Estudos</button>
+        <button class="tab-btn" onclick="switchTab('edital')">📋 Edital</button>
+        <button class="tab-btn" onclick="switchTab('revisoes')">🔁 Revisões</button>
+        <button class="tab-btn" onclick="switchTab('historico')">📅 Histórico</button>
+      </div>
+      <div class="strip-actions">
+        <button class="btn btn-ghost" id="btn-expand" onclick="expandAll()" style="display:none">↕ Expandir</button>
+        <button class="btn btn-ghost" id="btn-collapse" onclick="collapseAll()" style="display:none">↕ Recolher</button>
+        <button class="btn btn-navy" onclick="saveData()">💾 Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: ESTUDOS -->
+  <div class="page active" id="page-estudos">
+
+    <!-- MEU PROGRESSO -->
+    <div class="prog-card">
+      <div class="prog-main">
+        <div class="prog-top">
+          <div><div class="prog-lbl">Meu Progresso</div><div class="prog-sub" id="prog-sub">0 de 0 tópicos concluídos</div></div>
+          <div class="prog-pct" id="prog-pct">0%</div>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+      </div>
+      <div class="prog-stats">
+        <div class="ps"><div class="ps-v g" id="ps-ac">0</div><div class="ps-l">Acertos</div></div>
+        <div class="ps"><div class="ps-v r" id="ps-er">0</div><div class="ps-l">Erros</div></div>
+        <div class="ps"><div class="ps-v b" id="ps-tot">0</div><div class="ps-l">Questões</div></div>
+        <div class="ps"><div class="ps-v lime" id="ps-aprov">—</div><div class="ps-l">Aproveit.</div></div>
+      </div>
+    </div>
+
+    <!-- CRONÔMETRO + CALENDÁRIO -->
+    <div>
+      <div class="sec-lbl">⏱️ Cronômetro &amp; Calendário</div>
+      <div class="tracker-row">
+
+        <!-- CRONÔMETRO -->
+        <div class="crono-card">
+          <div class="crono-display">
+            <div class="crono-time" id="crono-display">00:00:00</div>
+            <div class="crono-status" id="crono-status">Pronto para iniciar</div>
+          </div>
+
+          <!-- Disciplina / assunto da sessão -->
+          <div class="crono-session-info">
+            <div class="crono-disc-select">
+              <select id="crono-disc" onchange="onCronoDiscChange()" style="flex:1">
+                <option value="">— Disciplina (opcional) —</option>
+              </select>
+            </div>
+            <div id="crono-topic-row" class="crono-disc-select" style="display:none">
+              <select id="crono-topic" style="flex:1">
+                <option value="">— Assunto / Tópico —</option>
+              </select>
+            </div>
+            <div class="man-field">
+              <label style="font-size:9px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Tipo de Estudo</label>
+              <select id="crono-tipo" class="man-inp">
+                <option value="">— selecione —</option>
+                <option value="Teoria">📖 Teoria</option>
+                <option value="Questões">📝 Questões</option>
+                <option value="Simulado">🎯 Simulado</option>
+                <option value="Lei Seca">⚖️ Lei Seca</option>
+                <option value="Jurisprudência">🏛️ Jurisprudência</option>
+                <option value="Discursiva">✍️ Discursiva</option>
+              </select>
+            </div>
+            <div class="man-field">
+              <label style="font-size:9px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Agendar Revisão</label>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+                <button type="button" class="rev-badge pending" onclick="toggleRevBtn(this,7)" data-days="7">7 dias</button>
+                <button type="button" class="rev-badge pending" onclick="toggleRevBtn(this,15)" data-days="15">15 dias</button>
+                <button type="button" class="rev-badge pending" onclick="toggleRevBtn(this,21)" data-days="21">21 dias</button>
+                <button type="button" class="rev-badge pending" onclick="toggleRevBtn(this,30)" data-days="30">30 dias</button>
+                <input type="number" id="crono-rev-custom" class="man-inp" min="1" max="365" placeholder="Custom (dias)" style="width:110px;text-align:center;font-size:12px;padding:4px 8px">
+              </div>
+              <div id="crono-rev-selected" style="font-size:10px;color:var(--text-soft);margin-top:4px"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div class="man-field">
+                <label style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.6px">Acertos</label>
+                <input type="number" class="man-inp" id="crono-acertos" min="0" placeholder="0" style="text-align:center;border-color:#bbf7d0">
+              </div>
+              <div class="man-field">
+                <label style="font-size:9px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.6px">Erros</label>
+                <input type="number" class="man-inp" id="crono-erros" min="0" placeholder="0" style="text-align:center;border-color:#fca5a5">
+              </div>
+            </div>
+            <div class="man-field">
+              <label style="font-size:9px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Observação (opcional)</label>
+              <textarea id="crono-obs" class="man-inp" rows="2" placeholder="Ex: revisar os tópicos X e Y, dúvida sobre..." style="resize:none;min-height:unset;font-size:12px;line-height:1.5"></textarea>
+            </div>
+          </div>
+
+          <div class="crono-btns">
+            <button class="crono-btn start" id="btn-start" onclick="cronoStart()">▶ Iniciar</button>
+            <button class="crono-btn pause" id="btn-pause" onclick="cronoPause()" style="display:none">⏸ Pausar</button>
+            <button class="crono-btn stop" id="btn-stop" onclick="cronoStop()" style="display:none">⏹ Parar e Registrar</button>
+          </div>
+
+          <div class="crono-today-row" style="background:var(--bg);border-radius:10px;padding:10px 14px;">
+            <span class="crono-today-lbl">⏱ Horas registradas hoje</span>
+            <span class="crono-today-val" id="crono-today-val">0h 00min</span>
+          </div>
+
+          <div class="crono-divider"></div>
+
+          <!-- INSERÇÃO MANUAL -->
+          <div class="crono-manual">
+            <div class="crono-manual-title">✏️ Inserir manualmente</div>
+            <div class="man-grid">
+              <div class="man-field"><label>Data</label><input type="date" class="man-inp" id="man-data"></div>
+              <div class="man-field"><label>Horas</label><input type="number" class="man-inp" id="man-h" min="0" max="24" placeholder="0" style="text-align:center"></div>
+              <div class="man-field"><label>Minutos</label><input type="number" class="man-inp" id="man-m" min="0" max="59" placeholder="0" style="text-align:center"></div>
+              <div class="man-field"><label>Segundos</label><input type="number" class="man-inp" id="man-s" min="0" max="59" placeholder="0" style="text-align:center"></div>
+            </div>
+            <div class="man-grid-wide">
+              <div class="man-field"><label>Disciplina</label>
+                <select class="man-inp" id="man-disc" onchange="onManDiscChange()"><option value="">— selecione —</option></select>
+              </div>
+              <div class="man-field" id="man-topic-wrap" style="display:none">
+                <label>Assunto / Tópico</label>
+                <select class="man-inp" id="man-topic"><option value="">— selecione —</option></select>
+              </div>
+            </div>
+            <div class="man-field">
+              <label style="font-size:9px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Tipo de Estudo</label>
+              <select id="man-tipo" class="man-inp">
+                <option value="">— selecione —</option>
+                <option value="Teoria">📖 Teoria</option>
+                <option value="Questões">📝 Questões</option>
+                <option value="Simulado">🎯 Simulado</option>
+                <option value="Lei Seca">⚖️ Lei Seca</option>
+                <option value="Jurisprudência">🏛️ Jurisprudência</option>
+                <option value="Discursiva">✍️ Discursiva</option>
+              </select>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+              <div class="man-field">
+                <label style="font-size:9px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Questões</label>
+                <input type="number" class="man-inp" id="man-q" min="0" placeholder="0" style="text-align:center">
+              </div>
+              <div class="man-field">
+                <label style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.6px">Acertos</label>
+                <input type="number" class="man-inp" id="man-acertos" min="0" placeholder="0" style="text-align:center;border-color:#bbf7d0">
+              </div>
+              <div class="man-field">
+                <label style="font-size:9px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.6px">Erros</label>
+                <input type="number" class="man-inp" id="man-erros" min="0" placeholder="0" style="text-align:center;border-color:#fca5a5">
+              </div>
+            </div>
+            <div class="man-field">
+              <label style="font-size:9px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px">Observação (opcional)</label>
+              <textarea id="man-obs" class="man-inp" rows="2" placeholder="Ex: revisar tópico X, dúvida sobre Y..." style="resize:none;min-height:unset;font-size:12px;line-height:1.5"></textarea>
+            </div>
+            <button class="crono-add-btn" onclick="manualAdd()">+ Adicionar registro</button>
+          </div>
+        </div>
+
+        <!-- CALENDÁRIO -->
+        <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="cal-card">
+          <div class="cal-nav">
+            <div class="cal-title" id="cal-title">—</div>
+            <div class="cal-nav-btns">
+              <button class="cal-nav-btn" onclick="calNav(-1)">‹</button>
+              <button class="cal-nav-btn" onclick="calNav(0)">●</button>
+              <button class="cal-nav-btn" onclick="calNav(1)">›</button>
+            </div>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
+          <div class="cal-legend">
+            <div class="cal-leg"><div class="cal-leg-dot" style="background:var(--navy)"></div>Horas estudadas</div>
+            <div class="cal-leg"><div class="cal-leg-dot" style="background:var(--rust)"></div>Hoje</div>
+          </div>
+        </div>
+
+        <!-- PAINEL DE ESTATÍSTICAS -->
+        <div class="stats-panel">
+          <div class="stats-panel-header">
+            <div class="stats-panel-title">📊 Análise de Desempenho</div>
+            <div style="display:flex;gap:6px">
+              <select class="cf-select" id="chart-disc" onchange="renderCharts()">
+                <option value="">Todas as disciplinas</option>
+              </select>
+              <select class="cf-select" id="chart-period" onchange="renderCharts()">
+                <option value="7">Últimos 7 dias</option>
+                <option value="14" selected>Últimos 14 dias</option>
+                <option value="30">Últimos 30 dias</option>
+                <option value="0">Todo o período</option>
+              </select>
+            </div>
+          </div>
+          <div class="stats-big-row" id="stats-big-row">
+            <div class="stat-big"><div class="stat-big-val" style="color:var(--navy)" id="sb-horas">0h</div><div class="stat-big-lbl">Horas estudadas</div><div class="stat-big-sub" id="sb-horas-sub">no período</div></div>
+            <div class="stat-big"><div class="stat-big-val" style="color:var(--green)" id="sb-acertos">0</div><div class="stat-big-lbl">Acertos</div><div class="stat-big-sub" id="sb-acertos-sub">no período</div></div>
+            <div class="stat-big"><div class="stat-big-val" style="color:var(--red)" id="sb-erros">0</div><div class="stat-big-lbl">Erros</div><div class="stat-big-sub" id="sb-erros-sub">no período</div></div>
+            <div class="stat-big"><div class="stat-big-val" id="sb-pct">—</div><div class="stat-big-lbl">% Aproveitamento</div><div class="stat-big-sub" id="sb-pct-sub">no período</div></div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Por disciplina</div>
+            <div class="stats-disc-row" id="stats-disc-row" style="max-height:320px;overflow-y:auto;padding-right:4px"><div class="chart-empty">Nenhum registro ainda</div></div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METAS -->
+    <div id="sec-metas">
+      <div class="sec-lbl">🎯 Metas de Estudo</div>
+      <div class="metas-grid">
+        <div class="meta-card">
+          <div class="mc-top"><div class="mc-icon" style="background:#e8eaff">⏱️</div><div class="mc-name">Horas / Semana <span class="mc-auto-badge">auto</span></div></div>
+          <div class="mc-inputs">
+            <div class="mc-ig"><label>Meta</label><input class="mc-inp" type="number" id="meta-horas" min="0" placeholder="Ex: 20" oninput="updateAll();debouncedSave()"></div>
+            <div class="mc-arrow">→</div>
+            <div class="mc-ig"><label>Real (semana)</label><input class="mc-inp" type="number" id="real-horas" readonly title="Calculado automaticamente pelo cronômetro e inserções manuais"></div>
+          </div>
+          <div class="mc-bar"><div class="mc-fill" id="mf-h" style="width:0%;background:var(--navy)"></div></div>
+          <div class="mc-labels"><span id="ml-h" style="color:var(--text-soft)">0h estudadas</span><span class="mc-pct" id="mp-h" style="color:var(--navy)">0%</span></div>
+        </div>
+        <div class="meta-card">
+          <div class="mc-top"><div class="mc-icon" style="background:#fff0e6">📝</div><div class="mc-name">Questões / Semana <span class="mc-auto-badge">auto</span></div></div>
+          <div class="mc-inputs">
+            <div class="mc-ig"><label>Meta</label><input class="mc-inp" type="number" id="meta-questoes" min="0" placeholder="Ex: 100" oninput="updateAll();debouncedSave()"></div>
+            <div class="mc-arrow">→</div>
+            <div class="mc-ig"><label>Real (semana)</label><input class="mc-inp" type="number" id="real-questoes" readonly title="Calculado automaticamente"></div>
+          </div>
+          <div class="mc-bar"><div class="mc-fill" id="mf-q" style="width:0%;background:var(--rust)"></div></div>
+          <div class="mc-labels"><span id="ml-q" style="color:var(--text-soft)">0 resolvidas</span><span class="mc-pct" id="mp-q" style="color:var(--rust)">0%</span></div>
+        </div>
+        <div class="meta-card">
+          <div class="mc-top"><div class="mc-icon" style="background:#e6faf3">✅</div><div class="mc-name">Conclusão do Edital</div></div>
+          <div class="mc-inputs"><div class="mc-ig"><label>Meta %</label><input class="mc-inp" type="number" id="meta-conclusao" min="0" max="100" placeholder="Ex: 100" oninput="updateAll();debouncedSave()"></div></div>
+          <div class="mc-bar"><div class="mc-fill" id="mf-c" style="width:0%;background:var(--green)"></div></div>
+          <div class="mc-labels"><span id="ml-c" style="color:var(--text-soft)">0 concluídos</span><span class="mc-pct" id="mp-c" style="color:var(--green)">0%</span></div>
+        </div>
+        <div class="meta-card">
+          <div class="mc-top"><div class="mc-icon" style="background:#fff8ec">🏆</div><div class="mc-name">Aproveitamento</div></div>
+          <div class="mc-inputs"><div class="mc-ig"><label>Meta %</label><input class="mc-inp" type="number" id="meta-aprov" min="0" max="100" placeholder="Ex: 70" oninput="updateAll();debouncedSave()"></div></div>
+          <div class="mc-bar"><div class="mc-fill" id="mf-a" style="width:0%;background:var(--amber)"></div></div>
+          <div class="mc-labels"><span id="ml-a" style="color:var(--text-soft)">Sem questões</span><span class="mc-pct" id="mp-a" style="color:var(--amber)">0%</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-estudos -->
+
+  <!-- PAGE: EDITAL -->
+  <div class="page" id="page-edital">
+    <div class="edital-toolbar" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div class="sec-lbl" style="margin-bottom:0">📋 Conteúdos do Edital</div>
+      <div class="filter-row">
+        <span class="flbl">Filtrar:</span>
+        <button class="fbtn active" onclick="setFilter('todos',this)">Todos</button>
+        <button class="fbtn" onclick="setFilter('pendentes',this)">⬜ Pendentes</button>
+        <button class="fbtn" onclick="setFilter('concluidos',this)">✅ Concluídos</button>
+        <button class="fbtn" onclick="setFilter('questoes',this)">📊 Com Questões</button>
+      </div>
+    </div>
+    <div class="disc-list" id="disc-list"></div>
+  </div>
+
+  <!-- PAGE: REVISÕES -->
+  <div class="page" id="page-revisoes">
+    <div class="sec-lbl">🔁 Cronograma de Revisões</div>
+    <div class="hint blue" style="margin-bottom:4px">
+      <div class="hint-icon">💡</div>
+      <div>As revisões são agendadas automaticamente quando você para o cronômetro com uma revisão selecionada. Clique nos badges para marcar como concluída.</div>
+    </div>
+    <div id="rev-content"><div class="rev-empty">Nenhuma revisão agendada ainda.<br>Use o cronômetro e agende revisões ao estudar.</div></div>
+  </div>
+
+  <!-- PAGE: HISTÓRICO -->
+  <div class="page" id="page-historico">
+    <div class="sec-lbl">📅 Histórico de Estudos</div>
+
+    <div class="hist-summary">
+      <div class="hist-sum-card"><div class="hsc-val" id="hs-dias">0</div><div class="hsc-lbl">Dias estudados</div></div>
+      <div class="hist-sum-card"><div class="hsc-val" id="hs-horas">0h</div><div class="hsc-lbl">Total de horas</div></div>
+      <div class="hist-sum-card"><div class="hsc-val" id="hs-questoes">0</div><div class="hsc-lbl">Total de questões</div></div>
+      <div class="hist-sum-card"><div class="hsc-val" id="hs-media">0h</div><div class="hsc-lbl">Média diária</div></div>
+    </div>
+
+    <div class="hist-filters">
+      <span class="flbl">Filtrar por:</span>
+      <select class="man-inp" id="hist-filter-disc" onchange="renderHistorico()" style="max-width:200px;padding:6px 10px;font-size:12px">
+        <option value="">Todas as disciplinas</option>
+      </select>
+      <select class="man-inp" id="hist-filter-period" onchange="renderHistorico()" style="max-width:160px;padding:6px 10px;font-size:12px">
+        <option value="30">Últimos 30 dias</option>
+        <option value="7">Última semana</option>
+        <option value="0">Todo o período</option>
+      </select>
+    </div>
+
+    <div class="hist-table-wrap">
+      <table class="hist-table">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Disciplina</th>
+            <th>Assunto / Tópico</th>
+            <th>Tipo</th>
+            <th>Tempo</th>
+            <th>Questões</th>
+            <th>Acertos</th>
+            <th>Erros</th>
+            <th>% Acerto</th>
+            <th>Observação</th>
+            <th>Origem</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="hist-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- MODAL DIA -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal-box">
+    <div class="modal-title">📅 Editar dia</div>
+    <div class="modal-sub" id="modal-date-lbl"></div>
+    <div class="modal-field"><label>Horas estudadas (ex: 1.5 = 1h30)</label><input type="number" class="modal-inp" id="modal-horas" min="0" step="0.1" placeholder="0"></div>
+    <div class="modal-field"><label>Questões resolvidas</label><input type="number" class="modal-inp" id="modal-questoes" min="0" placeholder="0"></div>
+    <div class="modal-field"><label>Disciplina</label>
+      <select class="modal-inp" id="modal-disc" onchange="onModalDiscChange()"><option value="">— selecione —</option></select>
+    </div>
+    <div class="modal-topic-field" id="modal-topic-field">
+      <label style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.7px">Assunto / Tópico</label>
+      <select class="modal-inp" id="modal-topic"><option value="">— selecione —</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="modal-btn-save" onclick="saveModalDay()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- BACKUP MODAL -->
+<div class="backup-modal" id="backup-modal" onclick="closeBackupModal(event)">
+  <div class="backup-box">
+    <div class="backup-title">💾 Backup do Progresso</div>
+    <div class="backup-sub">Exporte seu progresso para um arquivo .json e salve em um local seguro. Se limpar o cache do navegador, você pode restaurar tudo pelo botão Restaurar.</div>
+    <div class="backup-warn">⚠️ O progresso fica salvo no navegador. Se limpar o histórico/cache, use o backup para não perder nada.</div>
+    <div class="backup-actions">
+      <button class="backup-btn-exp" onclick="exportBackup()">⬆️ Exportar backup (.json)</button>
+      <button class="backup-btn-imp" onclick="triggerImport()">⬇️ Restaurar backup (.json)</button>
+    </div>
+    <button class="backup-btn-close" onclick="closeBackupModal()">Fechar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="ti">✅</span><span id="tm">Salvo!</span></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  CONFIGURAÇÃO DO CONCURSO — EDITE AQUI
+// ═══════════════════════════════════════════════════════
+const CONCURSO_INFO={concurso:"PC PR - Polícia Civil do Estado do Paraná",cargo:"Agente de Polícia Judiciária",banca:"FGV",dataProva:"2026-10-11"};
+const DISC_CORES = ['#C8102E','#0D134C','#E255BE','#A7C3BB','#EFBD7B','#AFE8D0','#7c3aed','#BAFF38','#0d9488','#ea580c'];
+
+// ═══════════════════════════════════════════════════════
+//  DADOS DO EDITAL — EDITE AQUI
+// ═══════════════════════════════════════════════════════
+const EDITAL=[{"id":"lingua-portuguesa","nome":"LÍNGUA PORTUGUESA","grupos":[{"nome":"Leitura, Compreensão e Análise Textual","topicos":["1.1 Interpretação e compreensão de texto.","1.2 Organização estrutural dos textos.","1.3 Marcas de textualidade: coesão, coerência e intertextualidade.","1.4 Modos de organização discursiva: descrição, narração, exposição, argumentação e injunção; características específicas de cada modo.","1.5 Tipos textuais: informativo, publicitário, propagandístico, normativo, didático e divinatório; characteristics específicas de cada tipo.","1.6 Textos literários e não literários.","1.14 Tipos de discurso.","1.15 Registros de linguagem.","1.16 Funções da linguagem.","1.17 Elementos dos atos de comunicação."]},{"nome":"Estrutura Sintática, Organização Frasal e Pontuação","topicos":["1.7 Tipologia da frase portuguesa.","1.8 Estrutura da frase portuguesa: operações de deslocamento, substituição, modificação e correção.","1.9 Problemas estruturais das frases.","1.11 Pontuação e sinais gráficos.","1.12 Organização sintática das frases: termos e orações.","1.13 Ordem direta e inversa.","1.26 A crase."]},{"nome":"Morfologia e Classes de Palavras","topicos":["1.18 Estrutura e formação de palavras.","1.19 Formas de abreviação.","1.20 Classes de palavras; aspectos morfológicos, sintáticos, semânticos e textuais de substantivos, adjetivos, artigos, numerais, pronomes, verbos, advérbios, conjunções e interjeições; modalizadores."]},{"nome":"Semântica, Vocabulário e Lexicografia","topicos":["1.21 Semântica: sentido próprio e figurado; antônimos, sinônimos, parônimos e hiperônimos.","1.22 Polissemia e ambiguidade.","1.23 Os dicionários: tipos e organização de verbetes.","1.24 Vocabulário: neologismos, arcaísmos, estrangeirismos e latinismos."]},{"nome":"Norma Culta, Ortografia e Acentuação","topicos":["1.10 Norma culta.","1.25 Ortografia e acentuação gráfica."]}]},{"id":"raciocinio-logico-matematico","nome":"RACIOCÍNIO LÓGICO-MATEMÁTICO","grupos":[{"nome":"Lógica Proposicional e Estruturas Lógicas","topicos":["2.1 Lógica: proposições, conectivos, equivalências lógicas, quantificadores e predicados.","2.6 Estrutura lógica de relações arbitrárias entre pessoas, lugares, objetos ou eventos fictícios; dedução de informações e avaliação de condições.","2.7 Compreensão e análise lógica de situações: raciocínio verbal, matemático e sequencial; orientação espacial e temporal; formação de conceitos; discriminação de elementos.","2.13 Problemas de lógica e raciocínio."]},{"nome":"Matemática Básica, Conjuntos e Proporcionalidade","topicos":["2.2 Conjuntos e suas operações; diagramas.","2.3 Números inteiros, racionais e reais; operações; porcentagem; juros.","2.4 Proporcionalidade direta e inversa.","2.5 Medidas de comprimento, área, volume, massa e tempo."]},{"nome":"Geometria, Espaço e Análise de Dados","topicos":["2.8 Interpretação de dados apresentados em gráficos e tabelas.","2.9 Raciocínio lógico envolvendo problemas aritméticos, geométricos e matriciais.","2.10 Problemas de contagem e noções de probabilidade.","2.11 Geometria básica: ângulos, triângulos, polígonos, distâncias, proporcionalidade, perímetro e área.","2.12 Plano cartesiano: sistema de coordenadas e distância."]}]},{"id":"realidade-etnica-social-historica-geografica-cultural-politica-e-economica-do-estado-do-parana","nome":"REALIDADE ÉTNICA, SOCIAL, HISTÓRICA, GEOGRÁFICA, CULTURAL, POLÍTICA E ECONÔMICA DO ESTADO DO PARANÁ","grupos":[{"nome":"História, Geografia e Organização Política do Paraná","topicos":["3.1 Aspectos históricos do Estado do Paraná: formação territorial; processos coloniais; movimentos sociais e desenvolvimento histórico.","3.2 Geografia física e humana: relevo; clima; hidrografia; vegetação; população; densidade demográfica; atividades econômicas.","3.3 Divisão político-administrativa: organização territorial; municípios; regiões de desenvolvimento."]},{"nome":"Cultura e Aspectos Sociais, Econômicos e Políticos","topicos":["3.4 Cultura paranaense: manifestações culturais; patrimônio material e imaterial; festas populares; artes; literatura; música; tradições.","3.5 Indicadores sociais e econômicos: Índice de Desenvolvimento Humano (IDH); segurança pública; saúde; educação; mobilidade; desenvolvimento regional.","3.6 Estrutura do governo estadual; políticas públicas; programas sociais; desafios contemporâneos.","3.7 Temas atuais do Estado do Paraná: segurança pública; economia; meio ambiente; inclusão social; sustentabilidade."]}]},{"id":"tecnologia-e-sistemas-de-informacao-e-de-comunicacao-seguranca-cibernetica-e-crimes-digitais","nome":"TECNOLOGIA E SISTEMAS DE INFORMAÇÃO E DE COMUNICAÇÃO, SEGURANÇA CIBERNÉTICA E CRIMES DIGITAIS","grupos":[{"nome":"Fundamentos de Informática, Sistemas Operacionais e Redes","topicos":["1.1. Fundamentos de informática: hardware, software, periféricos, dispositivos móveis, armazenamento de dados, backup, BIOS, UEFI, drivers e firmware.","1.2. Sistemas operacionais e aplicativos: Microsoft Windows 11(BR); Android; iOS; Microsoft 365 (BR); LibreOffice/BrOffice; Google Workspace; instalação, atualização, configuração e segurança de sistemas e aplicativos.","1.3. Internet, redes e tecnologias digitais: internet e intranet; navegadores; correio eletrônico; computação em nuvem; compartilhamento de arquivos; redes de computadores; IP; DNS; VPN; firewall; redes sociais; plataformas digitais; registros eletrônicos; cookies; cache; metadados; noções de lógica de programação, aplicações web, HTML, CSS, JavaScript, bancos de dados e APIs."]},{"nome":"Segurança da Informação e Cibernética","topicos":["1.4. Segurança da informação e segurança cibernética: confidencialidade, integridade, disponibilidade, autenticidade e rastreabilidade das informações; controle de acesso; autenticação; logs; auditoria; criptografia; certificados digitais; backup; recuperação de dados; vulnerabilidades; malware; ransomware; phishing; engenharia social; segurança em redes, dispositivos e serviços em nuvem; políticas de segurança; proteção de dados pessoais; prevenção e resposta a incidentes de segurança."]},{"nome":"Investigação Digital, Legislação e Crimes Cibernéticos","topicos":["1.5. Crimes cibernéticos, investigação digital e evidências eletrônicas: crimes digitais; fraudes eletrônicas; invasão de dispositivos; crimes em redes sociais e na internet; coleta, preservação, rastreabilidade e cadeia de custódia de evidências digitais; rastreamento e recuperação de informações; inteligência cibernética; fontes abertas (OSINT).","1.6. Legislação e ética digital: Marco Civil da Internet (Lei Federal n.º 12.965/2014); Lei Geral de Proteção de Dados Pessoais – LGPD (Lei Federal n.º 13.709/2018); Lei dos Crimes Informáticos (Lei Federal n.º 12.737/2012); Lei Federal n.º 14.155/2021); sigilo funcional; uso ético e responsável da tecnologia e das informações institucionais."]}]},{"id":"ciencias-forenses","nome":"CIÊNCIAS FORENSES","grupos":[{"nome":"Medicina Legal","topicos":["2.1. Medicina Legal: conceito, divisões e importância; perícia médico-legal; antropologia forense; identificação humana; papiloscopia; odontologia legal; identificação por DNA; reconhecimento facial; inteligência artificial aplicada à identificação pericial; sexologia forense; traumatologia forense; lesões corporais; instrumentos lesivos; asfixiologia; balística forense; tanatologia; morte; fenômenos cadavéricos; necropsia; toxicologia forense; intoxicações e exames toxicológicos; psicopatologia forense; imputabilidade penal; perícia psiquiátrica."]},{"nome":"Criminalística e Documentoscopia","topicos":["2.2. Criminalística e Documentoscopia: criminalística; vestígios, indícios e evidências; local de crime; cadeia de custódia; preservação de local de crime; documentoscopia; grafoscopia; análise documental; análise de assinaturas; falsificações."]},{"nome":"Criminologia e Vitimologia","topicos":["2.3. Criminologia e Vitimologia: conceito, objeto e métodos da criminologia; escolas criminológicas; criminologia crítica; teorias criminológicas; vitimologia; classificação das vítimas; vitimização; controle social; prevenção do delito; criminologia e política criminal; criminologia aplicada à atuação policial; perfil criminal; análise de indicadores de criminalidade."]},{"nome":"Criminologia Digital e Investigação Tecnológica","topicos":["2.4. Criminologia Digital e Investigação Tecnológica: crimes digitais; perfil do criminoso cibernético; deep web; dark web; ambientes digitais criminógenos; vitimização digital; rastreamento de informações; evidências eletrônicas; logs; metadados; redes sociais; preservação de evidências digitais; inteligência cibernética e fontes abertas (OSINT)."]}]},{"id":"contabilidade-geral","nome":"CONTABILIDADE GERAL","grupos":[{"nome":"Teoria Geral, Patrimônio e Operações Contábeis","topicos":["3.1 Teoria e princípios básicos da contabilidade.","3.2 Patrimônio, contas e escrituração contábil.","3.3 Operações comerciais e bancárias; estoques; tributos sobre compras e vendas; folha de pagamento; provisões."]},{"nome":"Demonstrações, Custos e Normatização","topicos":["3.4 Demonstrações contábeis and análise das demonstrações contábeis.","3.5 Custos: conceitos e classificações.","3.6 Sistemas de informações contábeis (SIC).","3.7 Normas do Comitê de Pronunciamentos Contábeis (CPC), do Conselho Federal de Contabilidade (CFC) e legislação societária aplicável."]},{"nome":"Análise Financeira e Prevenção a Fraudes","topicos":["3.8 Noções de análise financeira, controle patrimonial e identificação de irregularidades contábeis, fraudes, inconsistências em registros financeiros e indícios de ocultação patrimonial."]}]},{"id":"estatistica","nome":"ESTATÍSTICA","grupos":[{"nome":"Estatística Descritiva e Amostragem","topicos":["4.1. Conceitos básicos de estatística e estatística descritiva.","4.2. Organização, interpretação e apresentação de dados; tabelas e gráficos.","4.3. Variáveis qualitativas e quantitativas; média, mediana, moda e medidas de dispersão.","4.4. Porcentagem, probabilidade básica e noções de amostragem."]},{"nome":"Análise de Dados, Detecção de Anomalias e Atuação Policial","topicos":["4.5. Leitura e interpretação de indicadores estatísticos.","4.6. Identificação de padrões, inconsistências e anomalias em dados estatísticos.","4.7 Métodos de detecção de outliers.","4.8. Aplicação da estatística na análise de informações, indicadores de criminalidade e atividade policial."]}]},{"id":"legislacao-estadual-e-institucional","nome":"LEGISLAÇÃO ESTADUAL E INSTITUCIONAL","grupos":[{"nome":"Legislação Orgânica e Estrutura da Polícia Civil do Paraná","topicos":["5.1 Constituição do Estado do Paraná: disposições relativas à Administração Pública, servidores públicos, segurança pública e Polícia Civil.","5.2 Estruturação das carreiras da Polícia Civil do Estado do Paraná: Lei Complementar Estadual n.º 259, de 21 de julho de 2023, e suas alterações posteriores.","5.3 Lei Orgânica Nacional das Polícias Civis: Lei Federal n.º 14.735/2023.","5.4 Lei Orgânica da Polícia Civil do Estado do Paraná: Lei Estadual n.º 23.213/2026.","5.5 Código Disciplinar da Polícia Civil do Paraná: Lei Estadual n.º 21.894/2024."]},{"nome":"Regime Jurídico e Legislação Aplicada à Atividade Policial","topicos":["5.6 Regime jurídico dos servidores públicos do Estado do Paraná: Lei Estadual n.º 6.174/1970 e alterações posteriores; provimento; vacância; direitos; vantagens; deveres; proibições; responsabilidades; sindicância; processo administrativo disciplinar; responsabilidade civil, administrativa e penal do servidor público; ética no serviço público; sigilo funcional e proteção de informações institucionais.","5.7 Legislação aplicada à atividade institucional e policial: Lei de Abuso de Autoridade (Lei n.º 13.869/2019); Lei de Identificação Criminal (Lei n.º 12.037/2009); Lei Geral de Proteção de Dados Pessoais – LGPD (Lei n.º 13.709/2018); Lei de Acesso à Informação (Lei n.º 12.527/2011)."]}]},{"id":"direito-penal-e-legislacao-penal-extravagante","nome":"DIREITO PENAL E LEGISLAÇÃO PENAL EXTRAVAGANTE","grupos":[{"nome":"Direito Penal (Parte Geral e Parte Especial)","topicos":["6.1 Direito Penal: princípios básicos; aplicação da lei penal; lei penal no tempo e no espaço; tempo e lugar do crime; territorialidade e extraterritorialidade; teoria do crime; fato típico; crime consumado e tentado; desistência voluntária; arrependimento eficaz; crime impossível; dolo e culpa; erro; ilicitude; causas de exclusão; culpabilidade; concurso de pessoas; concurso de crimes; penas; aplicação da pena; extinção da punibilidade; crimes contra a pessoa; crimes contra o patrimônio; crimes contra a dignidade sexual; crimes contra a fé pública; crimes contra a administração pública."]},{"nome":"Direito Processual Penal Aplicado","topicos":["6.2 Direito Processual Penal aplicado: inquérito policial; notitia criminis; delatio criminis; indiciamento; garantias do investigado; provas; cadeia de custódia; preservação de local de crime; reconhecimento de pessoas e coisas; busca e apreensão; prisão em flagrante; prisão preventiva; liberdade provória; medidas cautelares diversas da prisão."]},{"nome":"Legislação Penal Extravagante","topicos":["6.3 Legislação Penal e Processual Penal Extravagante: Lei de Execução Penal (Lei n.º 7.210/1984); Lei dos Crimes Hediondos (Lei n.º 8.072/1990); Lei dos Crimes contra a Ordem Tributária, Econômica e Relações de Consumo (Lei n.º 8.137/1990); Lei de Interceptação Telefônica (Lei n.º 9.296/1996); Código de Trânsito Brasileiro – CTB (Lei n.º 9.503/1997); Estatuto do Desarmamento (Lei n.º 10.826/2003); Lei Maria da Penha (Lei n.º 11.340/2006); Lei de Drogas (Lei n.º 11.343/2006); Lei das Organizações Criminosas (Lei n.º 12.850/2013); Lei de Abuso de Autoridade (Lei n.º 13.869/2019); Pacote Anticrime (Lei n.º 13.964/2019); Estatuto da Advocacia e Ordem dos Advogados do Brasil (Lei n.º 8.906/1994 - aspectos penais)."]}]},{"id":"direito-processual-penal-e-legislacao-processual-penal-extravagante","nome":"DIREITO PROCESSUAL PENAL E LEGISLAÇÃO PROCESSUAL PENAL EXTRAVAGANTE","grupos":[{"nome":"Direito Processual Penal","topicos":["7.1 Direito Processual Penal: princípios do processo penal; aplicação da lei processual penal; sistemas processuais; persecução penal; inquérito policial; notícia do crime; ação penal; jurisdição e competência; sujeitos processuais; provas; cadeia de custódia; preservação de local de crime; busca e apreensão; reconhecimento de pessoas e coisas; interceptação telefônica; sigilo de dados; prisão em flagrante; prisão preventiva; prisão temporária; liberdade provisória; medidas cautelares diversas da prisão; procedimentos investigativos; direitos e garantias do investigado; juiz das garantias; acordo de não persecução penal."]},{"nome":"Legislação Processual Penal Extravagante","topicos":["7.2 Legislação Processual Penal Extravagante: Lei de Interceptação Telefônica (Lei n.º 9.296/1996); Lei de Lavagem de Dinheiro (Lei n.º 9.613/1998); Estatuto do Desarmamento (Lei n.º 10.826/2003); Lei Maria da Penha (Lei n.º 11.340/2006); Lei de Drogas (Lei n.º 11.343/2006); Lei das Organizações Criminosas (Lei n.º 12.850/2013); Lei de Abuso de Autoridade (Lei n.º 13.869/2019); Pacote Anticrime (Lei n.º 13.964/2019); disposições processuais penais da Lei dos Crimes Hediondos (Lei n.º 8.072/1990). Marco Legal do Combate ao Crime Organizado no Brasil (Lei n.º 15.358/2026); Estatuto da Advocacia e Ordem dos Advogados do Brasil (Lei n.º 8.906/1994 - aspectos processuais penais)."]}]},{"id":"direito-constitucional","nome":"DIREITO CONSTITUCIONAL","grupos":[{"nome":"Teoria Geral, Direitos Fundamentais e Remédios","topicos":["8.1 Princípios fundamentais da Constituição da República Federativa do Brasil de 1988.","8.2 Direitos e garantias fundamentais: direitos individuais e coletivos; direitos sociais; nacionalidade; direitos políticos; garantias constitucionais; devido processo legal; inviolabilidade de domicílio; sigilo de dados e comunicações; prisão e liberdade.","8.3 Remédios constitucionais: habeas corpus; habeas data; mandado de segurança; mandado de injunção; ação popular."]},{"nome":"Organização do Estado e dos Poderes","topicos":["8.4 Organização do Estado: União; Estados; Municípios; Distrito Federal; competências constitucionais.","8.5 Poderes da União: Poder Executivo; Poder Legislativo; Poder Judiciário; funções, competências e limites constitucionais."]},{"nome":"Segurança Pública, Controle de Constitucionalidade e Legislação Estadual","topicos":["8.6 Segurança pública na Constituição Federal: disposições do art. 144 da Constituição Federal; organização, competências e atribuições das polícias; Polícia Civil; polícia judiciária e investigação criminal.","8.7 Controle de constitucionalidade: ação direta de inconstitucionalidade; ação declaratória de constitucionalidade.","8.8 Constituição do Estado do Paraná: disposições relativas à Administração Pública; servidores públicos; segurança pública; Polícia Civil do Estado do Paraná."]}]},{"id":"direito-administrativo","nome":"DIREITO ADMINISTRATIVO","grupos":[{"nome":"Fundamentos, Estrutura, Atos e Poderes","topicos":["9.1 Conceito, fontes e princípios do Direito Administrativo; princípios da Administração Pública; disposições da Lei de Introdução às Normas do Direito Brasileiro (LINDB) aplicáveis ao Direito Administrativo.","9.2 Administração Pública: administração direta e indireta; autarquias, fundações, empresas públicas e sociedades de economia mista.","9.3 Atos administrativos: requisitos, atributos, classificação, espécies, revogação, invalidação e convalidação.","9.4 Poderes administrativos: poder hierárquico, disciplinar, regulamentar e de polícia; abuso de poder; Lei de Abuso de Autoridade (Lei n.º 13.869/2019)."]},{"nome":"Serviços Públicos, Licitações, Contratos e Agentes","topicos":["9.5 Serviços públicos: conceito, características e formas de prestação.","9.6 Licitações e contratos administrativos: Lei n.º 14.133/2021 e disposições aplicáveis.","9.7 Agentes públicos: cargos, empregos e funções públicas; investidura; direitos; deveres; responsabilidades; processo administrativo disciplinar."]},{"nome":"Responsabilidade do Estado, Improbidade e Controle","topicos":["9.8 Responsabilidade civil do Estado: teoria do risco administrativo; responsabilidade por atos de agentes públicos; causas excludentes.","9.9 Improbidade administrativa: Lei n.º 8.429/1992 e alterações posteriores; atos de improbidade; penalidades e disposições aplicáveis.","9.10 Controle da Administração Pública: controle administrativo, judicial e legislativo; autotutela administrativa."]}]},{"id":"direitos-humanos","nome":"DIREITOS HUMANOS","grupos":[{"nome":"Teoria Geral, Sistemas de Proteção e Cidadania","topicos":["10.1 Teoria Geral dos Direitos Humanos: conceito, características, princípios e evolução histórica dos Direitos Humanos.","10.2 Sistemas de proteção dos Direitos Humanos: sistema global e sistema interamericano de proteção dos Direitos Humanos; tratados internacionais de proteção dos Direitos Humanos; Constituição da República Federativa do Brasil de 1988 e Direitos Humanos.","10.3 Democracia, cidadania e Direitos Humanos."]},{"nome":"Grupos Vulneráveis, Segurança Pública e Políticas Institucionais","topicos":["10.4 Direitos Humanos e grupos vulneráveis: mulheres, idosos, crianças e adolescentes, povos indígenas e comunidades tradicionais, pessoas com deficiência, população LGBTQIA+ e refugiados.","10.5 Segurança pública e Direitos Humanos: dignidade da pessoa humana; uso proporcional da força; prevenção da tortura; direitos da pessoa presa; atuação policial e Direitos Humanos.","10.6 Política Nacional de Direitos Humanos, educação em Direitos Humanos e cultura de proteção dos Direitos Humanos.","10.7 Agenda 2030 e Objetivos de Desenvolvimento Sustentável (ODS)."]}]}];
+const KEY="gran-pc-pr-policia-civil-do-estado-do-parana";
+let state={};
+let historico=[];
+let revisoes=[];
+let calOffset=0;
+let modalDay=null;
+let curFilter="todos";
+
+// ── CRONÔMETRO ─────────────────────────────────────────
+let cronoStartTime = null;  // Date.now() quando iniciou/retomou
+let cronoAccumSecs = 0;     // segundos acumulados em pausas anteriores
+let cronoInterval  = null;
+let cronoRunning   = false;
+
+function getCronoSecs() {
+  let total = cronoAccumSecs;
+  if (cronoRunning && cronoStartTime) {
+    total += Math.floor((Date.now() - cronoStartTime) / 1000);
+  }
+  return total;
+}
+
+function cronoStart() {
+  cronoRunning   = true;
+  cronoStartTime = Date.now();
+  cronoInterval  = setInterval(updateCronoDisplay, 500);
+  document.getElementById('btn-start').style.display = 'none';
+  document.getElementById('btn-pause').style.display = '';
+  document.getElementById('btn-stop').style.display  = '';
+  document.getElementById('crono-display').className  = 'crono-time running';
+  document.getElementById('crono-status').textContent = 'Cronômetro em andamento...';
+}
+
+function cronoPause() {
+  if (!cronoRunning) { cronoResumeInternal(); return; }
+  cronoRunning    = false;
+  cronoAccumSecs += Math.floor((Date.now() - cronoStartTime) / 1000);
+  cronoStartTime  = null;
+  clearInterval(cronoInterval);
+  document.getElementById('btn-pause').textContent    = '▶ Retomar';
+  document.getElementById('btn-pause').className      = 'crono-btn start';
+  document.getElementById('crono-display').className   = 'crono-time paused';
+  document.getElementById('crono-status').textContent  = 'Pausado — clique Retomar para continuar';
+}
+
+function cronoResumeInternal() {
+  cronoRunning   = true;
+  cronoStartTime = Date.now();
+  cronoInterval  = setInterval(updateCronoDisplay, 500);
+  document.getElementById('btn-pause').textContent    = '⏸ Pausar';
+  document.getElementById('btn-pause').className      = 'crono-btn pause';
+  document.getElementById('crono-display').className   = 'crono-time running';
+  document.getElementById('crono-status').textContent  = 'Cronômetro em andamento...';
+}
+
+function cronoStop() {
+  cronoRunning = false;
+  clearInterval(cronoInterval);
+  if (cronoStartTime) {
+    cronoAccumSecs += Math.floor((Date.now() - cronoStartTime) / 1000);
+    cronoStartTime = null;
+  }
+
+  const totalSecs = cronoAccumSecs;
+
+  if (totalSecs > 0) {
+    const horas    = Math.round((totalSecs / 3600) * 100) / 100;
+    const disc     = document.getElementById('crono-disc').value;
+    const topic    = document.getElementById('crono-topic').value;
+    const tipo     = document.getElementById('crono-tipo').value;
+    const acertos  = parseInt(document.getElementById('crono-acertos').value) || 0;
+    const erros    = parseInt(document.getElementById('crono-erros').value) || 0;
+    const obs      = document.getElementById('crono-obs').value.trim();
+    const today    = todayKey();
+
+    const revDays = getSelectedRevDays();
+    addRegistro({ date: today, disc, topic, tipo, horas, questoes: acertos + erros, acertos, erros, obs, origem: 'cronômetro' });
+
+    if (revDays.length > 0 && topic) {
+      revDays.forEach(days => {
+        const revDate = addDays(today, days);
+        if (!revisoes) revisoes = [];
+        revisoes.push({ id: Date.now() + Math.random(), disc, topic, studyDate: today, revDate, days, done: false });
+      });
+      renderRevisoes();
+      debouncedSave();
+    }
+
+    document.getElementById('crono-acertos').value = '';
+    document.getElementById('crono-erros').value   = '';
+    document.getElementById('crono-obs').value     = '';
+    document.getElementById('crono-tipo').value    = '';
+    clearRevBtns();
+    document.getElementById('crono-rev-custom').value      = '';
+    document.getElementById('crono-rev-selected').textContent = '';
+    showToast('✅', secsToHMS(totalSecs) + ' registrados!' + (revDays.length ? ' ' + revDays.length + ' revisão(ões) agendada(s).' : ''));
+  }
+
+  cronoAccumSecs = 0;
+  updateCronoDisplay();
+  document.getElementById('btn-start').style.display  = '';
+  document.getElementById('btn-pause').style.display  = 'none';
+  document.getElementById('btn-stop').style.display   = 'none';
+  document.getElementById('btn-pause').textContent    = '⏸ Pausar';
+  document.getElementById('btn-pause').className      = 'crono-btn pause';
+  document.getElementById('crono-display').className  = 'crono-time';
+  document.getElementById('crono-status').textContent = 'Pronto para iniciar';
+}
+
+function updateCronoDisplay() {
+  document.getElementById('crono-display').textContent = secsToHMS(getCronoSecs());
+}
+
+function onCronoDiscChange() {
+  const disc = document.getElementById('crono-disc').value;
+  const row = document.getElementById('crono-topic-row');
+  const sel = document.getElementById('crono-topic');
+  if (disc) {
+    sel.innerHTML = '<option value="">— Assunto / Tópico —</option>' + getTopicsForDisc(disc).map(t => `<option value="${t}">${t}</option>`).join('');
+    row.style.display = 'flex';
+  } else {
+    row.style.display = 'none';
+  }
+}
+
+function escOpt(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function normTopic(s) {
+  return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim().toLowerCase();
+}
+
+function getTopicOptionsForDisc(discNome) {
+  const d = EDITAL.find(d => d.nome === discNome);
+  if (!d) return [];
+  const opts = [];
+  d.grupos.forEach(g => g.topicos.forEach((topic, idx) => {
+    opts.push({ tid: d.id + '_' + slug(g.nome) + '_' + idx, topic, grupo: g.nome });
+  }));
+  return opts;
+}
+
+function onManDiscChange() {
+  const disc = document.getElementById('man-disc').value;
+  const wrap = document.getElementById('man-topic-wrap');
+  const sel  = document.getElementById('man-topic');
+  if (disc) {
+    sel.innerHTML = '<option value="">— selecione —</option>' + getTopicOptionsForDisc(disc).map(o => `<option value="${escOpt(o.tid)}" data-topic="${escOpt(o.topic)}">${escOpt(o.topic)}</option>`).join('');
+    wrap.style.display = '';
+  } else {
+    sel.innerHTML = '<option value="">— selecione —</option>';
+    wrap.style.display = 'none';
+  }
+}
+
+function onModalDiscChange() {
+  const disc = document.getElementById('modal-disc').value;
+  const field = document.getElementById('modal-topic-field');
+  const sel = document.getElementById('modal-topic');
+  if (disc) {
+    sel.innerHTML = '<option value="">— Assunto / Tópico —</option>' + getTopicOptionsForDisc(disc).map(o => `<option value="${escOpt(o.topic)}">${escOpt(o.topic)}</option>`).join('');
+    field.classList.add('visible');
+  } else {
+    field.classList.remove('visible');
+  }
+}
+
+function getTopicsForDisc(discNome) {
+  return getTopicOptionsForDisc(discNome).map(o => o.topic);
+}
+
+function findTopicTid(discNome, topicOrTid) {
+  const d = EDITAL.find(d => d.nome === discNome);
+  if (!d || !topicOrTid) return null;
+  const direct = getTopicOptionsForDisc(discNome).find(o => o.tid === topicOrTid);
+  if (direct) return direct.tid;
+  const wanted = normTopic(topicOrTid);
+  const fuzzy = getTopicOptionsForDisc(discNome).find(o => normTopic(o.topic) === wanted);
+  return fuzzy ? fuzzy.tid : null;
+}
+
+function getTopicLabelFromTid(discNome, topicOrTid) {
+  const match = getTopicOptionsForDisc(discNome).find(o => o.tid === topicOrTid);
+  return match ? match.topic : topicOrTid;
+}
+
+function syncManualQuestionsToEdital(disc, topic, acertos, erros, totalQ, date) {
+  const tid = findTopicTid(disc, topic);
+  if (!tid || totalQ <= 0) return false;
+  const ts = getTS(tid);
+  const prevAc = parseInt(ts.acertos) || 0;
+  const prevEr = parseInt(ts.erros) || 0;
+  const prevTotal = Math.max(parseInt(ts.questoes) || 0, prevAc + prevEr);
+  const answered = (parseInt(acertos) || 0) + (parseInt(erros) || 0);
+  setTS(tid, 'acertos', prevAc + (parseInt(acertos) || 0));
+  setTS(tid, 'erros', prevEr + (parseInt(erros) || 0));
+  const nextAnswered = (parseInt(getTS(tid).acertos) || 0) + (parseInt(getTS(tid).erros) || 0);
+  const extraTotal = Math.max((parseInt(totalQ) || 0) - answered, 0);
+  setTS(tid, 'questoes', Math.max(prevTotal + extraTotal, nextAnswered));
+  if (date && !ts.datetime) {
+    const [y,m,d] = date.split('-');
+    setTS(tid, 'datetime', d + '/' + m + '/' + y);
+  }
+  return true;
+}
+
+function manualAdd() {
+  const date    = document.getElementById('man-data').value;
+  const h       = parseFloat(document.getElementById('man-h').value) || 0;
+  const m       = parseFloat(document.getElementById('man-m').value) || 0;
+  const sec     = parseFloat(document.getElementById('man-s').value) || 0;
+  const q       = parseInt(document.getElementById('man-q').value) || 0;
+  const acertos = parseInt(document.getElementById('man-acertos').value) || 0;
+  const erros   = parseInt(document.getElementById('man-erros').value) || 0;
+  const disc    = document.getElementById('man-disc').value;
+  const topicVal = document.getElementById('man-topic').value;
+  const topic   = getTopicLabelFromTid(disc, topicVal);
+  const tipo    = document.getElementById('man-tipo').value;
+  const obs     = document.getElementById('man-obs').value.trim();
+  if (!date) { showToast('⚠️', 'Selecione a data.'); return; }
+  const horas = Math.round((h + m / 60 + sec / 3600) * 10000) / 10000;
+  if (horas === 0 && q === 0 && acertos === 0 && erros === 0) { showToast('⚠️', 'Informe horas ou questões.'); return; }
+  const totalQ = q || (acertos + erros);
+  const synced = syncManualQuestionsToEdital(disc, topicVal, acertos, erros, totalQ, date);
+  addRegistro({ date, disc, topic, tipo, horas, questoes: totalQ, acertos, erros, obs, origem: 'manual' });
+  if (synced) { renderDiscs(); applyFilter(); updateAll(); }
+  ['man-h','man-m','man-s','man-q','man-acertos','man-erros','man-obs'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('man-disc').value = '';
+  document.getElementById('man-topic').value = '';
+  document.getElementById('man-tipo').value = '';
+  const wrap = document.getElementById('man-topic-wrap');
+  if (wrap) wrap.style.display = 'none';
+  showToast('✅', synced ? 'Registro adicionado e edital atualizado!' : 'Registro adicionado!');
+}
+
+// ── REGISTROS (histórico + calendário unificados) ──────
+function addRegistro(r) {
+  r.id = Date.now() + Math.random();
+  historico.push(r);
+  updateAll();
+  renderCal();
+  renderCharts();
+  renderHistorico();
+  debouncedSave();
+}
+
+function deleteRegistro(id) {
+  historico = historico.filter(r => r.id !== id);
+  updateAll();
+  renderCal();
+  renderHistorico();
+  debouncedSave();
+  showToast('🗑️', 'Registro removido.');
+}
+
+// ── CALENDÁRIO ─────────────────────────────────────────
+function calNav(dir) { calOffset = dir === 0 ? 0 : calOffset + dir; renderCal(); }
+
+function renderCal() {
+  const now = new Date();
+  const target = new Date(now.getFullYear(), now.getMonth() + calOffset, 1);
+  const y = target.getFullYear(), m = target.getMonth();
+  const months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  document.getElementById('cal-title').textContent = months[m] + ' ' + y;
+
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+  ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].forEach(d => {
+    const el = document.createElement('div'); el.className = 'cal-dow'; el.textContent = d; grid.appendChild(el);
+  });
+
+  const firstDay = new Date(y, m, 1).getDay();
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  const daysInPrev = new Date(y, m, 0).getDate();
+  const todayStr = todayKey();
+
+  for (let i = 0; i < firstDay; i++) grid.appendChild(makeDayEl(y, m - 1, daysInPrev - firstDay + 1 + i, true));
+  for (let d = 1; d <= daysInMonth; d++) grid.appendChild(makeDayEl(y, m, d, false));
+  const rem = (firstDay + daysInMonth) % 7; if (rem > 0) for (let d = 1; d <= 7 - rem; d++) grid.appendChild(makeDayEl(y, m + 1, d, true));
+
+  updateCronoTodayVal();
+}
+
+function makeDayEl(y, m, d, other) {
+  const date = new Date(y, m, d);
+  const key = dateToKey(date);
+  const regs = historico.filter(r => r.date === key);
+  const totalH = regs.reduce((s, r) => s + (r.horas || 0), 0);
+  const totalQ = regs.reduce((s, r) => s + (r.questoes || 0), 0);
+  const discs = [...new Set(regs.map(r => r.disc).filter(Boolean))];
+
+  const el = document.createElement('div');
+  el.className = 'cal-day' + (other ? ' other-month' : '') + (key === todayKey() ? ' today' : '') + (regs.length ? ' has-data' : '');
+  el.innerHTML = `<div class="cal-day-num">${d}</div>`;
+  if (totalH > 0) el.innerHTML += `<div class="cal-day-h">⏱ ${horasLabel(totalH)}</div>`;
+  if (!other) el.onclick = () => openModal(key);
+  return el;
+}
+
+function updateCronoTodayVal() {
+  const today = todayKey();
+  const totalH = historico.filter(r => r.date === today).reduce((s, r) => s + (r.horas || 0), 0);
+  document.getElementById('crono-today-val').textContent = horasLabel(totalH);
+}
+
+// ── MODAL CALENDÁRIO ─────────────────────────────────────
+function openModal(key) {
+  modalDay = key;
+  const [y, m, d] = key.split('-');
+  document.getElementById('modal-date-lbl').textContent = `${d}/${m}/${y}`;
+  const regs = historico.filter(r => r.date === key);
+  const totalH = regs.reduce((s, r) => s + (r.horas || 0), 0);
+  const totalQ = regs.reduce((s, r) => s + (r.questoes || 0), 0);
+  document.getElementById('modal-horas').value = totalH > 0 ? totalH : '';
+  document.getElementById('modal-questoes').value = totalQ > 0 ? totalQ : '';
+  document.getElementById('modal-disc').value = '';
+  document.getElementById('modal-topic').value = '';
+  document.getElementById('modal-topic-field').classList.remove('visible');
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('open');
+    modalDay = null;
+  }
+}
+
+function saveModalDay() {
+  if (!modalDay) return;
+  const horas = parseFloat(document.getElementById('modal-horas').value) || 0;
+  const questoes = parseInt(document.getElementById('modal-questoes').value) || 0;
+  const disc = document.getElementById('modal-disc').value;
+  const topic = document.getElementById('modal-topic').value;
+  // Remove registros manuais do dia e adiciona novo consolidado
+  historico = historico.filter(r => !(r.date === modalDay && r.origem === 'modal'));
+  if (horas > 0 || questoes > 0) addRegistro({ date: modalDay, disc, topic, horas, questoes, origem: 'modal' });
+  document.getElementById('modal-overlay').classList.remove('open');
+  modalDay = null;
+  showToast('✅', 'Dia atualizado!');
+}
+
+// ── HISTÓRICO ──────────────────────────────────────────
+function renderHistorico() {
+  const discFilter = document.getElementById('hist-filter-disc').value;
+  const periodDays = parseInt(document.getElementById('hist-filter-period').value);
+  const cutoff = periodDays > 0 ? new Date(Date.now() - periodDays * 86400000) : null;
+
+  let filtered = [...historico].filter(r => {
+    if (discFilter && r.disc !== discFilter) return false;
+    if (cutoff && new Date(r.date + 'T00:00:00') < cutoff) return false;
+    return true;
+  }).sort((a, b) => b.date.localeCompare(a.date));
+
+  // Summary
+  const totalH = filtered.reduce((s, r) => s + (r.horas || 0), 0);
+  const totalQ = filtered.reduce((s, r) => s + (r.questoes || 0), 0);
+  const dias = new Set(filtered.map(r => r.date)).size;
+  document.getElementById('hs-dias').textContent = dias;
+  document.getElementById('hs-horas').textContent = horasLabel(totalH);
+  document.getElementById('hs-questoes').textContent = totalQ;
+  document.getElementById('hs-media').textContent = dias > 0 ? horasLabel(totalH / dias) : '0h';
+
+  const tbody = document.getElementById('hist-tbody');
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="11" class="hist-empty">Nenhum registro encontrado.<br>Use o cronômetro ou inserção manual para começar.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(r => {
+    const discIdx = EDITAL.findIndex(d => d.nome === r.disc);
+    const cor = discIdx >= 0 ? DISC_CORES[discIdx % DISC_CORES.length] : 'var(--text-soft)';
+    const [y, m, d] = r.date.split('-');
+    const ac  = r.acertos || 0;
+    const er  = r.erros || 0;
+    const tot = ac + er;
+    const pct = tot > 0 ? Math.round(ac / tot * 100) : null;
+    const pctBadge = pct !== null
+      ? `<span style="padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;background:${pct>=70?'var(--green-bg)':pct>=50?'var(--yellow-bg)':'var(--red-bg)'};color:${pct>=70?'#15803d':pct>=50?'#b45309':'var(--red)'}">${pct}%</span>`
+      : '<span style="color:var(--text-soft)">—</span>';
+    const tipoBadge = r.tipo ? `<span style="font-size:10px;background:var(--bg);padding:2px 8px;border-radius:4px;color:var(--text-mid)">${r.tipo}</span>` : '<span style="color:var(--text-soft)">—</span>';
+    return `<tr>
+      <td style="font-weight:600;color:var(--navy);white-space:nowrap">${d}/${m}/${y}</td>
+      <td>${r.disc ? `<span class="hist-disc-badge" style="background:${cor}20;color:${cor}">${r.disc}</span>` : '<span style="color:var(--text-soft)">—</span>'}</td>
+      <td style="font-size:12px;color:var(--text-mid);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.topic||''}">${r.topic || '—'}</td>
+      <td>${tipoBadge}</td>
+      <td style="font-weight:700;color:var(--navy);white-space:nowrap">${r.horas > 0 ? horasLabel(r.horas) : '—'}</td>
+      <td style="text-align:center;font-weight:700;color:var(--navy)">${r.questoes > 0 ? r.questoes : '—'}</td>
+      <td style="text-align:center;font-weight:700;color:var(--green)">${ac > 0 ? ac : '—'}</td>
+      <td style="text-align:center;font-weight:700;color:var(--red)">${er > 0 ? er : '—'}</td>
+      <td style="text-align:center">${pctBadge}</td>
+      <td style="font-size:11px;color:var(--text-mid);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.obs||''}">${r.obs ? `💬 ${r.obs.length > 35 ? r.obs.slice(0,35)+'…' : r.obs}` : '<span style="color:var(--text-soft)">—</span>'}</td>
+      <td><span style="font-size:10px;background:var(--bg);padding:2px 8px;border-radius:4px;color:var(--text-soft)">${r.origem}</span></td>
+      <td><button class="btn-del" onclick="deleteRegistro(${r.id})" title="Remover">🗑</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function populateHistFilterDisc() {
+  const sel = document.getElementById('hist-filter-disc');
+  sel.innerHTML = '<option value="">Todas as disciplinas</option>' + EDITAL.map(d => `<option value="${d.nome}">${d.nome}</option>`).join('');
+}
+
+// ── SELECTS DE DISCIPLINA ─────────────────────────────
+function populateDiscSelects() {
+  const opts = '<option value="">— selecione —</option>' + EDITAL.map(d => `<option value="${d.nome}">${d.nome}</option>`).join('');
+  document.getElementById('crono-disc').innerHTML = opts;
+  document.getElementById('man-disc').innerHTML = opts;
+  document.getElementById('modal-disc').innerHTML = opts;
+}
+
+// ── TABS ───────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    const t = b.textContent.toLowerCase();
+    if ((tab==='estudos'&&t.includes('estudo'))||(tab==='edital'&&t.includes('edital'))||(tab==='revisoes'&&t.includes('revis'))||(tab==='historico'&&t.includes('hist'))) b.classList.add('active');
+  });
+  document.getElementById('btn-expand').style.display  = tab==='edital' ? '' : 'none';
+  document.getElementById('btn-collapse').style.display = tab==='edital' ? '' : 'none';
+  document.querySelector('.topstrip').classList.toggle('edital-actions', tab==='edital');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (tab==='historico') renderHistorico();
+  if (tab==='revisoes')  renderRevisoes();
+  if (tab==='estudos')   renderCharts();
+}
+
+function scrollToId(id) {
+  setTimeout(() => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+}
+
+// ── SIDEBAR ────────────────────────────────────────────
+function renderSidebar() {
+  const info = document.getElementById('sb-info');
+  const rows = [{l:'Concurso',v:CONCURSO_INFO.concurso},{l:'Cargo',v:CONCURSO_INFO.cargo},{l:'Banca',v:CONCURSO_INFO.banca}];
+  info.innerHTML = rows.map((r,i) => `${i>0?'<div class="si-div"></div>':''}<div class="si-row"><div class="si-lbl">${r.l}</div><div class="si-val${r.v?'':' empty'}">${r.v||'—'}</div></div>`).join('');
+  const cd = document.getElementById('cd-date'), cn = document.getElementById('cd-num');
+  if (CONCURSO_INFO.dataProva) {
+    const p = new Date(CONCURSO_INFO.dataProva + 'T00:00:00'), h = new Date(); h.setHours(0,0,0,0);
+    const diff = Math.ceil((p-h)/86400000);
+    cd.textContent = p.toLocaleDateString('pt-BR');
+    cn.textContent = diff > 0 ? diff : diff === 0 ? 'Hoje!' : 'Passou';
+  }
+  document.getElementById('nav-discs').innerHTML = EDITAL.map((d,i) =>
+    `<a class="nav-item" href="#" onclick="switchTab('edital');goDisc('${d.id}');return false;" style="gap:8px"><div class="nav-dot" style="background:${DISC_CORES[i%DISC_CORES.length]}"></div><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px">${d.nome}</span></a>`
+  ).join('');
+}
+
+function goDisc(id) {
+  const el = document.getElementById('disc-' + id);
+  if (el) { el.classList.add('open'); setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50); }
+}
+
+// ── DISCIPLINAS ────────────────────────────────────────
+function renderDiscs() {
+  const list = document.getElementById('disc-list'); list.innerHTML = '';
+  EDITAL.forEach((disc, di) => {
+    const cor = DISC_CORES[di % DISC_CORES.length];
+    const s = getDiscStats(disc);
+    const card = document.createElement('div'); card.className = 'disc-card'; card.id = 'disc-' + disc.id; card.style.setProperty('--dc', cor);
+    const cp = s.totalTopicos > 0 ? Math.round(s.concluidos / s.totalTopicos * 100) : 0;
+    const hdr = document.createElement('div'); hdr.className = 'disc-hdr'; hdr.onclick = () => card.classList.toggle('open');
+    hdr.innerHTML = `<div class="dc-dot"></div><div class="dc-info"><div class="dc-name">${disc.nome}</div><div class="dc-meta"><span class="dc-sub" id="dcsub0-${disc.id}">${s.concluidos}/${s.totalTopicos} concluídos</span><div class="dc-mini-bar"><div class="dc-mini-fill" id="dcmf-${disc.id}" style="width:${cp}%"></div></div><span class="dc-sub" id="dcsub1-${disc.id}">${s.total>0?s.pct+'% acertos':'Sem questões'}</span></div></div><div class="dc-stats"><div class="dcs"><div class="dcs-v g" id="dcac-${disc.id}">${s.acertos}</div><div class="dcs-l">Acertos</div></div><div class="dcs"><div class="dcs-v r" id="dcer-${disc.id}">${s.erros}</div><div class="dcs-l">Erros</div></div><div class="dcs"><div class="dcs-v b" id="dcto-${disc.id}">${s.total}</div><div class="dcs-l">Total</div></div><div class="pct-pill ${pc(s.pct,s.total)}" id="dcpct-${disc.id}">${s.total>0?s.pct+'%':'—'}</div></div><div class="dc-chevron">▼</div>`;
+    const body = document.createElement('div'); body.className = 'disc-body';
+    const tbl = document.createElement('table'); tbl.className = 'ctable';
+    tbl.innerHTML = `<thead><tr><th class="c">✓</th><th>Tópico / Conteúdo</th><th>Concluído em</th><th class="c">Questões (Acertos × Erros)</th><th class="c">Total</th><th class="c">% Acerto</th></tr></thead><tbody id="tb-${disc.id}"></tbody>`;
+    const tbody = tbl.querySelector('tbody');
+    disc.grupos.forEach(g => {
+      const gr = document.createElement('tr'); gr.className = 'grow'; gr.style.setProperty('--dc', cor);
+      gr.innerHTML = `<td colspan="6">${g.nome}</td>`; tbody.appendChild(gr);
+      g.topicos.forEach((tp, ti) => {
+        const tid = disc.id + '_' + slug(g.nome) + '_' + ti, ts = getTS(tid);
+        const answered = (ts.acertos||0) + (ts.erros||0), tot = Math.max(answered, parseInt(ts.questoes)||0), tpct = tot > 0 && answered > 0 ? Math.round((ts.acertos||0)/tot*100) : null;
+        const tr = document.createElement('tr'); tr.id = 'row-' + tid; if (ts.done) tr.classList.add('done');
+        tr.innerHTML = `<td class="td-ck"><input class="cbx" type="checkbox" ${ts.done?'checked':''} onchange="toggleT('${tid}',this)"></td><td class="td-topic"><div class="topic-nm">${tp}</div><div class="topic-dt" id="tdt-${tid}">${ts.datetime||''}</div></td><td class="td-dt" id="dt-${tid}">${ts.done&&ts.datetime?ts.datetime:'<span style="color:var(--border)">—</span>'}</td><td class="td-q"><div class="q-row"><div class="qwrap ac"><label>Acertos</label><input class="qinp" type="number" min="0" value="${ts.acertos||''}" placeholder="0" oninput="updateQ('${tid}','acertos',this.value)"></div><span class="qsep">×</span><div class="qwrap er"><label>Erros</label><input class="qinp" type="number" min="0" value="${ts.erros||''}" placeholder="0" oninput="updateQ('${tid}','erros',this.value)"></div></div></td><td class="td-tot"><span class="tot-v" id="tot-${tid}">${tot>0?tot:'—'}</span></td><td class="td-pct"><span class="pct-pill ${pc(tpct,tot)}" id="pct-${tid}">${tpct!==null?tpct+'%':'—'}</span></td>`;
+        tbody.appendChild(tr);
+      });
+    });
+    body.appendChild(tbl); card.appendChild(hdr); card.appendChild(body); list.appendChild(card);
+  });
+}
+
+function toggleT(tid, cb) {
+  setTS(tid,'done',cb.checked);
+  const now = cb.checked ? fmtDt(new Date()) : null; setTS(tid,'datetime',now);
+  const row = document.getElementById('row-'+tid), dtc = document.getElementById('dt-'+tid), tdt = document.getElementById('tdt-'+tid);
+  if (cb.checked) { row.classList.add('done'); dtc.innerHTML=now; if(tdt)tdt.textContent=now; }
+  else { row.classList.remove('done'); dtc.innerHTML='<span style="color:var(--border)">—</span>'; if(tdt)tdt.textContent=''; }
+  updateAll(); debouncedSave();
+}
+function updateQ(tid, field, val) {
+  setTS(tid,field,parseInt(val)||0);
+  const ts=getTS(tid),answered=(ts.acertos||0)+(ts.erros||0);
+  if (answered > (parseInt(ts.questoes)||0)) setTS(tid,'questoes',answered);
+  const totalForDisplay=Math.max(answered,parseInt(getTS(tid).questoes)||0),tpct=totalForDisplay>0&&answered>0?Math.round((ts.acertos||0)/totalForDisplay*100):null;
+  document.getElementById('tot-'+tid).textContent=totalForDisplay>0?totalForDisplay:'—';
+  const p=document.getElementById('pct-'+tid); p.textContent=tpct!==null?tpct+'%':'—'; p.className='pct-pill '+pc(tpct,tot);
+  updateAll(); debouncedSave();
+}
+function setFilter(f,btn){curFilter=f;document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyFilter();}
+function applyFilter(){EDITAL.forEach(d=>d.grupos.forEach(g=>g.topicos.forEach((t,i)=>{const tid=d.id+'_'+slug(g.nome)+'_'+i,row=document.getElementById('row-'+tid);if(!row)return;const ts=getTS(tid);let show=true;if(curFilter==='pendentes')show=!ts.done;else if(curFilter==='concluidos')show=!!ts.done;else if(curFilter==='questoes')show=Math.max((ts.acertos||0)+(ts.erros||0),parseInt(ts.questoes)||0)>0;row.style.display=show?'':'none';})));}
+function expandAll(){document.querySelectorAll('.disc-card').forEach(c=>c.classList.add('open'));}
+function collapseAll(){document.querySelectorAll('.disc-card').forEach(c=>c.classList.remove('open'));}
+
+// ── UPDATE ALL ──────────────────────────────────────────
+function updateAll() {
+  // Progresso edital — checkboxes
+  let tot=0,conc=0,acEdital=0,erEdital=0;
+  EDITAL.forEach(d=>{const s=getDiscStats(d);tot+=s.totalTopicos;conc+=s.concluidos;acEdital+=s.acertos;erEdital+=s.erros;});
+  const pct=tot>0?Math.round(conc/tot*100):0;
+
+  // Aproveitamento TOTAL = edital + cronômetro + inserção manual
+  const acHist = historico.reduce((s,r)=>s+(r.acertos||0),0);
+  const erHist = historico.reduce((s,r)=>s+(r.erros||0),0);
+  // Evitar dupla contagem: usa só o histórico se tiver registros, senão usa edital
+  // Na prática o aluno usa um ou outro — mas somamos os dois para ser abrangente
+  const acTotal = acEdital + acHist;
+  const erTotal = erEdital + erHist;
+  const totQ    = acTotal + erTotal;
+  const aprov   = totQ > 0 ? Math.round(acTotal / totQ * 100) : null;
+
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-sub').textContent=conc+' de '+tot+' tópicos concluídos';
+  document.getElementById('ps-ac').textContent=acTotal;
+  document.getElementById('ps-er').textContent=erTotal;
+  document.getElementById('ps-tot').textContent=totQ;
+  document.getElementById('ps-aprov').textContent=aprov!==null?aprov+'%':'—';
+
+  // Metas — horas e questões da semana atual (automático)
+  const weekStart = getWeekStart();
+  const weekRegs = historico.filter(r => r.date >= weekStart);
+  const weekH = weekRegs.reduce((s,r)=>s+(r.horas||0),0);
+  const weekQ = weekRegs.reduce((s,r)=>s+(r.questoes||0),0);
+  document.getElementById('real-horas').value = Math.round(weekH * 10) / 10;
+  document.getElementById('real-questoes').value = weekQ;
+
+  const mH=parseFloat(document.getElementById('meta-horas').value)||0,pH=mH>0?Math.min(Math.round(weekH/mH*100),100):0;
+  document.getElementById('mf-h').style.width=pH+'%';
+  document.getElementById('ml-h').textContent=horasLabel(weekH)+' esta semana';
+  document.getElementById('mp-h').textContent=pH+'%';
+
+  const mQ=parseInt(document.getElementById('meta-questoes').value)||0,pQ=mQ>0?Math.min(Math.round(weekQ/mQ*100),100):0;
+  document.getElementById('mf-q').style.width=pQ+'%';
+  document.getElementById('ml-q').textContent=weekQ+' esta semana';
+  document.getElementById('mp-q').textContent=pQ+'%';
+
+  const mC=parseInt(document.getElementById('meta-conclusao').value)||0,rC=tot>0?Math.round(conc/tot*100):0,pC=mC>0?Math.min(Math.round(rC/mC*100),100):rC;
+  document.getElementById('mf-c').style.width=pC+'%';
+  document.getElementById('ml-c').textContent=mC>0?conc+'/'+tot+' concluídos ('+rC+'% do edital; meta '+mC+'%)':conc+'/'+tot+' concluídos ('+rC+'% do edital)';
+  document.getElementById('mp-c').textContent=pC+'%';
+
+  const mA=parseInt(document.getElementById('meta-aprov').value)||0,rA=totQ>0?Math.round(acTotal/totQ*100):0,pA=mA>0?Math.min(Math.round(rA/mA*100),100):0;
+  document.getElementById('mf-a').style.width=pA+'%';
+  document.getElementById('ml-a').textContent=totQ>0?acTotal+' acertos de '+totQ:'Sem questões';
+  document.getElementById('mp-a').textContent=rA+'%';
+
+  // Disc headers
+  EDITAL.forEach(d=>{
+    const s=getDiscStats(d),cp=s.totalTopicos>0?Math.round(s.concluidos/s.totalTopicos*100):0,g=id=>document.getElementById(id);
+    if(g('dcac-'+d.id))g('dcac-'+d.id).textContent=s.acertos;if(g('dcer-'+d.id))g('dcer-'+d.id).textContent=s.erros;if(g('dcto-'+d.id))g('dcto-'+d.id).textContent=s.total;
+    if(g('dcmf-'+d.id))g('dcmf-'+d.id).style.width=cp+'%';
+    if(g('dcsub0-'+d.id))g('dcsub0-'+d.id).textContent=s.concluidos+'/'+s.totalTopicos+' concluídos';
+    if(g('dcsub1-'+d.id))g('dcsub1-'+d.id).textContent=s.total>0?s.pct+'% acertos':'Sem questões';
+    const badge=g('dcpct-'+d.id);if(badge){badge.textContent=s.total>0?s.pct+'%':'—';badge.className='pct-pill '+pc(s.pct,s.total);}
+  });
+
+  updateCronoTodayVal();
+}
+
+function getWeekStart() {
+  const d = new Date(); d.setHours(0,0,0,0);
+  d.setDate(d.getDate() - d.getDay()); // domingo
+  return dateToKey(d);
+}
+
+// ── STATE ───────────────────────────────────────────────
+function getTS(tid){return state[tid]||{};}
+function setTS(tid,k,v){if(!state[tid])state[tid]={};state[tid][k]=v;}
+function getDiscStats(disc){
+  let ac=0,er=0,totalQ=0,c=0,t=0;
+  disc.grupos.forEach(g=>g.topicos.forEach((tp,i)=>{const ts=getTS(disc.id+'_'+slug(g.nome)+'_'+i),a=parseInt(ts.acertos)||0,e=parseInt(ts.erros)||0;ac+=a;er+=e;totalQ+=Math.max(a+e,parseInt(ts.questoes)||0);if(ts.done)c++;t++;}));
+  const pct=totalQ>0?Math.round(ac/totalQ*100):0;return{acertos:ac,erros:er,total:totalQ,pct,concluidos:c,totalTopicos:t};
+}
+
+// ── STORAGE ─────────────────────────────────────────────
+function loadStorage() {
+  try {
+    const raw = localStorage.getItem(KEY); if (!raw) return;
+    const s = JSON.parse(raw);
+    state    = s.state    || {};
+    historico = s.historico || [];
+    revisoes  = s.revisoes  || [];
+    ['meta-horas','meta-questoes','meta-conclusao','meta-aprov'].forEach(id => {
+      if (s[id] !== undefined) { const el = document.getElementById(id); if (el) el.value = s[id]; }
+    });
+  } catch(e) {}
+}
+let saveTimer;
+function debouncedSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveData,1200);}
+function saveData() {
+  try {
+    const data = { state, historico, revisoes };
+    ['meta-horas','meta-questoes','meta-conclusao','meta-aprov'].forEach(id => {
+      const el = document.getElementById(id); if (el) data[id] = el.value;
+    });
+    localStorage.setItem(KEY, JSON.stringify(data));
+    showToast('✅', 'Progresso salvo!');
+  } catch(e) { showToast('⚠️', 'Erro ao salvar.'); }
+}
+
+// ── BACKUP / RESTORE ──────────────────────────────────
+function openBackupModal() {
+  document.getElementById('backup-modal').classList.add('open');
+}
+function closeBackupModal(e) {
+  if (!e || e.target === document.getElementById('backup-modal')) {
+    document.getElementById('backup-modal').classList.remove('open');
+  }
+}
+function exportBackup() {
+  try {
+    const data = { state, historico, revisoes, exportedAt: new Date().toISOString() };
+    try { data.concurso = CONCURSO_INFO.concurso; } catch(e) {}
+    ['meta-horas','meta-questoes','meta-conclusao','meta-aprov'].forEach(function(id) {
+      var el = document.getElementById(id); if (el) data[id] = el.value;
+    });
+    var json = JSON.stringify(data, null, 2);
+    var blob = new Blob([json], { type: 'application/json' });
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
+    var date = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
+    var nome = 'gran';
+    try { nome = slugify(CONCURSO_INFO.concurso || 'gran'); } catch(e) {}
+    a.href     = url;
+    a.download = 'backup-edital-' + nome + '-' + date + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    document.getElementById('backup-modal').classList.remove('open');
+    showToast('✅', 'Backup exportado com sucesso!');
+  } catch(e) {
+    console.error('exportBackup error:', e);
+    showToast('⚠️', 'Erro ao exportar: ' + e.message);
+  }
+}
+function triggerImport() {
+  document.getElementById('backup-modal').classList.remove('open');
+  document.getElementById('import-file').click();
+}
+function importBackup(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.state && !data.historico) throw new Error('Arquivo inválido');
+      state     = data.state     || {};
+      historico = data.historico || [];
+      revisoes  = data.revisoes  || [];
+      ['meta-horas','meta-questoes','meta-conclusao','meta-aprov'].forEach(id => {
+        if (data[id] !== undefined) { const el = document.getElementById(id); if (el) el.value = data[id]; }
+      });
+      localStorage.setItem(KEY, JSON.stringify({ state, historico, revisoes, 'meta-horas': data['meta-horas'], 'meta-questoes': data['meta-questoes'], 'meta-conclusao': data['meta-conclusao'], 'meta-aprov': data['meta-aprov'] }));
+      renderDiscs();
+      renderCal();
+      renderCharts();
+      renderRevisoes();
+      renderHistorico();
+      updateAll();
+      showToast('✅', 'Backup restaurado com sucesso!');
+    } catch(err) {
+      showToast('⚠️', 'Arquivo inválido. Use um backup exportado por este edital.');
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+function showToast(icon,msg){document.getElementById('ti').textContent=icon;document.getElementById('tm').textContent=msg;const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+
+// ── UTILS ────────────────────────────────────────────────
+function slug(s){return s.toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-');}
+function fmtDt(d){return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
+function pc(pct,tot){if(!tot||tot===0)return'n';if(pct>=70)return'g';if(pct>=50)return'y';return'r';}
+function secsToHMS(s){const h=Math.floor(s/3600).toString().padStart(2,'0'),m=Math.floor((s%3600)/60).toString().padStart(2,'0'),ss=(s%60).toString().padStart(2,'0');return`${h}:${m}:${ss}`;}
+function horasLabel(h){const hh=Math.floor(h),mm=Math.round((h-hh)*60);return`${hh}h ${mm.toString().padStart(2,'0')}min`;}
+function dateToKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function todayKey(){return dateToKey(new Date());}
+
+// ── REVISÕES ───────────────────────────────────────────
+function toggleRevBtn(btn, days) {
+  btn.classList.toggle('done'); updateRevSelected();
+}
+function clearRevBtns() {
+  document.querySelectorAll('[data-days]').forEach(b => b.classList.remove('done')); updateRevSelected();
+}
+function getSelectedRevDays() {
+  const days = [];
+  document.querySelectorAll('[data-days].done').forEach(b => days.push(parseInt(b.dataset.days)));
+  const custom = parseInt(document.getElementById('crono-rev-custom').value);
+  if (custom > 0) days.push(custom);
+  return [...new Set(days)].sort((a,b)=>a-b);
+}
+function updateRevSelected() {
+  const days = getSelectedRevDays();
+  const el = document.getElementById('crono-rev-selected'); if (!el) return;
+  el.textContent = days.length ? 'Revisão em: ' + days.map(d=>d+'d').join(', ') : '';
+}
+function addDays(dateStr, n) {
+  const d = new Date(dateStr + 'T00:00:00'); d.setDate(d.getDate() + n); return dateToKey(d);
+}
+function renderRevisoes() {
+  const el = document.getElementById('rev-content'); if (!el) return;
+  if (!revisoes || !revisoes.length) {
+    el.innerHTML = '<div class="rev-empty">Nenhuma revisão agendada ainda.<br>Use o cronômetro e agende revisões ao estudar.</div>'; return;
+  }
+  const today = todayKey();
+
+  // Classify each revisao
+  const groups = { overdue: [], today: [], week: [], later: [], done: [] };
+  revisoes.forEach(r => {
+    if (r.done) { groups.done.push(r); return; }
+    const daysLeft = Math.ceil((new Date(r.revDate+'T00:00:00') - new Date(today+'T00:00:00'))/86400000);
+    if (daysLeft < 0)      groups.overdue.push(r);
+    else if (daysLeft === 0) groups.today.push(r);
+    else if (daysLeft <= 7) groups.week.push(r);
+    else                    groups.later.push(r);
+  });
+
+  const groupDefs = [
+    { key:'overdue', icon:'🔴', title:'Atrasadas',    color:'#b91c1c' },
+    { key:'today',   icon:'🟡', title:'Revisar Hoje', color:'#b45309' },
+    { key:'week',    icon:'🔵', title:'Esta Semana',  color:'#0D134C' },
+    { key:'later',   icon:'⚪', title:'Próximas',     color:'#8a90b8' },
+    { key:'done',    icon:'🟢', title:'Concluídas',   color:'#15803d' },
+  ];
+
+  let html = '';
+  groupDefs.forEach(gd => {
+    const items = groups[gd.key];
+    if (!items.length) return;
+
+    // Group by disc within this group
+    const byDisc = {};
+    items.forEach(r => {
+      const k = r.disc || 'Sem disciplina';
+      if (!byDisc[k]) byDisc[k] = [];
+      byDisc[k].push(r);
+    });
+
+    html += `<div class="rev-group">
+      <div class="rev-group-hdr">
+        <span class="rev-group-icon">${gd.icon}</span>
+        <span class="rev-group-title">${gd.title}</span>
+        <span class="rev-group-count">${items.length} tópico${items.length!==1?'s':''}</span>
+      </div>`;
+
+    Object.keys(byDisc).sort().forEach(disc => {
+      const discItems = byDisc[disc];
+      const discIdx = EDITAL.findIndex(d => d.nome === disc);
+      const cor = discIdx >= 0 ? DISC_CORES[discIdx % DISC_CORES.length] : '#8a90b8';
+
+      html += `<div class="rev-disc-block" style="--dc:${cor}">
+        <div class="rev-disc-hdr">
+          <div class="rev-disc-dot"></div>
+          <div class="rev-disc-name">${disc}</div>
+          <div class="rev-disc-cnt">${discItems.length} tópico${discItems.length!==1?'s':''}</div>
+        </div>`;
+
+      discItems.forEach(r => {
+        const daysLeft = Math.ceil((new Date(r.revDate+'T00:00:00') - new Date(today+'T00:00:00'))/86400000);
+        const [,rm,rd] = r.revDate.split('-');
+        let badgeClass, badgeLabel;
+        if (r.done)         { badgeClass='done';    badgeLabel='✓ Concluída'; }
+        else if (daysLeft<0){ badgeClass='overdue'; badgeLabel=`${Math.abs(daysLeft)}d atrasada`; }
+        else if (daysLeft===0){ badgeClass='pending'; badgeLabel='Hoje!'; }
+        else                { badgeClass='pending'; badgeLabel=`${daysLeft}d — ${rd}/${rm}`; }
+
+        const actionLabel = r.done ? 'Reabrir' : 'Finalizado';
+        const actionClass = r.done ? ' is-done' : '';
+        const actionTitle = r.done ? 'Marcar revisão como pendente' : 'Marcar revisão como finalizada';
+
+        html += `<div class="rev-topic-row">
+          <div>
+            <div class="rev-topic-name">${r.topic || '—'}</div>
+            <div class="rev-topic-meta">Estudo: ${r.studyDate?r.studyDate.split('-').reverse().join('/'):'—'} &bull; Agendada ${r.days}d</div>
+          </div>
+          <div class="rev-badges">
+            <span class="rev-badge ${badgeClass}">${badgeLabel}</span>
+            <button class="rev-done-btn${actionClass}" onclick="toggleRevDone('${r.id}')" title="${actionTitle}">${actionLabel}</button>
+            <button class="btn-del" onclick="deleteRevisao('${r.id}')" title="Remover">🗑</button>
+          </div>
+        </div>`;
+      });
+      html += '</div>'; // rev-disc-block
+    });
+    html += '</div>'; // rev-group
+  });
+
+  el.innerHTML = html;
+}
+function toggleRevDone(id) {
+  const r = revisoes.find(r => String(r.id)===String(id)); if (r) { r.done=!r.done; renderRevisoes(); debouncedSave(); }
+}
+function deleteRevisao(id) {
+  revisoes = revisoes.filter(r => String(r.id)!==String(id)); renderRevisoes(); debouncedSave();
+}
+
+// ── PAINEL DE ESTATÍSTICAS ─────────────────────────────
+function renderCharts() {
+  const discEl   = document.getElementById('chart-disc');
+  const periodEl = document.getElementById('chart-period');
+  if (!discEl || !periodEl) return;
+
+  const discFilter = discEl.value;
+  const period     = parseInt(periodEl.value) || 0;
+  const cutoffKey  = period > 0 ? dateToKey(new Date(Date.now() - period*86400000)) : '0000-00-00';
+
+  let regs = historico.filter(r => r.date >= cutoffKey);
+  if (discFilter) regs = regs.filter(r => r.disc === discFilter);
+
+  const totalH  = regs.reduce((s,r)=>s+(r.horas||0),0);
+  const totalAc = regs.reduce((s,r)=>s+(r.acertos||0),0);
+  const totalEr = regs.reduce((s,r)=>s+(r.erros||0),0);
+  const totQ    = totalAc + totalEr;
+  const pct     = totQ > 0 ? Math.round(totalAc/totQ*100) : null;
+
+  const pctColor = pct===null ? 'var(--text-soft)' : pct>=70 ? '#15803d' : pct>=50 ? '#b45309' : '#b91c1c';
+
+  // Big numbers
+  document.getElementById('sb-horas').textContent    = horasLabel(totalH);
+  document.getElementById('sb-acertos').textContent  = totalAc;
+  document.getElementById('sb-erros').textContent    = totalEr;
+  document.getElementById('sb-pct').textContent      = pct !== null ? pct + '%' : '—';
+  document.getElementById('sb-pct').style.color      = pctColor;
+
+  const periodLabel = period > 0 ? `últimos ${period} dias` : 'todo o período';
+  ['sb-horas-sub','sb-acertos-sub','sb-erros-sub','sb-pct-sub'].forEach(id => {
+    document.getElementById(id).textContent = periodLabel;
+  });
+
+  // Per-discipline breakdown — always show all disciplines
+  const discRow = document.getElementById('stats-disc-row');
+  const discData = EDITAL.map((d, i) => {
+    let dRegs = historico.filter(r => r.disc === d.nome && r.date >= cutoffKey);
+    const h  = dRegs.reduce((s,r)=>s+(r.horas||0),0);
+    const ac = dRegs.reduce((s,r)=>s+(r.acertos||0),0);
+    const er = dRegs.reduce((s,r)=>s+(r.erros||0),0);
+    const q  = ac + er;
+    const p  = q > 0 ? Math.round(ac/q*100) : null;
+    return { nome: d.nome, cor: DISC_CORES[i % DISC_CORES.length], h, ac, er, q, p };
+  });
+
+  // Show all, sorted: with data first
+  discData.sort((a,b) => (b.h+b.q) - (a.h+a.q));
+
+  const maxH = Math.max(...discData.map(d => d.h), 0.01);
+  const maxQ = Math.max(...discData.map(d => d.q), 0.01);
+
+  discRow.innerHTML = discData.map(d => {
+    const hasData = d.h > 0 || d.q > 0;
+    const pctColor = d.p===null ? 'var(--text-soft)' : d.p>=70 ? '#15803d' : d.p>=50 ? '#b45309' : '#b91c1c';
+    const barW = hasData ? Math.max(4, Math.round((d.h / maxH) * 100)) : 0;
+    const opacity = hasData ? '1' : '0.4';
+    return `<div class="stat-disc-item" style="opacity:${opacity}">
+      <div class="stat-disc-dot" style="background:${d.cor}"></div>
+      <div class="stat-disc-name" title="${d.nome}">${d.nome}</div>
+      <div class="stat-disc-bar-wrap" title="${horasLabel(d.h)}"><div class="stat-disc-bar-fill" style="width:${barW}%;background:${d.cor}"></div></div>
+      <div class="stat-disc-nums">
+        <div class="stat-disc-num"><div class="stat-disc-num-val" style="color:var(--navy)">${hasData ? horasLabel(d.h) : '—'}</div><div class="stat-disc-num-lbl">Horas</div></div>
+        <div class="stat-disc-num"><div class="stat-disc-num-val" style="color:var(--green)">${d.ac > 0 ? d.ac : '—'}</div><div class="stat-disc-num-lbl">Acertos</div></div>
+        <div class="stat-disc-num"><div class="stat-disc-num-val" style="color:var(--red)">${d.er > 0 ? d.er : '—'}</div><div class="stat-disc-num-lbl">Erros</div></div>
+        <div class="stat-disc-num"><div class="stat-disc-num-val" style="color:${pctColor}">${d.p !== null ? d.p+'%' : '—'}</div><div class="stat-disc-num-lbl">% Acerto</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function populateChartDisc() {
+  const sel = document.getElementById('chart-disc'); if (!sel) return;
+  sel.innerHTML = '<option value="">Todas as disciplinas</option>' + EDITAL.map(d=>`<option value="${d.nome}">${d.nome}</option>`).join('');
+}
+
+// ── INIT ─────────────────────────────────────────────────
+function init() {
+  loadStorage();
+  renderSidebar();
+  renderDiscs();
+  populateDiscSelects();
+  populateHistFilterDisc();
+  populateChartDisc();
+  document.getElementById('man-data').value = todayKey();
+  renderCal();
+  renderCharts();
+  renderRevisoes();
+  updateAll();
+}
+init();
+</script>
+</body>
+</html>
