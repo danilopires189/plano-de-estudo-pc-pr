@@ -82,13 +82,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .login-input-icon{left:5px;pointer-events:none;user-select:none;}
 .password-toggle{right:5px;border:0;cursor:pointer;transition:background .15s,color .15s;}
 .password-toggle:hover,.password-toggle:focus-visible{background:#e1e7f2;color:var(--navy);outline:none;}
-.user-line-icon,.lock-line-icon,.eye-line-icon{position:relative;display:block;color:currentColor;}
+.user-line-icon,.eye-line-icon{position:relative;display:block;color:currentColor;}
 .user-line-icon{width:18px;height:21px;}
 .user-line-icon::before{content:"";position:absolute;left:5px;top:0;width:7px;height:7px;border:2px solid currentColor;border-radius:50%;}
 .user-line-icon::after{content:"";position:absolute;left:1px;bottom:0;width:14px;height:10px;border:2px solid currentColor;border-bottom:0;border-radius:10px 10px 0 0;}
-.lock-line-icon{width:20px;height:21px;}
-.lock-line-icon::before{content:"";position:absolute;left:4.5px;top:1px;width:11px;height:10px;border:2px solid currentColor;border-bottom:0;border-radius:8px 8px 0 0;}
-.lock-line-icon::after{content:"";position:absolute;left:1px;bottom:1px;width:18px;height:11px;border:2px solid currentColor;border-radius:3.5px;}
+.lock-line-icon{width:20px;height:20px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .eye-line-icon{width:19px;height:12px;border:2px solid currentColor;border-radius:50% 50%;}
 .eye-line-icon::before{content:"";position:absolute;left:50%;top:50%;width:4px;height:4px;transform:translate(-50%,-50%);border:1.5px solid currentColor;border-radius:50%;}
 .password-toggle[aria-pressed="false"] .eye-line-icon::after{content:"";position:absolute;left:-3px;top:4px;width:23px;height:2px;background:currentColor;border-radius:2px;transform:rotate(45deg);box-shadow:0 0 0 2px #eef1f7;}
@@ -488,7 +486,7 @@ select{min-width:0;max-width:100%;}
       <div class="login-field">
         <label for="login-password">Senha</label>
         <div class="login-input-wrap has-password-toggle">
-          <span class="login-input-icon" aria-hidden="true"><span class="lock-line-icon"></span></span>
+          <span class="login-input-icon" aria-hidden="true"><svg class="lock-line-icon" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
           <input class="login-input" id="login-password" type="password" autocomplete="current-password" required>
           <button class="password-toggle" id="password-toggle" type="button" aria-label="Mostrar senha" aria-pressed="false" onclick="togglePasswordVisibility()"><span class="eye-line-icon" aria-hidden="true"></span></button>
         </div>
