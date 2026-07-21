@@ -76,8 +76,22 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .login-field{display:flex;flex-direction:column;gap:7px;}
 .login-field label{color:var(--text-mid);font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;}
 .login-input-wrap{position:relative;}
-.login-input-wrap .login-input{padding-left:44px;}
-.login-input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:17px;line-height:1;pointer-events:none;user-select:none;}
+.login-input-wrap .login-input{padding-left:58px;}
+.login-input-wrap.has-password-toggle .login-input{padding-right:58px;}
+.login-input-icon,.password-toggle{position:absolute;top:50%;width:38px;height:38px;transform:translateY(-50%);border-radius:11px;background:#eef1f7;color:#244b8f;display:grid;place-items:center;}
+.login-input-icon{left:5px;pointer-events:none;user-select:none;}
+.password-toggle{right:5px;border:0;cursor:pointer;transition:background .15s,color .15s;}
+.password-toggle:hover,.password-toggle:focus-visible{background:#e1e7f2;color:var(--navy);outline:none;}
+.user-line-icon,.lock-line-icon,.eye-line-icon{position:relative;display:block;color:currentColor;}
+.user-line-icon{width:18px;height:21px;}
+.user-line-icon::before{content:"";position:absolute;left:5px;top:0;width:7px;height:7px;border:2px solid currentColor;border-radius:50%;}
+.user-line-icon::after{content:"";position:absolute;left:1px;bottom:0;width:14px;height:10px;border:2px solid currentColor;border-bottom:0;border-radius:10px 10px 0 0;}
+.lock-line-icon{width:16px;height:14px;margin-top:5px;border:2px solid currentColor;border-radius:3px;}
+.lock-line-icon::before{content:"";position:absolute;left:2px;top:-10px;width:8px;height:9px;border:2px solid currentColor;border-bottom:0;border-radius:7px 7px 0 0;}
+.eye-line-icon{width:19px;height:12px;border:2px solid currentColor;border-radius:50% 50%;}
+.eye-line-icon::before{content:"";position:absolute;left:50%;top:50%;width:4px;height:4px;transform:translate(-50%,-50%);border:1.5px solid currentColor;border-radius:50%;}
+.password-toggle[aria-pressed="false"] .eye-line-icon::after{content:"";position:absolute;left:-3px;top:4px;width:23px;height:2px;background:currentColor;border-radius:2px;transform:rotate(45deg);box-shadow:0 0 0 2px #eef1f7;}
+.password-toggle[aria-pressed="false"]:hover .eye-line-icon::after,.password-toggle[aria-pressed="false"]:focus-visible .eye-line-icon::after{box-shadow:0 0 0 2px #e1e7f2;}
 .login-input{width:100%;height:48px;padding:0 14px;border:1.5px solid var(--border);border-radius:11px;background:white;color:var(--navy);font:600 16px 'Inter',sans-serif;outline:none;transition:border-color .18s,box-shadow .18s;}
 .login-input:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(13,19,76,.1);}
 .login-button{height:48px;margin-top:3px;border:0;border-radius:11px;background:var(--rust);color:white;font:800 14px 'Nunito',sans-serif;cursor:pointer;box-shadow:0 8px 18px rgba(200,16,46,.22);transition:transform .15s,background .15s;}
@@ -466,15 +480,16 @@ select{min-width:0;max-width:100%;}
       <div class="login-field">
         <label for="login-username">Usuário</label>
         <div class="login-input-wrap">
-          <span class="login-input-icon" aria-hidden="true">👤</span>
+          <span class="login-input-icon" aria-hidden="true"><span class="user-line-icon"></span></span>
           <input class="login-input" id="login-username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus>
         </div>
       </div>
       <div class="login-field">
         <label for="login-password">Senha</label>
-        <div class="login-input-wrap">
-          <span class="login-input-icon" aria-hidden="true">🔒</span>
+        <div class="login-input-wrap has-password-toggle">
+          <span class="login-input-icon" aria-hidden="true"><span class="lock-line-icon"></span></span>
           <input class="login-input" id="login-password" type="password" autocomplete="current-password" required>
+          <button class="password-toggle" id="password-toggle" type="button" aria-label="Mostrar senha" aria-pressed="false" onclick="togglePasswordVisibility()"><span class="eye-line-icon" aria-hidden="true"></span></button>
         </div>
       </div>
       <button class="login-button" id="login-button" type="submit" disabled>Verificando acesso...</button>
@@ -1816,6 +1831,13 @@ function setLoginScreenVisible(visible, message = '') {
   if (visible) {
     document.getElementById('mfa-screen')?.classList.add('hidden');
     document.getElementById('reset-screen')?.classList.add('hidden');
+    const passwordInput = document.getElementById('login-password');
+    const passwordToggle = document.getElementById('password-toggle');
+    if (passwordInput) passwordInput.type = 'password';
+    if (passwordToggle) {
+      passwordToggle.setAttribute('aria-pressed', 'false');
+      passwordToggle.setAttribute('aria-label', 'Mostrar senha');
+    }
   }
   document.body.style.overflow = visible ? 'hidden' : '';
   if (feedback) feedback.textContent = message;
@@ -1824,6 +1846,17 @@ function setLoginScreenVisible(visible, message = '') {
     button.textContent = 'Entrar';
   }
   if (visible) setTimeout(() => document.getElementById('login-username')?.focus(), 0);
+}
+
+function togglePasswordVisibility() {
+  const passwordInput = document.getElementById('login-password');
+  const passwordToggle = document.getElementById('password-toggle');
+  if (!passwordInput || !passwordToggle) return;
+  const willShow = passwordInput.type === 'password';
+  passwordInput.type = willShow ? 'text' : 'password';
+  passwordToggle.setAttribute('aria-pressed', String(willShow));
+  passwordToggle.setAttribute('aria-label', willShow ? 'Ocultar senha' : 'Mostrar senha');
+  passwordInput.focus({ preventScroll: true });
 }
 
 async function submitLogin(event) {
