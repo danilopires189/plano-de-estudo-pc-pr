@@ -75,6 +75,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .login-form{display:flex;flex-direction:column;gap:15px;}
 .login-field{display:flex;flex-direction:column;gap:7px;}
 .login-field label{color:var(--text-mid);font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;}
+.login-input-wrap{position:relative;}
+.login-input-wrap .login-input{padding-left:44px;}
+.login-input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:17px;line-height:1;pointer-events:none;user-select:none;}
 .login-input{width:100%;height:48px;padding:0 14px;border:1.5px solid var(--border);border-radius:11px;background:white;color:var(--navy);font:600 16px 'Inter',sans-serif;outline:none;transition:border-color .18s,box-shadow .18s;}
 .login-input:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(13,19,76,.1);}
 .login-button{height:48px;margin-top:3px;border:0;border-radius:11px;background:var(--rust);color:white;font:800 14px 'Nunito',sans-serif;cursor:pointer;box-shadow:0 8px 18px rgba(200,16,46,.22);transition:transform .15s,background .15s;}
@@ -462,11 +465,17 @@ select{min-width:0;max-width:100%;}
     <form class="login-form" id="login-form" onsubmit="submitLogin(event)">
       <div class="login-field">
         <label for="login-username">Usuário</label>
-        <input class="login-input" id="login-username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus>
+        <div class="login-input-wrap">
+          <span class="login-input-icon" aria-hidden="true">👤</span>
+          <input class="login-input" id="login-username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus>
+        </div>
       </div>
       <div class="login-field">
         <label for="login-password">Senha</label>
-        <input class="login-input" id="login-password" type="password" autocomplete="current-password" required>
+        <div class="login-input-wrap">
+          <span class="login-input-icon" aria-hidden="true">🔒</span>
+          <input class="login-input" id="login-password" type="password" autocomplete="current-password" required>
+        </div>
       </div>
       <button class="login-button" id="login-button" type="submit" disabled>Verificando acesso...</button>
       <button class="login-link" type="button" onclick="requestPasswordReset()">Esqueci minha senha</button>
