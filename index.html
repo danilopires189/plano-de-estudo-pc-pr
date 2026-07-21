@@ -1870,8 +1870,12 @@ async function requestPasswordReset(fromAccount = false) {
       if (resetVisible) document.getElementById('reset-request-button').style.display = 'none';
     }
   } catch (error) {
-    if (fromAccount) showToast('⚠️', 'Não foi possível enviar o link agora.');
-    else message.textContent = 'Não foi possível enviar o link. Tente novamente em instantes.';
+    const emailLimitReached = error?.status === 429 || error?.code === 'over_email_send_rate_limit';
+    const errorMessage = emailLimitReached
+      ? 'Limite temporário de e-mails atingido. Aguarde cerca de 1 hora antes de solicitar outro link.'
+      : 'Não foi possível enviar o link agora. Tente novamente mais tarde.';
+    if (fromAccount) showToast(emailLimitReached ? '⏳' : '⚠️', errorMessage);
+    else message.textContent = errorMessage;
   }
 }
 
