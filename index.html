@@ -54,6 +54,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .backup-btn-imp:hover{border-color:var(--navy);}
 .backup-btn-close{padding:9px;background:transparent;border:none;color:var(--text-soft);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;}
 .backup-warn{font-size:11px;color:var(--text-soft);background:var(--yellow-bg);border:1px solid #fde68a;border-radius:8px;padding:8px 12px;line-height:1.5;}
+.cloud-fab{position:fixed;left:calc(var(--sidebar-w) + 22px);bottom:22px;z-index:450;border:none;border-radius:99px;padding:10px 15px;background:white;color:var(--navy);box-shadow:0 6px 24px rgba(13,19,76,.2);font-family:'Inter',sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;border:1.5px solid var(--border);max-width:220px;}
+.cloud-fab:hover{border-color:var(--navy);}
+.cloud-dot{width:8px;height:8px;border-radius:50%;background:var(--text-soft);flex-shrink:0;}
+.cloud-fab.online .cloud-dot{background:var(--green);box-shadow:0 0 0 3px var(--green-bg);}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--bg);border-radius:10px;}
+.auth-tab{border:none;border-radius:8px;padding:8px;background:transparent;color:var(--text-soft);font:700 12px 'Inter',sans-serif;cursor:pointer;}
+.auth-tab.active{background:white;color:var(--navy);box-shadow:0 1px 4px rgba(13,19,76,.1);}
+.auth-form{display:flex;flex-direction:column;gap:10px;}
+.auth-message{min-height:18px;font-size:11px;line-height:1.5;color:var(--text-soft);}
+.auth-user{padding:12px;background:var(--green-bg);border:1px solid #bbf7d0;border-radius:10px;color:#15803d;font-size:12px;line-height:1.5;}
 
 /* ── TABS ── */
 .content{margin-left:var(--sidebar-w);width:calc(100% - var(--sidebar-w));max-width:calc(100vw - var(--sidebar-w));min-width:0;display:flex;flex-direction:column;align-items:stretch;}
@@ -378,6 +388,8 @@ tr.done .topic-dt{display:block;}
   .rev-topic-name{flex-basis:100%;}
   .rev-badges{width:100%;flex-wrap:wrap;}
   .toast{left:12px;right:12px;bottom:12px;justify-content:center;text-align:center;}
+  .cloud-fab{left:12px;bottom:12px;max-width:calc(100vw - 24px);}
+  .toast.show~.cloud-fab{bottom:68px;}
   .modal-overlay,.backup-modal{padding:12px;align-items:flex-end;}
   .modal-box,.backup-box{padding:20px 16px;border-radius:16px;}
 }
@@ -784,8 +796,8 @@ select{min-width:0;max-width:100%;}
 <div class="backup-modal" id="backup-modal" onclick="closeBackupModal(event)">
   <div class="backup-box">
     <div class="backup-title">💾 Backup do Progresso</div>
-    <div class="backup-sub">Exporte seu progresso para um arquivo .json e salve em um local seguro. Se limpar o cache do navegador, você pode restaurar tudo pelo botão Restaurar.</div>
-    <div class="backup-warn">⚠️ O progresso fica salvo no navegador. Se limpar o histórico/cache, use o backup para não perder nada.</div>
+    <div class="backup-sub">Exporte seu progresso para um arquivo .json sempre que quiser manter uma cópia pessoal dos seus dados.</div>
+    <div class="backup-warn">☁️ Quando você está conectado, o progresso é sincronizado no Supabase. O backup continua disponível como segurança adicional.</div>
     <div class="backup-actions">
       <button class="backup-btn-exp" onclick="exportBackup()">⬆️ Exportar backup (.json)</button>
       <button class="backup-btn-imp" onclick="triggerImport()">⬇️ Restaurar backup (.json)</button>
@@ -794,14 +806,50 @@ select{min-width:0;max-width:100%;}
   </div>
 </div>
 
-<div class="toast" id="toast"><span id="ti">✅</span><span id="tm">Salvo!</span></div>
+<!-- ACESSO À NUVEM -->
+<div class="backup-modal" id="auth-modal" onclick="closeAuthModal(event)">
+  <div class="backup-box">
+    <div class="backup-title">☁️ Progresso na nuvem</div>
+    <div id="auth-signed-out">
+      <div class="backup-sub" style="margin:0 0 14px">Entre para sincronizar seu progresso entre celular e computador.</div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="auth-tab-login" onclick="setAuthMode('login')">Entrar</button>
+        <button class="auth-tab" id="auth-tab-signup" onclick="setAuthMode('signup')">Criar conta</button>
+      </div>
+      <div class="auth-form" style="margin-top:12px">
+        <input class="modal-inp" type="email" id="auth-email" autocomplete="email" placeholder="Seu e-mail">
+        <input class="modal-inp" type="password" id="auth-password" autocomplete="current-password" minlength="6" placeholder="Sua senha">
+        <button class="modal-btn-save" id="auth-submit" onclick="submitAuth()">Entrar</button>
+        <div class="auth-message" id="auth-message"></div>
+      </div>
+    </div>
+    <div id="auth-signed-in" style="display:none">
+      <div class="auth-user">Conectado como<br><strong id="auth-user-email"></strong></div>
+      <div class="backup-actions" style="margin-top:12px">
+        <button class="backup-btn-exp" onclick="saveData()">☁️ Sincronizar agora</button>
+        <button class="backup-btn-imp" onclick="signOutCloud()">Sair da conta</button>
+      </div>
+    </div>
+    <button class="backup-btn-close" onclick="closeAuthModal()">Fechar</button>
+  </div>
+</div>
 
+<div class="toast" id="toast"><span id="ti">✅</span><span id="tm">Salvo!</span></div>
+<button class="cloud-fab" id="cloud-fab" onclick="openAuthModal()"><span class="cloud-dot"></span><span id="cloud-label">Entrar para sincronizar</span></button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ═══════════════════════════════════════════════════════
 //  CONFIGURAÇÃO DO CONCURSO — EDITE AQUI
 // ═══════════════════════════════════════════════════════
 const CONCURSO_INFO={concurso:"PC PR - Polícia Civil do Estado do Paraná",cargo:"Agente de Polícia Judiciária",banca:"FGV",dataProva:"2026-10-11"};
 const DISC_CORES = ['#C8102E','#0D134C','#E255BE','#A7C3BB','#EFBD7B','#AFE8D0','#7c3aed','#BAFF38','#0d9488','#ea580c'];
+const SUPABASE_URL = 'https://cepffdlfxjggkjzkkjlh.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_MplCfLiIJFUfoX7Krhl2Cw_bEMAJyZE';
+const cloudDb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
+let cloudUser = null;
+let authMode = 'login';
+let cloudSyncing = false;
 
 // ═══════════════════════════════════════════════════════
 //  DADOS DO EDITAL — EDITE AQUI
@@ -1055,7 +1103,7 @@ function addRegistro(r) {
 }
 
 function deleteRegistro(id) {
-  historico = historico.filter(r => r.id !== id);
+  historico = historico.filter(r => String(r.id) !== String(id));
   updateAll();
   renderCal();
   renderHistorico();
@@ -1201,7 +1249,7 @@ function renderHistorico() {
       <td style="text-align:center">${pctBadge}</td>
       <td style="font-size:11px;color:var(--text-mid);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.obs||''}">${r.obs ? `💬 ${r.obs.length > 35 ? r.obs.slice(0,35)+'…' : r.obs}` : '<span style="color:var(--text-soft)">—</span>'}</td>
       <td><span style="font-size:10px;background:var(--bg);padding:2px 8px;border-radius:4px;color:var(--text-soft)">${r.origem}</span></td>
-      <td><button class="btn-del" onclick="deleteRegistro(${r.id})" title="Remover">🗑</button></td>
+      <td><button class="btn-del" onclick="deleteRegistro('${r.id}')" title="Remover">🗑</button></td>
     </tr>`;
   }).join('');
 }
@@ -1294,7 +1342,10 @@ function renderDiscs() {
 
 function toggleT(tid, cb) {
   setTS(tid,'done',cb.checked);
-  const now = cb.checked ? fmtDt(new Date()) : null; setTS(tid,'datetime',now);
+  const dateNow = new Date();
+  const now = cb.checked ? fmtDt(dateNow) : null;
+  setTS(tid,'datetime',now);
+  setTS(tid,'completedAt',cb.checked ? dateNow.toISOString() : null);
   const row = document.getElementById('row-'+tid), dtc = document.getElementById('dt-'+tid), tdt = document.getElementById('tdt-'+tid);
   if (cb.checked) { row.classList.add('done'); dtc.innerHTML=now; if(tdt)tdt.textContent=now; }
   else { row.classList.remove('done'); dtc.innerHTML='<span style="color:var(--border)">—</span>'; if(tdt)tdt.textContent=''; }
@@ -1410,15 +1461,298 @@ function loadStorage() {
 }
 let saveTimer;
 function debouncedSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveData,1200);}
-function saveData() {
+async function saveData() {
+  if (cloudUser) return saveCloudData();
   try {
     const data = { state, historico, revisoes };
     ['meta-horas','meta-questoes','meta-conclusao','meta-aprov'].forEach(id => {
       const el = document.getElementById(id); if (el) data[id] = el.value;
     });
     localStorage.setItem(KEY, JSON.stringify(data));
-    showToast('✅', 'Progresso salvo!');
+    showToast('📱', 'Salvo neste dispositivo. Entre para sincronizar.');
   } catch(e) { showToast('⚠️', 'Erro ao salvar.'); }
+}
+
+function getGoalValue(id) {
+  const el = document.getElementById(id);
+  return el ? (parseFloat(el.value) || 0) : 0;
+}
+
+function localDateTimeToIso(value) {
+  if (!value) return null;
+  const match = String(value).match(/^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})$/);
+  if (!match) return null;
+  const [,day,month,year,hour,minute] = match;
+  return new Date(`${year}-${month}-${day}T${hour}:${minute}:00`).toISOString();
+}
+
+function cloudSource(origem) {
+  if (origem === 'cronômetro' || origem === 'cronometro') return 'cronometro';
+  if (origem === 'modal') return 'modal';
+  if (origem === 'manual') return 'manual';
+  return 'importacao';
+}
+
+function localSource(source) {
+  return source === 'cronometro' ? 'cronômetro' : source;
+}
+
+function cloudPayload() {
+  const topics = Object.entries(state).map(([topicId, item]) => ({
+    topic_id: topicId,
+    discipline_id: topicId.split('_')[0],
+    completed: !!item.done,
+    completed_at: item.completedAt || localDateTimeToIso(item.datetime),
+    questions: parseInt(item.questoes) || 0,
+    correct_answers: parseInt(item.acertos) || 0,
+    wrong_answers: parseInt(item.erros) || 0
+  }));
+
+  const sessions = historico.map(item => ({
+    client_id: String(item.id),
+    study_date: item.date,
+    discipline: item.disc || '',
+    topic: item.topic || '',
+    study_type: item.tipo || '',
+    duration_seconds: Math.max(0, Math.round((parseFloat(item.horas) || 0) * 3600)),
+    questions: parseInt(item.questoes) || 0,
+    correct_answers: parseInt(item.acertos) || 0,
+    wrong_answers: parseInt(item.erros) || 0,
+    notes: item.obs || '',
+    source: cloudSource(item.origem)
+  }));
+
+  const reviewItems = revisoes.map(item => ({
+    client_id: String(item.id),
+    discipline: item.disc || '',
+    topic: item.topic || 'Sem tópico',
+    study_date: item.studyDate,
+    review_date: item.revDate,
+    interval_days: parseInt(item.days) || 1,
+    completed: !!item.done,
+    completed_at: item.completedAt || null
+  }));
+
+  return {
+    goals: {
+      weekly_hours: getGoalValue('meta-horas'),
+      weekly_questions: Math.round(getGoalValue('meta-questoes')),
+      completion_target: Math.round(getGoalValue('meta-conclusao')),
+      accuracy_target: Math.round(getGoalValue('meta-aprov'))
+    },
+    topics,
+    sessions,
+    review_items: reviewItems
+  };
+}
+
+async function saveCloudData(options = {}) {
+  if (!cloudDb || !cloudUser || cloudSyncing) return;
+  cloudSyncing = true;
+  refreshCloudUI('Sincronizando...');
+  try {
+    const { error } = await cloudDb.rpc('replace_study_data', cloudPayload());
+    if (error) throw error;
+    localStorage.removeItem(KEY);
+    refreshCloudUI('Sincronizado');
+    if (!options.silent) showToast('☁️', 'Progresso sincronizado na nuvem!');
+  } catch (error) {
+    console.error('Cloud save error:', error);
+    refreshCloudUI('Erro ao sincronizar');
+    if (!options.silent) showToast('⚠️', 'Não foi possível sincronizar.');
+  } finally {
+    cloudSyncing = false;
+  }
+}
+
+function renderAllData() {
+  renderDiscs();
+  renderCal();
+  renderCharts();
+  renderRevisoes();
+  renderHistorico();
+  updateAll();
+}
+
+async function loadCloudData() {
+  if (!cloudDb || !cloudUser) return;
+  refreshCloudUI('Carregando...');
+  try {
+    const [goalsResult, topicsResult, sessionsResult, reviewsResult] = await Promise.all([
+      cloudDb.from('study_goals').select('*').eq('user_id', cloudUser.id).maybeSingle(),
+      cloudDb.from('topic_progress').select('*').order('created_at'),
+      cloudDb.from('study_sessions').select('*').order('study_date'),
+      cloudDb.from('reviews').select('*').order('review_date')
+    ]);
+    const firstError = [goalsResult, topicsResult, sessionsResult, reviewsResult].find(result => result.error);
+    if (firstError) throw firstError.error;
+
+    const goals = goalsResult.data || {};
+    const topics = topicsResult.data || [];
+    const sessions = sessionsResult.data || [];
+    const reviewRows = reviewsResult.data || [];
+    const remoteHasProgress = topics.length > 0 || sessions.length > 0 || reviewRows.length > 0 ||
+      Number(goals.weekly_hours) > 0 || Number(goals.weekly_questions) > 0 ||
+      Number(goals.completion_target) > 0 || Number(goals.accuracy_target) > 0;
+
+    if (!remoteHasProgress && localStorage.getItem(KEY)) {
+      await saveCloudData({ silent: true });
+      renderAllData();
+      refreshCloudUI('Sincronizado');
+      showToast('☁️', 'Progresso deste dispositivo enviado para a nuvem!');
+      return;
+    }
+
+    state = {};
+    topics.forEach(item => {
+      state[item.topic_id] = {
+        done: item.completed,
+        datetime: item.completed_at ? fmtDt(new Date(item.completed_at)) : null,
+        completedAt: item.completed_at,
+        questoes: item.questions,
+        acertos: item.correct_answers,
+        erros: item.wrong_answers
+      };
+    });
+    historico = sessions.map(item => ({
+      id: item.client_id || item.id,
+      date: item.study_date,
+      disc: item.discipline || '',
+      topic: item.topic || '',
+      tipo: item.study_type || '',
+      horas: Number(item.duration_seconds || 0) / 3600,
+      questoes: item.questions || 0,
+      acertos: item.correct_answers || 0,
+      erros: item.wrong_answers || 0,
+      obs: item.notes || '',
+      origem: localSource(item.source)
+    }));
+    revisoes = reviewRows.map(item => ({
+      id: item.client_id || item.id,
+      disc: item.discipline || '',
+      topic: item.topic,
+      studyDate: item.study_date,
+      revDate: item.review_date,
+      days: item.interval_days,
+      done: item.completed,
+      completedAt: item.completed_at
+    }));
+
+    const goalMap = {
+      'meta-horas': goals.weekly_hours,
+      'meta-questoes': goals.weekly_questions,
+      'meta-conclusao': goals.completion_target,
+      'meta-aprov': goals.accuracy_target
+    };
+    Object.entries(goalMap).forEach(([id, value]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = Number(value) || '';
+    });
+    localStorage.removeItem(KEY);
+    renderAllData();
+    refreshCloudUI('Sincronizado');
+  } catch (error) {
+    console.error('Cloud load error:', error);
+    refreshCloudUI('Erro de conexão');
+    showToast('⚠️', 'Não foi possível carregar os dados da nuvem.');
+  }
+}
+
+function openAuthModal() {
+  document.getElementById('auth-modal').classList.add('open');
+  refreshAuthModal();
+}
+
+function closeAuthModal(event) {
+  if (!event || event.target === document.getElementById('auth-modal')) {
+    document.getElementById('auth-modal').classList.remove('open');
+  }
+}
+
+function setAuthMode(mode) {
+  authMode = mode;
+  document.getElementById('auth-tab-login').classList.toggle('active', mode === 'login');
+  document.getElementById('auth-tab-signup').classList.toggle('active', mode === 'signup');
+  document.getElementById('auth-submit').textContent = mode === 'login' ? 'Entrar' : 'Criar conta';
+  document.getElementById('auth-message').textContent = '';
+}
+
+function refreshAuthModal() {
+  document.getElementById('auth-signed-out').style.display = cloudUser ? 'none' : '';
+  document.getElementById('auth-signed-in').style.display = cloudUser ? '' : 'none';
+  document.getElementById('auth-user-email').textContent = cloudUser ? cloudUser.email : '';
+}
+
+function refreshCloudUI(label) {
+  const button = document.getElementById('cloud-fab');
+  const text = document.getElementById('cloud-label');
+  if (!button || !text) return;
+  button.classList.toggle('online', !!cloudUser);
+  text.textContent = label || (cloudUser ? 'Nuvem conectada' : 'Entrar para sincronizar');
+  refreshAuthModal();
+}
+
+async function submitAuth() {
+  if (!cloudDb) return;
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const message = document.getElementById('auth-message');
+  if (!email || password.length < 6) {
+    message.textContent = 'Informe um e-mail válido e uma senha com pelo menos 6 caracteres.';
+    return;
+  }
+  message.textContent = authMode === 'login' ? 'Entrando...' : 'Criando conta...';
+  try {
+    const result = authMode === 'login'
+      ? await cloudDb.auth.signInWithPassword({ email, password })
+      : await cloudDb.auth.signUp({ email, password, options: { emailRedirectTo: location.origin } });
+    if (result.error) throw result.error;
+    if (authMode === 'signup' && !result.data.session) {
+      message.textContent = 'Conta criada. Confirme o e-mail recebido e depois entre.';
+      return;
+    }
+    message.textContent = '';
+    closeAuthModal();
+  } catch (error) {
+    message.textContent = error.message === 'Invalid login credentials'
+      ? 'E-mail ou senha incorretos.'
+      : error.message;
+  }
+}
+
+async function signOutCloud() {
+  if (!cloudDb) return;
+  await cloudDb.auth.signOut();
+  cloudUser = null;
+  state = {};
+  historico = [];
+  revisoes = [];
+  ['meta-horas','meta-questoes','meta-conclusao','meta-aprov'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  renderAllData();
+  refreshCloudUI();
+  closeAuthModal();
+  showToast('👋', 'Você saiu da conta.');
+}
+
+async function initializeCloud() {
+  if (!cloudDb) {
+    refreshCloudUI('Nuvem indisponível');
+    return;
+  }
+  const { data } = await cloudDb.auth.getSession();
+  cloudUser = data.session ? data.session.user : null;
+  refreshCloudUI();
+  if (cloudUser) await loadCloudData();
+  cloudDb.auth.onAuthStateChange((event, session) => {
+    if (event !== 'SIGNED_IN' && event !== 'SIGNED_OUT') return;
+    setTimeout(async () => {
+      cloudUser = session ? session.user : null;
+      refreshCloudUI();
+      if (cloudUser) await loadCloudData();
+    }, 0);
+  });
 }
 
 // ── BACKUP / RESTORE ──────────────────────────────────
@@ -1474,7 +1808,8 @@ function importBackup(input) {
       ['meta-horas','meta-questoes','meta-conclusao','meta-aprov'].forEach(id => {
         if (data[id] !== undefined) { const el = document.getElementById(id); if (el) el.value = data[id]; }
       });
-      localStorage.setItem(KEY, JSON.stringify({ state, historico, revisoes, 'meta-horas': data['meta-horas'], 'meta-questoes': data['meta-questoes'], 'meta-conclusao': data['meta-conclusao'], 'meta-aprov': data['meta-aprov'] }));
+      if (cloudUser) saveCloudData();
+      else localStorage.setItem(KEY, JSON.stringify({ state, historico, revisoes, 'meta-horas': data['meta-horas'], 'meta-questoes': data['meta-questoes'], 'meta-conclusao': data['meta-conclusao'], 'meta-aprov': data['meta-aprov'] }));
       renderDiscs();
       renderCal();
       renderCharts();
@@ -1613,7 +1948,13 @@ function renderRevisoes() {
   el.innerHTML = html;
 }
 function toggleRevDone(id) {
-  const r = revisoes.find(r => String(r.id)===String(id)); if (r) { r.done=!r.done; renderRevisoes(); debouncedSave(); }
+  const r = revisoes.find(r => String(r.id)===String(id));
+  if (r) {
+    r.done = !r.done;
+    r.completedAt = r.done ? new Date().toISOString() : null;
+    renderRevisoes();
+    debouncedSave();
+  }
 }
 function deleteRevisao(id) {
   revisoes = revisoes.filter(r => String(r.id)!==String(id)); renderRevisoes(); debouncedSave();
@@ -1706,6 +2047,7 @@ function init() {
   renderCharts();
   renderRevisoes();
   updateAll();
+  initializeCloud();
 }
 init();
 </script>
