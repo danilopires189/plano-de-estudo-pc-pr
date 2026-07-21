@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0D134C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Plano PC PR">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 <title>Edital Verticalizado – Gran Concursos</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap');
@@ -76,6 +82,22 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .login-button:disabled{cursor:wait;opacity:.7;transform:none;}
 .login-message{min-height:18px;color:var(--red);font-size:12px;line-height:1.5;text-align:center;}
 .login-note{margin-top:18px;color:var(--text-soft);font-size:10px;text-align:center;}
+.login-link{align-self:center;border:0;background:transparent;color:var(--text-mid);font:700 12px 'Inter',sans-serif;cursor:pointer;padding:2px 8px;}
+.login-link:hover{color:var(--rust);}
+.security-screen{position:fixed;inset:0;z-index:2100;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(145deg,#090e3b,var(--navy));overflow-y:auto;}
+.security-screen.hidden{display:none;}
+.security-card{width:min(440px,100%);padding:32px;background:white;border-radius:22px;box-shadow:0 28px 80px rgba(0,0,0,.35);}
+.security-title{font:900 24px/1.2 'Nunito',sans-serif;color:var(--navy);}
+.security-sub{margin:8px 0 22px;color:var(--text-soft);font-size:12px;line-height:1.55;}
+.security-code{text-align:center;letter-spacing:6px;font-size:20px;}
+.security-actions{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
+.mfa-box{display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px;background:var(--bg);border-radius:12px;}
+.mfa-qr{width:190px;height:190px;max-width:100%;background:white;border-radius:8px;padding:6px;}
+.mfa-secret{max-width:100%;padding:7px 9px;border-radius:7px;background:white;color:var(--text-mid);font:600 10px monospace;overflow-wrap:anywhere;text-align:center;}
+.security-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-top:1px solid var(--border);font-size:12px;}
+.security-status{font-weight:800;color:var(--text-mid);}
+.security-status.on{color:#15803d;}
+.install-help{font-size:10px;line-height:1.5;color:var(--text-soft);text-align:center;}
 
 /* ── TABS ── */
 .content{margin-left:var(--sidebar-w);width:calc(100% - var(--sidebar-w));max-width:calc(100vw - var(--sidebar-w));min-width:0;display:flex;flex-direction:column;align-items:stretch;}
@@ -414,6 +436,8 @@ tr.done .topic-dt{display:block;}
   .login-screen{padding:14px;align-items:center;}
   .login-card{padding:30px 22px;border-radius:20px;}
   .login-title{font-size:25px;}
+  .security-screen{padding:14px;}
+  .security-card{padding:26px 20px;border-radius:18px;}
 }
 /* Ajuste de largura dos campos de lista suspensa */
 select{min-width:0;max-width:100%;}
@@ -445,9 +469,54 @@ select{min-width:0;max-width:100%;}
         <input class="login-input" id="login-password" type="password" autocomplete="current-password" required>
       </div>
       <button class="login-button" id="login-button" type="submit" disabled>Verificando acesso...</button>
+      <button class="login-link" type="button" onclick="requestPasswordReset()">Esqueci minha senha</button>
       <div class="login-message" id="login-message" role="alert" aria-live="polite"></div>
     </form>
     <div class="login-note">Acesso pessoal e protegido pelo Supabase</div>
+  </div>
+</section>
+
+<!-- SEGUNDO FATOR -->
+<section class="security-screen hidden" id="mfa-screen" aria-labelledby="mfa-title">
+  <div class="security-card">
+    <h1 class="security-title" id="mfa-title">Verificação em duas etapas</h1>
+    <p class="security-sub" id="mfa-description">Digite o código de 6 dígitos do seu aplicativo autenticador.</p>
+    <div id="mfa-enrollment" style="display:none">
+      <div class="mfa-box">
+        <img class="mfa-qr" id="mfa-qr" alt="QR Code para configurar autenticação em duas etapas">
+        <div class="install-help">Escaneie o QR Code com Microsoft Authenticator, Google Authenticator, Authy ou equivalente.</div>
+        <div class="mfa-secret" id="mfa-secret"></div>
+      </div>
+    </div>
+    <form class="login-form" onsubmit="verifyMfa(event)" style="margin-top:16px">
+      <div class="login-field">
+        <label for="mfa-code">Código do autenticador</label>
+        <input class="login-input security-code" id="mfa-code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required>
+      </div>
+      <button class="login-button" id="mfa-button" type="submit">Verificar e entrar</button>
+      <div class="login-message" id="mfa-message" role="alert" aria-live="polite"></div>
+    </form>
+    <button class="login-link" type="button" onclick="signOutCloud()" style="display:block;margin:8px auto 0">Cancelar e sair</button>
+  </div>
+</section>
+
+<!-- NOVA SENHA -->
+<section class="security-screen hidden" id="reset-screen" aria-labelledby="reset-title">
+  <div class="security-card">
+    <h1 class="security-title" id="reset-title">Crie uma nova senha</h1>
+    <p class="security-sub">Use pelo menos 12 caracteres e não reutilize a senha anterior.</p>
+    <form class="login-form" onsubmit="submitNewPassword(event)">
+      <div class="login-field">
+        <label for="new-password">Nova senha</label>
+        <input class="login-input" id="new-password" type="password" autocomplete="new-password" minlength="12" required>
+      </div>
+      <div class="login-field">
+        <label for="confirm-password">Confirmar nova senha</label>
+        <input class="login-input" id="confirm-password" type="password" autocomplete="new-password" minlength="12" required>
+      </div>
+      <button class="login-button" id="reset-button" type="submit">Atualizar senha</button>
+      <div class="login-message" id="reset-message" role="alert" aria-live="polite"></div>
+    </form>
   </div>
 </section>
 
@@ -848,8 +917,18 @@ select{min-width:0;max-width:100%;}
   <div class="backup-box">
     <div class="backup-title">☁️ Progresso na nuvem</div>
     <div class="auth-user">Conectado como<br><strong id="auth-user-name">danilopires189</strong></div>
+    <div class="backup-sub" id="auth-user-email" style="margin:0"></div>
     <div class="backup-actions">
       <button class="backup-btn-exp" onclick="saveData()">☁️ Sincronizar agora</button>
+      <button class="backup-btn-imp" onclick="requestPasswordReset(true)">🔑 Trocar senha por e-mail</button>
+      <div class="security-row">
+        <span>Autenticação em duas etapas</span>
+        <span class="security-status" id="mfa-status">Verificando...</span>
+      </div>
+      <button class="backup-btn-imp" id="mfa-enable-button" onclick="beginMfaEnrollment()">🛡️ Configurar autenticador</button>
+      <button class="backup-btn-imp" id="mfa-disable-button" onclick="disableMfa()" style="display:none">Remover autenticador</button>
+      <button class="backup-btn-imp" id="install-app-button" onclick="installPwa()" style="display:none">📲 Instalar aplicativo</button>
+      <div class="install-help" id="install-help">No iPhone, use Compartilhar → Adicionar à Tela de Início.</div>
       <button class="backup-btn-imp" onclick="signOutCloud()">Sair da conta</button>
     </div>
     <button class="backup-btn-close" onclick="closeAuthModal()">Fechar</button>
@@ -869,10 +948,14 @@ const DISC_CORES = ['#C8102E','#0D134C','#E255BE','#A7C3BB','#EFBD7B','#AFE8D0',
 const SUPABASE_URL = 'https://cepffdlfxjggkjzkkjlh.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_MplCfLiIJFUfoX7Krhl2Cw_bEMAJyZE';
 const LOGIN_USERNAME = 'danilopires189';
-const LOGIN_EMAIL = 'danilopires189@pc-plano.app';
+const LOGIN_EMAIL = 'danilo_pires189@hotmail.com';
 const cloudDb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
 let cloudUser = null;
 let cloudSyncing = false;
+let mfaFactorId = null;
+let mfaEnrollmentPending = false;
+let recoveryMode = location.search.includes('recovery=1') || location.hash.includes('type=recovery');
+let deferredInstallPrompt = null;
 
 // ═══════════════════════════════════════════════════════
 //  DADOS DO EDITAL — EDITE AQUI
@@ -1697,7 +1780,10 @@ function closeAuthModal(event) {
 
 function refreshAuthModal() {
   const name = document.getElementById('auth-user-name');
+  const email = document.getElementById('auth-user-email');
   if (name) name.textContent = cloudUser?.user_metadata?.username || LOGIN_USERNAME;
+  if (email) email.textContent = cloudUser?.email || LOGIN_EMAIL;
+  refreshMfaStatus();
 }
 
 function refreshCloudUI(label) {
@@ -1715,6 +1801,10 @@ function setLoginScreenVisible(visible, message = '') {
   const feedback = document.getElementById('login-message');
   if (!screen) return;
   screen.classList.toggle('hidden', !visible);
+  if (visible) {
+    document.getElementById('mfa-screen')?.classList.add('hidden');
+    document.getElementById('reset-screen')?.classList.add('hidden');
+  }
   document.body.style.overflow = visible ? 'hidden' : '';
   if (feedback) feedback.textContent = message;
   if (button && visible) {
@@ -1731,6 +1821,7 @@ async function submitLogin(event) {
   const message = document.getElementById('login-message');
   const button = document.getElementById('login-button');
   message.textContent = '';
+  message.style.color = '';
   if (!cloudDb) {
     message.textContent = 'O serviço de acesso está indisponível. Tente novamente em instantes.';
     return;
@@ -1745,7 +1836,7 @@ async function submitLogin(event) {
     const result = await cloudDb.auth.signInWithPassword({ email: LOGIN_EMAIL, password });
     if (result.error) throw result.error;
     document.getElementById('login-password').value = '';
-    setLoginScreenVisible(false);
+    await handleAuthenticatedSession(result.data.user);
   } catch (error) {
     message.textContent = 'Usuário ou senha incorretos.';
   } finally {
@@ -1754,10 +1845,242 @@ async function submitLogin(event) {
   }
 }
 
+async function requestPasswordReset(fromAccount = false) {
+  const message = document.getElementById('login-message');
+  if (!cloudDb) return;
+  if (!fromAccount) {
+    message.textContent = 'Enviando link seguro...';
+  }
+  try {
+    const { error } = await cloudDb.auth.resetPasswordForEmail(LOGIN_EMAIL, {
+      redirectTo: 'https://pc-plano.vercel.app/?recovery=1'
+    });
+    if (error) throw error;
+    if (fromAccount) {
+      closeAuthModal();
+      showToast('📧', 'Link para trocar a senha enviado ao seu e-mail.');
+    } else {
+      message.style.color = '#15803d';
+      message.textContent = 'Link enviado. Confira seu e-mail e também a pasta de spam.';
+    }
+  } catch (error) {
+    if (fromAccount) showToast('⚠️', 'Não foi possível enviar o link agora.');
+    else message.textContent = 'Não foi possível enviar o link. Tente novamente em instantes.';
+  }
+}
+
+function showResetScreen() {
+  recoveryMode = true;
+  document.getElementById('login-screen')?.classList.add('hidden');
+  document.getElementById('mfa-screen')?.classList.add('hidden');
+  document.getElementById('reset-screen')?.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('new-password')?.focus(), 0);
+}
+
+async function submitNewPassword(event) {
+  event.preventDefault();
+  const password = document.getElementById('new-password').value;
+  const confirmation = document.getElementById('confirm-password').value;
+  const message = document.getElementById('reset-message');
+  const button = document.getElementById('reset-button');
+  message.textContent = '';
+  if (password.length < 12) {
+    message.textContent = 'Use pelo menos 12 caracteres.';
+    return;
+  }
+  if (password !== confirmation) {
+    message.textContent = 'As senhas não coincidem.';
+    return;
+  }
+  button.disabled = true;
+  button.textContent = 'Atualizando...';
+  try {
+    const { error } = await cloudDb.auth.updateUser({ password });
+    if (error) throw error;
+    await cloudDb.auth.signOut();
+    recoveryMode = false;
+    history.replaceState({}, document.title, location.pathname);
+    document.getElementById('new-password').value = '';
+    document.getElementById('confirm-password').value = '';
+    setLoginScreenVisible(true, 'Senha atualizada. Entre usando a nova senha.');
+    document.getElementById('login-message').style.color = '#15803d';
+  } catch (error) {
+    message.textContent = 'O link expirou ou a senha não pôde ser atualizada. Solicite outro link.';
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Atualizar senha';
+  }
+}
+
+async function getVerifiedMfaFactor() {
+  const { data, error } = await cloudDb.auth.mfa.listFactors();
+  if (error) throw error;
+  return data.totp?.find(factor => factor.status === 'verified') || null;
+}
+
+async function refreshMfaStatus() {
+  const status = document.getElementById('mfa-status');
+  const enable = document.getElementById('mfa-enable-button');
+  const disable = document.getElementById('mfa-disable-button');
+  if (!status || !cloudUser || !cloudDb) return;
+  try {
+    const factor = await getVerifiedMfaFactor();
+    mfaFactorId = factor?.id || null;
+    status.textContent = factor ? 'Ativa' : 'Pendente';
+    status.classList.toggle('on', !!factor);
+    enable.style.display = factor ? 'none' : '';
+    disable.style.display = factor ? '' : 'none';
+  } catch (error) {
+    status.textContent = 'Indisponível';
+  }
+}
+
+async function beginMfaEnrollment(fromLogin = false) {
+  if (!cloudDb || !cloudUser) return;
+  if (!fromLogin) closeAuthModal();
+  const screen = document.getElementById('mfa-screen');
+  const message = document.getElementById('mfa-message');
+  document.getElementById('login-screen')?.classList.add('hidden');
+  document.getElementById('reset-screen')?.classList.add('hidden');
+  screen.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  message.textContent = '';
+  document.getElementById('mfa-enrollment').style.display = '';
+  document.getElementById('mfa-description').textContent = 'Primeiro acesso seguro: escaneie o QR Code e confirme o código gerado pelo aplicativo.';
+  document.getElementById('mfa-button').textContent = 'Ativar e entrar';
+  try {
+    const listed = await cloudDb.auth.mfa.listFactors();
+    if (listed.error) throw listed.error;
+    const verified = listed.data.totp?.find(factor => factor.status === 'verified');
+    if (verified) {
+      mfaFactorId = verified.id;
+      mfaEnrollmentPending = false;
+      showMfaChallenge();
+      return;
+    }
+    for (const factor of listed.data.all?.filter(factor => factor.status === 'unverified') || []) {
+      await cloudDb.auth.mfa.unenroll({ factorId: factor.id });
+    }
+    const { data, error } = await cloudDb.auth.mfa.enroll({
+      factorType: 'totp',
+      friendlyName: 'Plano de Estudos PC PR'
+    });
+    if (error) throw error;
+    mfaFactorId = data.id;
+    mfaEnrollmentPending = true;
+    document.getElementById('mfa-qr').src = data.totp.qr_code;
+    document.getElementById('mfa-secret').textContent = `Código manual: ${data.totp.secret}`;
+    setTimeout(() => document.getElementById('mfa-code')?.focus(), 0);
+  } catch (error) {
+    console.error('MFA enrollment error:', error);
+    message.textContent = 'Não foi possível preparar o autenticador. Saia e tente novamente.';
+  }
+}
+
+function showMfaChallenge() {
+  document.getElementById('login-screen')?.classList.add('hidden');
+  document.getElementById('reset-screen')?.classList.add('hidden');
+  document.getElementById('mfa-screen')?.classList.remove('hidden');
+  document.getElementById('mfa-enrollment').style.display = 'none';
+  document.getElementById('mfa-description').textContent = 'Digite o código de 6 dígitos do seu aplicativo autenticador.';
+  document.getElementById('mfa-button').textContent = 'Verificar e entrar';
+  document.getElementById('mfa-message').textContent = '';
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('mfa-code')?.focus(), 0);
+}
+
+async function verifyMfa(event) {
+  event.preventDefault();
+  const code = document.getElementById('mfa-code').value.trim();
+  const message = document.getElementById('mfa-message');
+  const button = document.getElementById('mfa-button');
+  if (!/^\d{6}$/.test(code) || !mfaFactorId) {
+    message.textContent = 'Digite o código de 6 dígitos.';
+    return;
+  }
+  button.disabled = true;
+  button.textContent = 'Verificando...';
+  try {
+    const { error } = await cloudDb.auth.mfa.challengeAndVerify({ factorId: mfaFactorId, code });
+    if (error) throw error;
+    mfaEnrollmentPending = false;
+    document.getElementById('mfa-code').value = '';
+    await unlockApp();
+    showToast('🛡️', 'Acesso protegido por autenticação em duas etapas.');
+  } catch (error) {
+    message.textContent = 'Código inválido ou expirado. Tente o código atual do aplicativo.';
+  } finally {
+    button.disabled = false;
+    button.textContent = mfaEnrollmentPending ? 'Ativar e entrar' : 'Verificar e entrar';
+  }
+}
+
+async function disableMfa() {
+  if (!mfaFactorId || !confirm('Remover a autenticação em duas etapas deste usuário?')) return;
+  const { error } = await cloudDb.auth.mfa.unenroll({ factorId: mfaFactorId });
+  if (error) {
+    showToast('⚠️', 'Não foi possível remover o autenticador.');
+    return;
+  }
+  mfaFactorId = null;
+  closeAuthModal();
+  showToast('⚠️', 'Autenticador removido. Ele será exigido novamente no próximo acesso.');
+  await signOutCloud();
+}
+
+async function unlockApp() {
+  document.getElementById('login-screen')?.classList.add('hidden');
+  document.getElementById('mfa-screen')?.classList.add('hidden');
+  document.getElementById('reset-screen')?.classList.add('hidden');
+  document.body.style.overflow = '';
+  refreshCloudUI();
+  await loadCloudData();
+}
+
+let authFlowPromise = null;
+async function handleAuthenticatedSession(user) {
+  if (!user || recoveryMode) {
+    if (recoveryMode) showResetScreen();
+    return;
+  }
+  cloudUser = user;
+  refreshCloudUI('Verificando segurança...');
+  if (authFlowPromise) return authFlowPromise;
+  authFlowPromise = (async () => {
+    try {
+      const assurance = await cloudDb.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (assurance.error) throw assurance.error;
+      if (assurance.data.currentLevel === 'aal2') {
+        await unlockApp();
+        return;
+      }
+      const factor = await getVerifiedMfaFactor();
+      if (factor) {
+        mfaFactorId = factor.id;
+        mfaEnrollmentPending = false;
+        showMfaChallenge();
+      } else {
+        await beginMfaEnrollment(true);
+      }
+    } catch (error) {
+      console.error('MFA check error:', error);
+      setLoginScreenVisible(true, 'Não foi possível verificar a segurança da conta. Tente novamente.');
+    }
+  })();
+  try {
+    await authFlowPromise;
+  } finally {
+    authFlowPromise = null;
+  }
+}
+
 async function signOutCloud() {
   if (!cloudDb) return;
   await cloudDb.auth.signOut();
   cloudUser = null;
+  mfaFactorId = null;
+  mfaEnrollmentPending = false;
   state = {};
   historico = [];
   revisoes = [];
@@ -1777,26 +2100,56 @@ async function initializeCloud() {
     setLoginScreenVisible(true, 'O serviço de acesso está indisponível. Recarregue a página.');
     return;
   }
+  cloudDb.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY') {
+      cloudUser = session?.user || null;
+      showResetScreen();
+      return;
+    }
+    if (event === 'SIGNED_OUT') {
+      cloudUser = null;
+      setLoginScreenVisible(true);
+      return;
+    }
+    if (event === 'SIGNED_IN' && session?.user) {
+      setTimeout(() => handleAuthenticatedSession(session.user), 0);
+    }
+  });
   try {
     const { data, error } = await cloudDb.auth.getSession();
     if (error) throw error;
     cloudUser = data.session ? data.session.user : null;
-    refreshCloudUI();
-    setLoginScreenVisible(!cloudUser);
-    if (cloudUser) await loadCloudData();
+    if (recoveryMode) showResetScreen();
+    else if (cloudUser) await handleAuthenticatedSession(cloudUser);
+    else setLoginScreenVisible(true);
   } catch (error) {
     console.error('Auth initialization error:', error);
     setLoginScreenVisible(true, 'Não foi possível verificar o acesso. Tente novamente.');
   }
-  cloudDb.auth.onAuthStateChange((event, session) => {
-    if (event !== 'SIGNED_IN' && event !== 'SIGNED_OUT') return;
-    setTimeout(async () => {
-      cloudUser = session ? session.user : null;
-      refreshCloudUI();
-      setLoginScreenVisible(!cloudUser);
-      if (cloudUser) await loadCloudData();
-    }, 0);
-  });
+}
+
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  const button = document.getElementById('install-app-button');
+  if (button) button.style.display = '';
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  const button = document.getElementById('install-app-button');
+  if (button) button.style.display = 'none';
+  showToast('📲', 'Aplicativo instalado com sucesso.');
+});
+
+async function installPwa() {
+  if (!deferredInstallPrompt) {
+    showToast('📲', 'Use o menu do navegador para adicionar à tela inicial.');
+    return;
+  }
+  await deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
 }
 
 // ── BACKUP / RESTORE ──────────────────────────────────
@@ -2092,6 +2445,9 @@ function init() {
   renderRevisoes();
   updateAll();
   initializeCloud();
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js').catch(error => console.error('Service worker:', error));
+  }
 }
 init();
 </script>
