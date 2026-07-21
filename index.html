@@ -58,12 +58,24 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .cloud-fab:hover{border-color:var(--navy);}
 .cloud-dot{width:8px;height:8px;border-radius:50%;background:var(--text-soft);flex-shrink:0;}
 .cloud-fab.online .cloud-dot{background:var(--green);box-shadow:0 0 0 3px var(--green-bg);}
-.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--bg);border-radius:10px;}
-.auth-tab{border:none;border-radius:8px;padding:8px;background:transparent;color:var(--text-soft);font:700 12px 'Inter',sans-serif;cursor:pointer;}
-.auth-tab.active{background:white;color:var(--navy);box-shadow:0 1px 4px rgba(13,19,76,.1);}
-.auth-form{display:flex;flex-direction:column;gap:10px;}
 .auth-message{min-height:18px;font-size:11px;line-height:1.5;color:var(--text-soft);}
 .auth-user{padding:12px;background:var(--green-bg);border:1px solid #bbf7d0;border-radius:10px;color:#15803d;font-size:12px;line-height:1.5;}
+.login-screen{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 18% 12%,#27307d 0,transparent 34%),linear-gradient(145deg,#090e3b 0%,var(--navy) 55%,#171d62 100%);overflow-y:auto;}
+.login-screen.hidden{display:none;}
+.login-card{width:min(420px,100%);padding:38px 34px;background:rgba(255,255,255,.98);border:1px solid rgba(255,255,255,.5);border-radius:24px;box-shadow:0 28px 80px rgba(0,0,0,.35);}
+.login-mark{width:54px;height:54px;margin-bottom:22px;border-radius:16px;background:var(--rust);color:white;display:grid;place-items:center;font:900 28px 'Nunito',sans-serif;box-shadow:0 10px 24px rgba(200,16,46,.28);}
+.login-title{font:900 28px/1.1 'Nunito',sans-serif;color:var(--navy);}
+.login-subtitle{margin:8px 0 26px;color:var(--text-soft);font-size:13px;line-height:1.55;}
+.login-form{display:flex;flex-direction:column;gap:15px;}
+.login-field{display:flex;flex-direction:column;gap:7px;}
+.login-field label{color:var(--text-mid);font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;}
+.login-input{width:100%;height:48px;padding:0 14px;border:1.5px solid var(--border);border-radius:11px;background:white;color:var(--navy);font:600 16px 'Inter',sans-serif;outline:none;transition:border-color .18s,box-shadow .18s;}
+.login-input:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(13,19,76,.1);}
+.login-button{height:48px;margin-top:3px;border:0;border-radius:11px;background:var(--rust);color:white;font:800 14px 'Nunito',sans-serif;cursor:pointer;box-shadow:0 8px 18px rgba(200,16,46,.22);transition:transform .15s,background .15s;}
+.login-button:hover{background:var(--rust-dark);transform:translateY(-1px);}
+.login-button:disabled{cursor:wait;opacity:.7;transform:none;}
+.login-message{min-height:18px;color:var(--red);font-size:12px;line-height:1.5;text-align:center;}
+.login-note{margin-top:18px;color:var(--text-soft);font-size:10px;text-align:center;}
 
 /* ── TABS ── */
 .content{margin-left:var(--sidebar-w);width:calc(100% - var(--sidebar-w));max-width:calc(100vw - var(--sidebar-w));min-width:0;display:flex;flex-direction:column;align-items:stretch;}
@@ -399,6 +411,9 @@ tr.done .topic-dt{display:block;}
   .crono-today-row{gap:10px;}
   .crono-today-val{font-size:13px;white-space:nowrap;}
   .filter-row .flbl{width:100%;}
+  .login-screen{padding:14px;align-items:center;}
+  .login-card{padding:30px 22px;border-radius:20px;}
+  .login-title{font-size:25px;}
 }
 /* Ajuste de largura dos campos de lista suspensa */
 select{min-width:0;max-width:100%;}
@@ -413,6 +428,28 @@ select{min-width:0;max-width:100%;}
 @media(max-width:760px){.stats-panel-header > div:last-child{width:100%;}.cf-select,#chart-disc,#chart-period{flex:1 1 100%;width:100%;}}</style>
 </head>
 <body>
+
+<!-- LOGIN OBRIGATÓRIO -->
+<section class="login-screen" id="login-screen" aria-labelledby="login-title">
+  <div class="login-card">
+    <div class="login-mark" aria-hidden="true">✓</div>
+    <h1 class="login-title" id="login-title">Plano de Estudos</h1>
+    <p class="login-subtitle">Entre para acessar seu progresso e continuar seus estudos de onde parou.</p>
+    <form class="login-form" id="login-form" onsubmit="submitLogin(event)">
+      <div class="login-field">
+        <label for="login-username">Usuário</label>
+        <input class="login-input" id="login-username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus>
+      </div>
+      <div class="login-field">
+        <label for="login-password">Senha</label>
+        <input class="login-input" id="login-password" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="login-button" id="login-button" type="submit" disabled>Verificando acesso...</button>
+      <div class="login-message" id="login-message" role="alert" aria-live="polite"></div>
+    </form>
+    <div class="login-note">Acesso pessoal e protegido pelo Supabase</div>
+  </div>
+</section>
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
@@ -810,25 +847,10 @@ select{min-width:0;max-width:100%;}
 <div class="backup-modal" id="auth-modal" onclick="closeAuthModal(event)">
   <div class="backup-box">
     <div class="backup-title">☁️ Progresso na nuvem</div>
-    <div id="auth-signed-out">
-      <div class="backup-sub" style="margin:0 0 14px">Entre para sincronizar seu progresso entre celular e computador.</div>
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="auth-tab-login" onclick="setAuthMode('login')">Entrar</button>
-        <button class="auth-tab" id="auth-tab-signup" onclick="setAuthMode('signup')">Criar conta</button>
-      </div>
-      <div class="auth-form" style="margin-top:12px">
-        <input class="modal-inp" type="email" id="auth-email" autocomplete="email" placeholder="Seu e-mail">
-        <input class="modal-inp" type="password" id="auth-password" autocomplete="current-password" minlength="6" placeholder="Sua senha">
-        <button class="modal-btn-save" id="auth-submit" onclick="submitAuth()">Entrar</button>
-        <div class="auth-message" id="auth-message"></div>
-      </div>
-    </div>
-    <div id="auth-signed-in" style="display:none">
-      <div class="auth-user">Conectado como<br><strong id="auth-user-email"></strong></div>
-      <div class="backup-actions" style="margin-top:12px">
-        <button class="backup-btn-exp" onclick="saveData()">☁️ Sincronizar agora</button>
-        <button class="backup-btn-imp" onclick="signOutCloud()">Sair da conta</button>
-      </div>
+    <div class="auth-user">Conectado como<br><strong id="auth-user-name">danilopires189</strong></div>
+    <div class="backup-actions">
+      <button class="backup-btn-exp" onclick="saveData()">☁️ Sincronizar agora</button>
+      <button class="backup-btn-imp" onclick="signOutCloud()">Sair da conta</button>
     </div>
     <button class="backup-btn-close" onclick="closeAuthModal()">Fechar</button>
   </div>
@@ -846,9 +868,10 @@ const CONCURSO_INFO={concurso:"PC PR - Polícia Civil do Estado do Paraná",carg
 const DISC_CORES = ['#C8102E','#0D134C','#E255BE','#A7C3BB','#EFBD7B','#AFE8D0','#7c3aed','#BAFF38','#0d9488','#ea580c'];
 const SUPABASE_URL = 'https://cepffdlfxjggkjzkkjlh.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_MplCfLiIJFUfoX7Krhl2Cw_bEMAJyZE';
+const LOGIN_USERNAME = 'danilopires189';
+const LOGIN_EMAIL = 'danilopires189@pc-plano.app';
 const cloudDb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
 let cloudUser = null;
-let authMode = 'login';
 let cloudSyncing = false;
 
 // ═══════════════════════════════════════════════════════
@@ -1659,8 +1682,11 @@ async function loadCloudData() {
 }
 
 function openAuthModal() {
+  if (!cloudUser) {
+    setLoginScreenVisible(true);
+    return;
+  }
   document.getElementById('auth-modal').classList.add('open');
-  refreshAuthModal();
 }
 
 function closeAuthModal(event) {
@@ -1669,18 +1695,9 @@ function closeAuthModal(event) {
   }
 }
 
-function setAuthMode(mode) {
-  authMode = mode;
-  document.getElementById('auth-tab-login').classList.toggle('active', mode === 'login');
-  document.getElementById('auth-tab-signup').classList.toggle('active', mode === 'signup');
-  document.getElementById('auth-submit').textContent = mode === 'login' ? 'Entrar' : 'Criar conta';
-  document.getElementById('auth-message').textContent = '';
-}
-
 function refreshAuthModal() {
-  document.getElementById('auth-signed-out').style.display = cloudUser ? 'none' : '';
-  document.getElementById('auth-signed-in').style.display = cloudUser ? '' : 'none';
-  document.getElementById('auth-user-email').textContent = cloudUser ? cloudUser.email : '';
+  const name = document.getElementById('auth-user-name');
+  if (name) name.textContent = cloudUser?.user_metadata?.username || LOGIN_USERNAME;
 }
 
 function refreshCloudUI(label) {
@@ -1688,35 +1705,52 @@ function refreshCloudUI(label) {
   const text = document.getElementById('cloud-label');
   if (!button || !text) return;
   button.classList.toggle('online', !!cloudUser);
-  text.textContent = label || (cloudUser ? 'Nuvem conectada' : 'Entrar para sincronizar');
+  text.textContent = label || (cloudUser ? 'Nuvem conectada' : 'Entrar');
   refreshAuthModal();
 }
 
-async function submitAuth() {
-  if (!cloudDb) return;
-  const email = document.getElementById('auth-email').value.trim();
-  const password = document.getElementById('auth-password').value;
-  const message = document.getElementById('auth-message');
-  if (!email || password.length < 6) {
-    message.textContent = 'Informe um e-mail válido e uma senha com pelo menos 6 caracteres.';
+function setLoginScreenVisible(visible, message = '') {
+  const screen = document.getElementById('login-screen');
+  const button = document.getElementById('login-button');
+  const feedback = document.getElementById('login-message');
+  if (!screen) return;
+  screen.classList.toggle('hidden', !visible);
+  document.body.style.overflow = visible ? 'hidden' : '';
+  if (feedback) feedback.textContent = message;
+  if (button && visible) {
+    button.disabled = false;
+    button.textContent = 'Entrar';
+  }
+  if (visible) setTimeout(() => document.getElementById('login-username')?.focus(), 0);
+}
+
+async function submitLogin(event) {
+  event.preventDefault();
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  const message = document.getElementById('login-message');
+  const button = document.getElementById('login-button');
+  message.textContent = '';
+  if (!cloudDb) {
+    message.textContent = 'O serviço de acesso está indisponível. Tente novamente em instantes.';
     return;
   }
-  message.textContent = authMode === 'login' ? 'Entrando...' : 'Criando conta...';
+  if (username !== LOGIN_USERNAME || !password) {
+    message.textContent = 'Usuário ou senha incorretos.';
+    return;
+  }
+  button.disabled = true;
+  button.textContent = 'Entrando...';
   try {
-    const result = authMode === 'login'
-      ? await cloudDb.auth.signInWithPassword({ email, password })
-      : await cloudDb.auth.signUp({ email, password, options: { emailRedirectTo: location.origin } });
+    const result = await cloudDb.auth.signInWithPassword({ email: LOGIN_EMAIL, password });
     if (result.error) throw result.error;
-    if (authMode === 'signup' && !result.data.session) {
-      message.textContent = 'Conta criada. Confirme o e-mail recebido e depois entre.';
-      return;
-    }
-    message.textContent = '';
-    closeAuthModal();
+    document.getElementById('login-password').value = '';
+    setLoginScreenVisible(false);
   } catch (error) {
-    message.textContent = error.message === 'Invalid login credentials'
-      ? 'E-mail ou senha incorretos.'
-      : error.message;
+    message.textContent = 'Usuário ou senha incorretos.';
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Entrar';
   }
 }
 
@@ -1733,23 +1767,33 @@ async function signOutCloud() {
   renderAllData();
   refreshCloudUI();
   closeAuthModal();
+  setLoginScreenVisible(true);
   showToast('👋', 'Você saiu da conta.');
 }
 
 async function initializeCloud() {
   if (!cloudDb) {
     refreshCloudUI('Nuvem indisponível');
+    setLoginScreenVisible(true, 'O serviço de acesso está indisponível. Recarregue a página.');
     return;
   }
-  const { data } = await cloudDb.auth.getSession();
-  cloudUser = data.session ? data.session.user : null;
-  refreshCloudUI();
-  if (cloudUser) await loadCloudData();
+  try {
+    const { data, error } = await cloudDb.auth.getSession();
+    if (error) throw error;
+    cloudUser = data.session ? data.session.user : null;
+    refreshCloudUI();
+    setLoginScreenVisible(!cloudUser);
+    if (cloudUser) await loadCloudData();
+  } catch (error) {
+    console.error('Auth initialization error:', error);
+    setLoginScreenVisible(true, 'Não foi possível verificar o acesso. Tente novamente.');
+  }
   cloudDb.auth.onAuthStateChange((event, session) => {
     if (event !== 'SIGNED_IN' && event !== 'SIGNED_OUT') return;
     setTimeout(async () => {
       cloudUser = session ? session.user : null;
       refreshCloudUI();
+      setLoginScreenVisible(!cloudUser);
       if (cloudUser) await loadCloudData();
     }, 0);
   });
