@@ -107,13 +107,93 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .security-sub{margin:8px 0 22px;color:var(--text-soft);font-size:12px;line-height:1.55;}
 .security-code{text-align:center;letter-spacing:6px;font-size:20px;}
 .security-actions{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
-.mfa-box{display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px;background:var(--bg);border-radius:12px;}
-.mfa-qr{width:190px;height:190px;max-width:100%;background:white;border-radius:8px;padding:6px;}
-.mfa-secret{max-width:100%;padding:7px 9px;border-radius:7px;background:white;color:var(--text-mid);font:600 10px monospace;overflow-wrap:anywhere;text-align:center;}
+.mfa-box{display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;}
+.mfa-qr{width:170px;height:170px;max-width:100%;background:white;border-radius:10px;padding:6px;}
+.mfa-secret{max-width:100%;padding:7px 9px;border-radius:7px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.72);font:600 10px monospace;overflow-wrap:anywhere;text-align:center;}
 .security-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-top:1px solid var(--border);font-size:12px;}
 .security-status{font-weight:800;color:var(--text-mid);}
 .security-status.on{color:#15803d;}
-.install-help{font-size:10px;line-height:1.5;color:var(--text-soft);text-align:center;}
+.install-help{font-size:10px;line-height:1.5;color:rgba(255,255,255,.55);text-align:center;}
+
+/* OTP MFA — estilo do vídeo, adaptado à marca */
+#mfa-screen{background:
+  radial-gradient(circle at 50% 42%,rgba(77,141,255,.16) 0%,transparent 42%),
+  radial-gradient(circle at 18% 10%,rgba(39,48,125,.55) 0,transparent 34%),
+  linear-gradient(160deg,#070b2a 0%,var(--navy) 55%,#10164f 100%);}
+#mfa-screen .security-card{
+  width:min(420px,100%);padding:36px 28px 28px;background:transparent;border:0;border-radius:0;
+  box-shadow:none;display:flex;flex-direction:column;align-items:stretch;position:relative;
+}
+#mfa-screen .security-card::before{
+  content:"";position:absolute;left:50%;top:48%;width:min(320px,90%);height:180px;
+  transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;z-index:0;
+  background:radial-gradient(circle,rgba(77,141,255,.12) 0%,transparent 70%);
+  transition:background .45s ease,opacity .45s ease;
+}
+#mfa-screen.is-success .security-card::before{background:radial-gradient(circle,rgba(34,197,94,.28) 0%,transparent 70%);}
+#mfa-screen.is-error .security-card::before{background:radial-gradient(circle,rgba(239,68,68,.22) 0%,transparent 70%);}
+.otp-eyebrow{position:relative;z-index:1;font:700 11px/1 'Inter',sans-serif;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.42);margin-bottom:10px;}
+#mfa-screen .security-title{position:relative;z-index:1;color:white;font-size:32px;letter-spacing:-.3px;}
+#mfa-screen .security-sub{position:relative;z-index:1;margin:10px 0 28px;color:rgba(255,255,255,.55);font-size:13px;}
+.otp-form{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:18px;}
+.otp-row{
+  display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  padding:8px 0 4px;isolation:isolate;
+}
+.otp-sep{width:14px;height:2px;border-radius:2px;background:rgba(255,255,255,.28);flex-shrink:0;}
+.otp-cell{
+  width:48px;height:56px;border-radius:14px;border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.05);color:white;text-align:center;
+  font:800 22px/1 'Nunito',sans-serif;caret-color:#6ea8ff;outline:none;
+  transition:border-color .2s,box-shadow .25s,background .2s,color .2s,transform .2s;
+  -webkit-appearance:none;appearance:none;
+}
+.otp-cell:focus{
+  border-color:#6ea8ff;background:rgba(110,168,255,.08);
+  box-shadow:0 0 0 3px rgba(110,168,255,.22),0 0 28px rgba(110,168,255,.35);
+}
+.otp-cell.is-filled{border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.08);}
+.otp-row.is-success .otp-cell{
+  border-color:#22c55e;background:rgba(34,197,94,.1);color:#22c55e;
+  box-shadow:0 0 0 1px rgba(34,197,94,.25),0 0 22px rgba(34,197,94,.28);
+  animation:otpPop .42s cubic-bezier(.2,.9,.2,1) both;
+}
+.otp-row.is-success .otp-cell:nth-child(1){animation-delay:0ms;}
+.otp-row.is-success .otp-cell:nth-child(2){animation-delay:45ms;}
+.otp-row.is-success .otp-cell:nth-child(3){animation-delay:90ms;}
+.otp-row.is-success .otp-cell:nth-child(5){animation-delay:135ms;}
+.otp-row.is-success .otp-cell:nth-child(6){animation-delay:180ms;}
+.otp-row.is-success .otp-cell:nth-child(7){animation-delay:225ms;}
+.otp-row.is-error .otp-cell{
+  border-color:#ef4444;background:rgba(239,68,68,.08);color:#fecaca;
+  box-shadow:0 0 0 1px rgba(239,68,68,.2),0 0 18px rgba(239,68,68,.22);
+}
+.otp-row.is-error{animation:otpShake .42s ease;}
+.otp-cell.is-check{
+  font-size:0;color:transparent;position:relative;
+}
+.otp-cell.is-check::after{
+  content:"";position:absolute;inset:0;margin:auto;width:16px;height:10px;
+  border-left:2.5px solid #22c55e;border-bottom:2.5px solid #22c55e;
+  transform:rotate(-45deg) translate(1px,-2px);animation:otpCheck .35s ease both;
+}
+.otp-status{
+  min-height:20px;display:flex;align-items:center;justify-content:center;gap:8px;
+  font:600 13px/1.4 'Inter',sans-serif;color:rgba(255,255,255,.5);transition:color .25s;
+}
+.otp-status::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.85;flex-shrink:0;}
+.otp-status.is-ok{color:#22c55e;}
+.otp-status.is-err{color:#f87171;}
+.otp-status.is-busy{color:#93c5fd;}
+.otp-tip{font-size:11px;color:rgba(255,255,255,.35);text-align:center;}
+#mfa-screen .login-button{width:100%;margin-top:4px;}
+#mfa-screen .login-link{color:rgba(255,255,255,.55);}
+#mfa-screen .login-link:hover{color:white;}
+#mfa-screen .login-message{color:#fca5a5;}
+#mfa-enrollment{width:100%;margin-bottom:8px;position:relative;z-index:1;}
+@keyframes otpPop{0%{transform:scale(.86);opacity:.5;}60%{transform:scale(1.06);}100%{transform:scale(1);opacity:1;}}
+@keyframes otpCheck{0%{transform:rotate(-45deg) translate(1px,-2px) scale(.4);opacity:0;}100%{transform:rotate(-45deg) translate(1px,-2px) scale(1);opacity:1;}}
+@keyframes otpShake{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}}
 
 /* ── TABS ── */
 .content{margin-left:var(--sidebar-w);width:calc(100% - var(--sidebar-w));max-width:calc(100vw - var(--sidebar-w));min-width:0;display:flex;flex-direction:column;align-items:stretch;}
@@ -454,6 +534,11 @@ tr.done .topic-dt{display:block;}
   .login-title{font-size:25px;}
   .security-screen{padding:14px;}
   .security-card{padding:26px 20px;border-radius:18px;}
+  #mfa-screen .security-card{padding:28px 14px 22px;}
+  #mfa-screen .security-title{font-size:28px;}
+  .otp-cell{width:42px;height:50px;border-radius:12px;font-size:20px;}
+  .otp-row{gap:7px;}
+  .otp-sep{width:10px;}
 }
 /* Ajuste de largura dos campos de lista suspensa */
 select{min-width:0;max-width:100%;}
@@ -502,8 +587,9 @@ select{min-width:0;max-width:100%;}
 <!-- SEGUNDO FATOR -->
 <section class="security-screen hidden" id="mfa-screen" aria-labelledby="mfa-title">
   <div class="security-card">
-    <h1 class="security-title" id="mfa-title">Verificação em duas etapas</h1>
-    <p class="security-sub" id="mfa-description">Digite o código de 6 dígitos do seu aplicativo autenticador.</p>
+    <div class="otp-eyebrow">Verificação de segurança</div>
+    <h1 class="security-title" id="mfa-title">Digite seu código</h1>
+    <p class="security-sub" id="mfa-description">Use o código de 6 dígitos do seu aplicativo autenticador.</p>
     <div id="mfa-enrollment" style="display:none">
       <div class="mfa-box">
         <img class="mfa-qr" id="mfa-qr" alt="QR Code para configurar autenticação em duas etapas">
@@ -511,15 +597,23 @@ select{min-width:0;max-width:100%;}
         <div class="mfa-secret" id="mfa-secret"></div>
       </div>
     </div>
-    <form class="login-form" onsubmit="verifyMfa(event)" style="margin-top:16px">
-      <div class="login-field">
-        <label for="mfa-code">Código do autenticador</label>
-        <input class="login-input security-code" id="mfa-code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required>
+    <form class="otp-form" id="mfa-form" onsubmit="verifyMfa(event)">
+      <div class="otp-row" id="otp-row" role="group" aria-label="Código de 6 dígitos">
+        <input class="otp-cell" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" pattern="[0-9]" aria-label="Dígito 1" data-otp-index="0">
+        <input class="otp-cell" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" aria-label="Dígito 2" data-otp-index="1">
+        <input class="otp-cell" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" aria-label="Dígito 3" data-otp-index="2">
+        <span class="otp-sep" aria-hidden="true"></span>
+        <input class="otp-cell" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" aria-label="Dígito 4" data-otp-index="3">
+        <input class="otp-cell" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" aria-label="Dígito 5" data-otp-index="4">
+        <input class="otp-cell" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" aria-label="Dígito 6" data-otp-index="5">
       </div>
+      <div class="otp-status" id="otp-status"><span id="otp-status-text">Digite o código de 6 dígitos</span></div>
+      <div class="otp-tip">Dica: cole o código para preencher todas as caixas de uma vez.</div>
+      <input type="hidden" id="mfa-code" value="">
       <button class="login-button" id="mfa-button" type="submit">Verificar e entrar</button>
       <div class="login-message" id="mfa-message" role="alert" aria-live="polite"></div>
     </form>
-    <button class="login-link" type="button" onclick="signOutCloud()" style="display:block;margin:8px auto 0">Cancelar e sair</button>
+    <button class="login-link" type="button" onclick="signOutCloud()" style="display:block;margin:14px auto 0;position:relative;z-index:1">Cancelar e sair</button>
   </div>
 </section>
 
@@ -2028,6 +2122,184 @@ async function refreshMfaStatus() {
   }
 }
 
+let mfaVerifyInFlight = false;
+let mfaAutoSubmitTimer = null;
+
+function getOtpCells() {
+  return Array.from(document.querySelectorAll('#otp-row .otp-cell'));
+}
+
+function setOtpStatus(text, state = '') {
+  const status = document.getElementById('otp-status');
+  const statusText = document.getElementById('otp-status-text');
+  if (statusText) statusText.textContent = text;
+  if (status) status.className = 'otp-status' + (state ? ` is-${state}` : '');
+}
+
+function syncOtpHiddenValue() {
+  const code = getOtpCells().map(cell => cell.value).join('');
+  const hidden = document.getElementById('mfa-code');
+  if (hidden) hidden.value = code;
+  return code;
+}
+
+function resetOtpInput({ focus = true, keepValues = false } = {}) {
+  const screen = document.getElementById('mfa-screen');
+  const row = document.getElementById('otp-row');
+  screen?.classList.remove('is-success', 'is-error');
+  row?.classList.remove('is-success', 'is-error');
+  getOtpCells().forEach(cell => {
+    cell.classList.remove('is-check', 'is-filled');
+    cell.readOnly = false;
+    if (!keepValues) cell.value = '';
+  });
+  syncOtpHiddenValue();
+  setOtpStatus('Digite o código de 6 dígitos');
+  const message = document.getElementById('mfa-message');
+  if (message) message.textContent = '';
+  if (focus) setTimeout(() => getOtpCells()[0]?.focus(), 0);
+}
+
+function markOtpFilledStates() {
+  getOtpCells().forEach(cell => {
+    cell.classList.toggle('is-filled', !!cell.value);
+  });
+}
+
+function setOtpSuccessState() {
+  const screen = document.getElementById('mfa-screen');
+  const row = document.getElementById('otp-row');
+  screen?.classList.remove('is-error');
+  screen?.classList.add('is-success');
+  row?.classList.remove('is-error');
+  row?.classList.add('is-success');
+  getOtpCells().forEach(cell => {
+    cell.classList.add('is-check');
+    cell.readOnly = true;
+  });
+  setOtpStatus('Código verificado', 'ok');
+}
+
+function setOtpErrorState(messageText) {
+  const screen = document.getElementById('mfa-screen');
+  const row = document.getElementById('otp-row');
+  screen?.classList.remove('is-success');
+  screen?.classList.add('is-error');
+  row?.classList.remove('is-success');
+  row?.classList.add('is-error');
+  getOtpCells().forEach(cell => cell.classList.remove('is-check'));
+  setOtpStatus('Código inválido', 'err');
+  const message = document.getElementById('mfa-message');
+  if (message) message.textContent = messageText || 'Código inválido ou expirado. Tente o código atual do aplicativo.';
+  row?.addEventListener('animationend', () => row.classList.remove('is-error'), { once: true });
+  setTimeout(() => {
+    screen?.classList.remove('is-error');
+    getOtpCells().forEach(cell => { cell.value = ''; cell.classList.remove('is-filled'); cell.readOnly = false; });
+    syncOtpHiddenValue();
+    getOtpCells()[0]?.focus();
+    setOtpStatus('Digite o código de 6 dígitos');
+  }, 700);
+}
+
+function fillOtpFrom(index, text) {
+  const digits = String(text || '').replace(/\D/g, '');
+  if (!digits) return;
+  const cells = getOtpCells();
+  let cursor = index;
+  for (const digit of digits) {
+    if (cursor >= cells.length) break;
+    cells[cursor].value = digit;
+    cursor += 1;
+  }
+  markOtpFilledStates();
+  const code = syncOtpHiddenValue();
+  if (code.length === 6) {
+    cells[5]?.focus();
+    queueMfaAutoSubmit();
+  } else {
+    cells[Math.min(cursor, cells.length - 1)]?.focus();
+  }
+}
+
+function queueMfaAutoSubmit() {
+  if (mfaAutoSubmitTimer) clearTimeout(mfaAutoSubmitTimer);
+  mfaAutoSubmitTimer = setTimeout(() => {
+    mfaAutoSubmitTimer = null;
+    const form = document.getElementById('mfa-form');
+    if (form && syncOtpHiddenValue().length === 6 && !mfaVerifyInFlight) {
+      form.requestSubmit();
+    }
+  }, 120);
+}
+
+function bindOtpInputs() {
+  const row = document.getElementById('otp-row');
+  if (!row || row.dataset.bound === '1') return;
+  row.dataset.bound = '1';
+  const cells = getOtpCells();
+
+  cells.forEach((cell, index) => {
+    cell.addEventListener('focus', () => {
+      cell.select();
+    });
+
+    cell.addEventListener('keydown', (event) => {
+      if (mfaVerifyInFlight) {
+        event.preventDefault();
+        return;
+      }
+      if (event.key === 'Backspace') {
+        if (cell.value) {
+          cell.value = '';
+          markOtpFilledStates();
+          syncOtpHiddenValue();
+        } else if (index > 0) {
+          cells[index - 1].value = '';
+          cells[index - 1].focus();
+          markOtpFilledStates();
+          syncOtpHiddenValue();
+        }
+        event.preventDefault();
+        return;
+      }
+      if (event.key === 'ArrowLeft' && index > 0) {
+        cells[index - 1].focus();
+        event.preventDefault();
+        return;
+      }
+      if (event.key === 'ArrowRight' && index < cells.length - 1) {
+        cells[index + 1].focus();
+        event.preventDefault();
+        return;
+      }
+      if (event.key.length === 1 && !/[0-9]/.test(event.key) && !event.metaKey && !event.ctrlKey) {
+        event.preventDefault();
+      }
+    });
+
+    cell.addEventListener('input', () => {
+      if (mfaVerifyInFlight) return;
+      const raw = cell.value.replace(/\D/g, '');
+      if (raw.length > 1) {
+        fillOtpFrom(index, raw);
+        return;
+      }
+      cell.value = raw.slice(0, 1);
+      markOtpFilledStates();
+      const code = syncOtpHiddenValue();
+      if (cell.value && index < cells.length - 1) cells[index + 1].focus();
+      if (code.length === 6) queueMfaAutoSubmit();
+    });
+
+    cell.addEventListener('paste', (event) => {
+      event.preventDefault();
+      if (mfaVerifyInFlight) return;
+      const pasted = event.clipboardData?.getData('text') || '';
+      fillOtpFrom(index, pasted);
+    });
+  });
+}
+
 async function beginMfaEnrollment(fromLogin = false) {
   if (!cloudDb || !cloudUser) return;
   if (!fromLogin) closeAuthModal();
@@ -2037,10 +2309,13 @@ async function beginMfaEnrollment(fromLogin = false) {
   document.getElementById('reset-screen')?.classList.add('hidden');
   screen.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+  bindOtpInputs();
+  resetOtpInput({ focus: false });
   message.textContent = '';
   document.getElementById('mfa-enrollment').style.display = '';
   document.getElementById('mfa-description').textContent = 'Primeiro acesso seguro: escaneie o QR Code e confirme o código gerado pelo aplicativo.';
   document.getElementById('mfa-button').textContent = 'Ativar e entrar';
+  setOtpStatus('Confirme o código do autenticador');
   try {
     const listed = await cloudDb.auth.mfa.listFactors();
     if (listed.error) throw listed.error;
@@ -2063,7 +2338,8 @@ async function beginMfaEnrollment(fromLogin = false) {
     mfaEnrollmentPending = true;
     document.getElementById('mfa-qr').src = data.totp.qr_code;
     document.getElementById('mfa-secret').textContent = `Código manual: ${data.totp.secret}`;
-    setTimeout(() => document.getElementById('mfa-code')?.focus(), 0);
+    resetOtpInput({ focus: true });
+    setOtpStatus('Confirme o código do autenticador');
   } catch (error) {
     console.error('MFA enrollment error:', error);
     message.textContent = 'Não foi possível preparar o autenticador. Saia e tente novamente.';
@@ -2075,34 +2351,43 @@ function showMfaChallenge() {
   document.getElementById('reset-screen')?.classList.add('hidden');
   document.getElementById('mfa-screen')?.classList.remove('hidden');
   document.getElementById('mfa-enrollment').style.display = 'none';
-  document.getElementById('mfa-description').textContent = 'Digite o código de 6 dígitos do seu aplicativo autenticador.';
+  document.getElementById('mfa-description').textContent = 'Use o código de 6 dígitos do seu aplicativo autenticador.';
   document.getElementById('mfa-button').textContent = 'Verificar e entrar';
   document.getElementById('mfa-message').textContent = '';
   document.body.style.overflow = 'hidden';
-  setTimeout(() => document.getElementById('mfa-code')?.focus(), 0);
+  bindOtpInputs();
+  resetOtpInput({ focus: true });
 }
 
 async function verifyMfa(event) {
   event.preventDefault();
-  const code = document.getElementById('mfa-code').value.trim();
+  if (mfaVerifyInFlight) return;
+  const code = syncOtpHiddenValue();
   const message = document.getElementById('mfa-message');
   const button = document.getElementById('mfa-button');
   if (!/^\d{6}$/.test(code) || !mfaFactorId) {
     message.textContent = 'Digite o código de 6 dígitos.';
+    setOtpStatus('Digite o código de 6 dígitos', 'err');
+    getOtpCells()[0]?.focus();
     return;
   }
+  mfaVerifyInFlight = true;
   button.disabled = true;
   button.textContent = 'Verificando...';
+  setOtpStatus('Verificando código...', 'busy');
+  getOtpCells().forEach(cell => { cell.readOnly = true; });
   try {
     const { error } = await cloudDb.auth.mfa.challengeAndVerify({ factorId: mfaFactorId, code });
     if (error) throw error;
     mfaEnrollmentPending = false;
-    document.getElementById('mfa-code').value = '';
+    setOtpSuccessState();
+    await new Promise(resolve => setTimeout(resolve, 650));
     await unlockApp();
     showToast('🛡️', 'Acesso protegido por autenticação em duas etapas.');
   } catch (error) {
-    message.textContent = 'Código inválido ou expirado. Tente o código atual do aplicativo.';
+    setOtpErrorState('Código inválido ou expirado. Tente o código atual do aplicativo.');
   } finally {
+    mfaVerifyInFlight = false;
     button.disabled = false;
     button.textContent = mfaEnrollmentPending ? 'Ativar e entrar' : 'Verificar e entrar';
   }
@@ -2537,6 +2822,7 @@ function init() {
   renderCharts();
   renderRevisoes();
   updateAll();
+  bindOtpInputs();
   initializeCloud();
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js').catch(error => console.error('Service worker:', error));
