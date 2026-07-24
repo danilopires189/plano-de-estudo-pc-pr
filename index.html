@@ -60,12 +60,67 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .backup-btn-imp:hover{border-color:var(--navy);}
 .backup-btn-close{padding:9px;background:transparent;border:none;color:var(--text-soft);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;}
 .backup-warn{font-size:11px;color:var(--text-soft);background:var(--yellow-bg);border:1px solid #fde68a;border-radius:8px;padding:8px 12px;line-height:1.5;}
-.cloud-fab{position:fixed;left:calc(var(--sidebar-w) + 22px);bottom:22px;z-index:450;border:none;border-radius:99px;padding:10px 15px;background:white;color:var(--navy);box-shadow:0 6px 24px rgba(13,19,76,.2);font-family:'Inter',sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;border:1.5px solid var(--border);max-width:220px;}
+.cloud-fab{position:fixed;left:calc(var(--sidebar-w) + 22px);bottom:22px;z-index:450;border:none;border-radius:99px;padding:10px 15px;background:white;color:var(--navy);box-shadow:0 6px 24px rgba(13,19,76,.2);font-family:'Inter',sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:none;align-items:center;gap:7px;border:1.5px solid var(--border);max-width:220px;}
 .cloud-fab:hover{border-color:var(--navy);}
 .cloud-dot{width:8px;height:8px;border-radius:50%;background:var(--text-soft);flex-shrink:0;}
 .cloud-fab.online .cloud-dot{background:var(--green);box-shadow:0 0 0 3px var(--green-bg);}
 .auth-message{min-height:18px;font-size:11px;line-height:1.5;color:var(--text-soft);}
 .auth-user{padding:12px;background:var(--green-bg);border:1px solid #bbf7d0;border-radius:10px;color:#15803d;font-size:12px;line-height:1.5;}
+
+/* Perfil / conta */
+.profile-btn{
+  position:relative;width:40px;height:40px;border:1.5px solid var(--border);border-radius:50%;
+  background:var(--bg);padding:0;cursor:pointer;flex-shrink:0;
+  display:grid;place-items:center;transition:border-color .15s,box-shadow .15s,transform .15s;
+}
+.profile-btn:hover,.profile-btn:focus-visible{
+  border-color:var(--navy);box-shadow:0 0 0 3px rgba(13,19,76,.08);outline:none;transform:translateY(-1px);
+}
+.profile-avatar{
+  width:100%;height:100%;border-radius:50%;display:grid;place-items:center;
+  background:linear-gradient(145deg,var(--navy),#27307d);color:white;
+  font:800 12px/1 'Nunito',sans-serif;letter-spacing:.3px;user-select:none;
+}
+.profile-dot{
+  position:absolute;right:1px;bottom:1px;width:10px;height:10px;border-radius:50%;
+  background:var(--text-soft);border:2px solid white;box-sizing:border-box;
+}
+.profile-btn.online .profile-dot{background:var(--green);}
+.profile-panel{width:min(400px,calc(100vw - 24px));padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:calc(100dvh - 24px);}
+.profile-head{
+  padding:22px 22px 18px;background:linear-gradient(145deg,#090e3b 0%,var(--navy) 70%,#1a2060 100%);
+  color:white;display:flex;align-items:center;gap:14px;
+}
+.profile-head-avatar{
+  width:56px;height:56px;border-radius:50%;flex-shrink:0;
+  background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.22);
+  display:grid;place-items:center;font:800 18px/1 'Nunito',sans-serif;color:white;
+}
+.profile-head-meta{min-width:0;flex:1;}
+.profile-head-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:4px;}
+.profile-head-name{font:800 18px/1.2 'Nunito',sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.profile-head-email{margin-top:4px;font-size:12px;color:rgba(255,255,255,.62);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.profile-body{padding:16px 18px 10px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;}
+.profile-section{display:flex;flex-direction:column;gap:8px;}
+.profile-section-title{font-size:10px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--text-soft);}
+.profile-sync{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--border);font-size:12px;color:var(--text-mid);
+}
+.profile-sync strong{color:var(--navy);font-weight:800;}
+.profile-password{display:none;flex-direction:column;gap:10px;padding:12px;border-radius:10px;background:var(--bg);border:1px solid var(--border);}
+.profile-password.open{display:flex;}
+.profile-password .login-field label{font-size:10px;}
+.profile-password .login-input{height:42px;font-size:14px;}
+.profile-password .login-button{height:42px;margin-top:0;}
+.profile-msg{min-height:16px;font-size:11px;line-height:1.45;color:var(--red);text-align:center;}
+.profile-msg.ok{color:#15803d;}
+.profile-signout{color:#b91c1c !important;border-color:#fecaca !important;background:#fff5f5 !important;}
+.profile-signout:hover{border-color:#f87171 !important;background:#fee2e2 !important;}
+.profile-foot{padding:4px 18px 14px;display:flex;justify-content:center;}
+#auth-modal .install-help{color:var(--text-soft);text-align:left;padding:0 2px;}
+#auth-modal .security-row{border-top:0;padding:8px 2px;}
+#auth-modal .backup-btn-imp,#auth-modal .backup-btn-exp{justify-content:flex-start;}
 .login-screen{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 18% 12%,#27307d 0,transparent 34%),linear-gradient(145deg,#090e3b 0%,var(--navy) 55%,#171d62 100%);overflow-y:auto;}
 .login-screen.hidden{display:none;}
 .login-card{width:min(420px,100%);padding:38px 34px;background:rgba(255,255,255,.98);border:1px solid rgba(255,255,255,.5);border-radius:24px;box-shadow:0 28px 80px rgba(0,0,0,.35);}
@@ -474,6 +529,8 @@ tr.done .topic-dt{display:block;}
   .strip-right{display:contents;}
   .strip-actions{grid-column:2;grid-row:1;}
   .strip-actions .btn{min-height:38px;padding:7px 12px;}
+  .profile-btn{width:38px;height:38px;}
+  .profile-avatar{font-size:11px;}
   .topstrip.edital-actions .page-title{display:none;}
   .topstrip.edital-actions .strip-actions{grid-column:1/-1;justify-content:space-between;}
   .tab-bar{grid-column:1/-1;grid-row:2;width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;overflow:visible;padding-bottom:2px;}
@@ -680,6 +737,10 @@ select{min-width:0;max-width:100%;}
         <button class="btn btn-ghost" id="btn-expand" onclick="expandAll()" style="display:none">↕ Expandir</button>
         <button class="btn btn-ghost" id="btn-collapse" onclick="collapseAll()" style="display:none">↕ Recolher</button>
         <button class="btn btn-navy" onclick="saveData()">💾 Salvar</button>
+        <button class="profile-btn" id="profile-btn" type="button" onclick="openAuthModal()" aria-label="Abrir menu da conta" title="Minha conta">
+          <span class="profile-avatar" id="profile-avatar">DP</span>
+          <span class="profile-dot" id="profile-dot" aria-hidden="true"></span>
+        </button>
       </div>
     </div>
   </div>
@@ -1030,26 +1091,68 @@ select{min-width:0;max-width:100%;}
   </div>
 </div>
 
-<!-- ACESSO À NUVEM -->
+<!-- CONTA / PERFIL -->
 <div class="backup-modal" id="auth-modal" onclick="closeAuthModal(event)">
-  <div class="backup-box">
-    <div class="backup-title">☁️ Progresso na nuvem</div>
-    <div class="auth-user">Conectado como<br><strong id="auth-user-name">danilopires189</strong></div>
-    <div class="backup-sub" id="auth-user-email" style="margin:0"></div>
-    <div class="backup-actions">
-      <button class="backup-btn-exp" onclick="saveData()">☁️ Sincronizar agora</button>
-      <button class="backup-btn-imp" onclick="requestPasswordReset(true)">🔑 Trocar senha por e-mail</button>
-      <div class="security-row">
-        <span>Autenticação em duas etapas</span>
-        <span class="security-status" id="mfa-status">Verificando...</span>
+  <div class="backup-box profile-panel" onclick="event.stopPropagation()">
+    <div class="profile-head">
+      <div class="profile-head-avatar" id="profile-head-avatar">DP</div>
+      <div class="profile-head-meta">
+        <div class="profile-head-label">Minha conta</div>
+        <div class="profile-head-name" id="auth-user-name">danilopires189</div>
+        <div class="profile-head-email" id="auth-user-email"></div>
       </div>
-      <button class="backup-btn-imp" id="mfa-enable-button" onclick="beginMfaEnrollment()">🛡️ Configurar autenticador</button>
-      <button class="backup-btn-imp" id="mfa-disable-button" onclick="disableMfa()" style="display:none">Remover autenticador</button>
-      <button class="backup-btn-imp" id="install-app-button" onclick="installPwa()" style="display:none">📲 Instalar aplicativo</button>
-      <div class="install-help" id="install-help">No iPhone, use Compartilhar → Adicionar à Tela de Início.</div>
-      <button class="backup-btn-imp" onclick="signOutCloud()">Sair da conta</button>
     </div>
-    <button class="backup-btn-close" onclick="closeAuthModal()">Fechar</button>
+    <div class="profile-body">
+      <div class="profile-section">
+        <div class="profile-section-title">Nuvem</div>
+        <div class="profile-sync">
+          <span>Status: <strong id="profile-sync-label">Verificando...</strong></span>
+          <button class="backup-btn-exp" type="button" onclick="saveData();closeAuthModal()" style="width:auto;padding:8px 12px;font-size:12px">Sincronizar</button>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-title">Segurança</div>
+        <button class="backup-btn-imp" type="button" id="toggle-password-form" onclick="toggleProfilePasswordForm()">🔑 Alterar senha</button>
+        <form class="profile-password" id="profile-password-form" onsubmit="changePasswordFromProfile(event)">
+          <div class="login-field">
+            <label for="profile-new-password">Nova senha</label>
+            <input class="login-input" id="profile-new-password" type="password" autocomplete="new-password" minlength="12" required>
+          </div>
+          <div class="login-field">
+            <label for="profile-confirm-password">Confirmar nova senha</label>
+            <input class="login-input" id="profile-confirm-password" type="password" autocomplete="new-password" minlength="12" required>
+          </div>
+          <button class="login-button" id="profile-password-button" type="submit">Salvar nova senha</button>
+          <button class="login-link" type="button" onclick="requestPasswordReset(true)">Enviar link por e-mail</button>
+          <div class="profile-msg" id="profile-password-message" role="alert" aria-live="polite"></div>
+        </form>
+        <div class="security-row">
+          <span>Autenticação em duas etapas</span>
+          <span class="security-status" id="mfa-status">Verificando...</span>
+        </div>
+        <button class="backup-btn-imp" id="mfa-enable-button" type="button" onclick="beginMfaEnrollment()">🛡️ Configurar autenticador</button>
+        <button class="backup-btn-imp" id="mfa-disable-button" type="button" onclick="disableMfa()" style="display:none">Remover autenticador</button>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-title">Dados</div>
+        <button class="backup-btn-imp" type="button" onclick="closeAuthModal();openBackupModal()">⬆️ Exportar / restaurar backup</button>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-title">Aplicativo</div>
+        <button class="backup-btn-imp" id="install-app-button" type="button" onclick="installPwa()" style="display:none">📲 Instalar aplicativo</button>
+        <div class="install-help" id="install-help">No iPhone, use Compartilhar → Adicionar à Tela de Início.</div>
+      </div>
+
+      <div class="profile-section">
+        <button class="backup-btn-imp profile-signout" type="button" onclick="signOutCloud()">Sair da conta</button>
+      </div>
+    </div>
+    <div class="profile-foot">
+      <button class="backup-btn-close" type="button" onclick="closeAuthModal()">Fechar</button>
+    </div>
   </div>
 </div>
 
@@ -1889,30 +1992,115 @@ function openAuthModal() {
     setLoginScreenVisible(true);
     return;
   }
+  refreshAuthModal();
   document.getElementById('auth-modal').classList.add('open');
 }
 
 function closeAuthModal(event) {
-  if (!event || event.target === document.getElementById('auth-modal')) {
-    document.getElementById('auth-modal').classList.remove('open');
+  if (event && event.target !== document.getElementById('auth-modal')) return;
+  document.getElementById('auth-modal')?.classList.remove('open');
+  const form = document.getElementById('profile-password-form');
+  if (form) {
+    form.classList.remove('open');
+    form.reset();
+  }
+  const message = document.getElementById('profile-password-message');
+  if (message) {
+    message.textContent = '';
+    message.classList.remove('ok');
   }
 }
 
-function refreshAuthModal() {
+function getProfileInitials(name) {
+  const clean = String(name || LOGIN_USERNAME || 'U').trim();
+  const parts = clean.split(/[\s._-]+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return clean.slice(0, 2).toUpperCase();
+}
+
+function toggleProfilePasswordForm() {
+  const form = document.getElementById('profile-password-form');
+  if (!form) return;
+  const opening = !form.classList.contains('open');
+  form.classList.toggle('open', opening);
+  if (opening) {
+    const message = document.getElementById('profile-password-message');
+    if (message) {
+      message.textContent = '';
+      message.classList.remove('ok');
+    }
+    setTimeout(() => document.getElementById('profile-new-password')?.focus(), 0);
+  } else {
+    form.reset();
+  }
+}
+
+async function changePasswordFromProfile(event) {
+  event.preventDefault();
+  const next = document.getElementById('profile-new-password')?.value || '';
+  const confirmation = document.getElementById('profile-confirm-password')?.value || '';
+  const message = document.getElementById('profile-password-message');
+  const button = document.getElementById('profile-password-button');
+  if (!message || !button) return;
+  message.classList.remove('ok');
+  message.textContent = '';
+  if (!cloudDb || !cloudUser) {
+    message.textContent = 'Sessão indisponível. Entre novamente.';
+    return;
+  }
+  if (next.length < 12) {
+    message.textContent = 'Use pelo menos 12 caracteres.';
+    return;
+  }
+  if (next !== confirmation) {
+    message.textContent = 'As senhas não coincidem.';
+    return;
+  }
+  button.disabled = true;
+  button.textContent = 'Salvando...';
+  try {
+    const { error } = await cloudDb.auth.updateUser({ password: next });
+    if (error) throw error;
+    document.getElementById('profile-password-form')?.reset();
+    message.classList.add('ok');
+    message.textContent = 'Senha atualizada com sucesso.';
+    showToast('🔑', 'Senha alterada com sucesso.');
+  } catch (error) {
+    console.error('Password update error:', error);
+    message.textContent = 'Não foi possível alterar a senha agora. Tente novamente.';
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Salvar nova senha';
+  }
+}
+
+function refreshAuthModal(syncLabel) {
+  const username = cloudUser?.user_metadata?.username || LOGIN_USERNAME;
+  const email = cloudUser?.email || LOGIN_EMAIL;
+  const initials = getProfileInitials(username);
   const name = document.getElementById('auth-user-name');
-  const email = document.getElementById('auth-user-email');
-  if (name) name.textContent = cloudUser?.user_metadata?.username || LOGIN_USERNAME;
-  if (email) email.textContent = cloudUser?.email || LOGIN_EMAIL;
+  const emailEl = document.getElementById('auth-user-email');
+  const avatar = document.getElementById('profile-avatar');
+  const headAvatar = document.getElementById('profile-head-avatar');
+  const sync = document.getElementById('profile-sync-label');
+  if (name) name.textContent = username;
+  if (emailEl) emailEl.textContent = email;
+  if (avatar) avatar.textContent = initials;
+  if (headAvatar) headAvatar.textContent = initials;
+  if (sync) sync.textContent = syncLabel || (cloudUser ? 'Conectada' : 'Offline');
   refreshMfaStatus();
 }
 
 function refreshCloudUI(label) {
   const button = document.getElementById('cloud-fab');
   const text = document.getElementById('cloud-label');
-  if (!button || !text) return;
-  button.classList.toggle('online', !!cloudUser);
-  text.textContent = label || (cloudUser ? 'Nuvem conectada' : 'Entrar');
-  refreshAuthModal();
+  const profileBtn = document.getElementById('profile-btn');
+  if (button && text) {
+    button.classList.toggle('online', !!cloudUser);
+    text.textContent = label || (cloudUser ? 'Nuvem conectada' : 'Entrar');
+  }
+  if (profileBtn) profileBtn.classList.toggle('online', !!cloudUser);
+  refreshAuthModal(label || (cloudUser ? 'Conectada' : 'Offline'));
 }
 
 function setLoginScreenVisible(visible, message = '') {
