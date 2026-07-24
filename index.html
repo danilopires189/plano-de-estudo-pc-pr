@@ -1170,13 +1170,24 @@ const SUPABASE_URL = 'https://cepffdlfxjggkjzkkjlh.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_MplCfLiIJFUfoX7Krhl2Cw_bEMAJyZE';
 const LOGIN_USERNAME = 'danilopires189';
 const LOGIN_EMAIL = 'danilo_pires189@hotmail.com';
-const cloudDb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
+const cloudDb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: {
+    detectSessionInUrl: true,
+    persistSession: true,
+    autoRefreshToken: true
+  }
+}) : null;
 let cloudUser = null;
 let cloudSyncing = false;
 let mfaFactorId = null;
 let mfaEnrollmentPending = false;
 const recoveryParams = new URLSearchParams(location.search);
-let recoveryMode = recoveryParams.get('recovery') === '1' || location.hash.includes('type=recovery');
+const recoveryHashParams = new URLSearchParams(location.hash.replace(/^#/, ''));
+let recoveryMode = recoveryParams.get('recovery') === '1'
+  || recoveryParams.get('type') === 'recovery'
+  || recoveryHashParams.get('type') === 'recovery'
+  || recoveryParams.has('token_hash')
+  || recoveryParams.has('code');
 let recoverySessionReady = false;
 let deferredInstallPrompt = null;
 
@@ -2202,9 +2213,10 @@ async function requestPasswordReset(fromAccount = false) {
   }
 }
 
-function showResetScreen(ready = recoverySessionReady, message = '') {
+function showResetScreen(ready = recoverySessionReady, message = '', options = {}) {
+  const validating = !!options.validating;
   recoveryMode = true;
-  recoverySessionReady = ready;
+  recoverySessionReady = !!ready && !validating;
   document.getElementById('login-screen')?.classList.add('hidden');
   document.getElementById('mfa-screen')?.classList.add('hidden');
   document.getElementById('reset-screen')?.classList.remove('hidden');
@@ -2214,35 +2226,88 @@ function showResetScreen(ready = recoverySessionReady, message = '') {
   const button = document.getElementById('reset-button');
   const requestButton = document.getElementById('reset-request-button');
   const feedback = document.getElementById('reset-message');
-  password.disabled = !ready;
-  confirmation.disabled = !ready;
-  button.disabled = !ready;
-  button.textContent = ready ? 'Atualizar senha' : 'Link inválido';
-  requestButton.style.display = ready ? 'none' : '';
+  const canEdit = recoverySessionReady;
+  password.disabled = !canEdit;
+  confirmation.disabled = !canEdit;
+  button.disabled = !canEdit;
+  button.textContent = validating ? 'Validando link...' : (canEdit ? 'Atualizar senha' : 'Link inválido');
+  requestButton.style.display = (!canEdit && !validating) ? '' : 'none';
   feedback.textContent = message;
-  if (ready) setTimeout(() => password.focus(), 0);
+  feedback.style.color = '';
+  if (!canEdit && !validating) {
+    password.value = '';
+    confirmation.value = '';
+  }
+  if (canEdit) setTimeout(() => password.focus(), 0);
+}
+
+function cleanRecoveryUrl() {
+  history.replaceState({}, document.title, `${location.pathname}?recovery=1`);
+}
+
+async function waitForAuthSession(attempts = 12, delayMs = 150) {
+  for (let i = 0; i < attempts; i++) {
+    const { data, error } = await cloudDb.auth.getSession();
+    if (!error && data.session) return data.session;
+    await new Promise(resolve => setTimeout(resolve, delayMs));
+  }
+  return null;
 }
 
 async function establishRecoverySession() {
-  const tokenHash = recoveryParams.get('token_hash');
-  const recoveryType = recoveryParams.get('type');
-  if (tokenHash) {
-    if (recoveryType && recoveryType !== 'recovery') return false;
+  if (!cloudDb) return false;
+  const query = new URLSearchParams(location.search);
+  const hash = new URLSearchParams(location.hash.replace(/^#/, ''));
+
+  const authCode = query.get('code');
+  if (authCode) {
+    const { data, error } = await cloudDb.auth.exchangeCodeForSession(authCode);
+    if (!error && data.session) {
+      cloudUser = data.session.user;
+      recoverySessionReady = true;
+      cleanRecoveryUrl();
+      return true;
+    }
+  }
+
+  const tokenHash = query.get('token_hash') || hash.get('token_hash');
+  const otpType = query.get('type') || hash.get('type') || 'recovery';
+  if (tokenHash && otpType === 'recovery') {
     const { data, error } = await cloudDb.auth.verifyOtp({
       token_hash: tokenHash,
       type: 'recovery'
     });
-    if (error || !data.session) return false;
-    cloudUser = data.user;
+    if (!error && data.session) {
+      cloudUser = data.user || data.session.user;
+      recoverySessionReady = true;
+      cleanRecoveryUrl();
+      return true;
+    }
+  }
+
+  const accessToken = hash.get('access_token');
+  const refreshToken = hash.get('refresh_token');
+  if (accessToken && refreshToken) {
+    const { data, error } = await cloudDb.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken
+    });
+    if (!error && data.session) {
+      cloudUser = data.session.user;
+      recoverySessionReady = true;
+      cleanRecoveryUrl();
+      return true;
+    }
+  }
+
+  const session = await waitForAuthSession();
+  if (session) {
+    cloudUser = session.user;
     recoverySessionReady = true;
-    history.replaceState({}, document.title, `${location.pathname}?recovery=1`);
+    cleanRecoveryUrl();
     return true;
   }
-  const { data, error } = await cloudDb.auth.getSession();
-  if (error || !data.session) return false;
-  cloudUser = data.session.user;
-  recoverySessionReady = true;
-  return true;
+  return false;
 }
 
 async function submitNewPassword(event) {
@@ -2252,6 +2317,7 @@ async function submitNewPassword(event) {
   const message = document.getElementById('reset-message');
   const button = document.getElementById('reset-button');
   message.textContent = '';
+  message.style.color = '';
   if (password.length < 12) {
     message.textContent = 'Use pelo menos 12 caracteres.';
     return;
@@ -2260,30 +2326,93 @@ async function submitNewPassword(event) {
     message.textContent = 'As senhas não coincidem.';
     return;
   }
+  if (!cloudDb) {
+    message.textContent = 'Serviço indisponível. Tente novamente.';
+    return;
+  }
   button.disabled = true;
   button.textContent = 'Atualizando...';
+
+  let passwordUpdated = false;
   try {
     const { data: sessionData, error: sessionError } = await cloudDb.auth.getSession();
-    if (sessionError || !sessionData.session || !recoverySessionReady) {
-      throw new Error('Recovery session unavailable');
+    if (sessionError || !sessionData.session) {
+      showResetScreen(false, 'A sessão do link expirou. Solicite um novo link abaixo.');
+      return;
     }
+    recoverySessionReady = true;
     const { error } = await cloudDb.auth.updateUser({ password });
     if (error) throw error;
-    await cloudDb.auth.signOut();
-    recoveryMode = false;
-    recoverySessionReady = false;
-    history.replaceState({}, document.title, location.pathname);
-    document.getElementById('new-password').value = '';
-    document.getElementById('confirm-password').value = '';
-    setLoginScreenVisible(true, 'Senha atualizada. Entre usando a nova senha.');
-    document.getElementById('login-message').style.color = '#15803d';
+    passwordUpdated = true;
   } catch (error) {
-    showResetScreen(false, 'Este link não é mais válido. Solicite um novo link abaixo.');
-  } finally {
-    if (recoverySessionReady) {
-      button.disabled = false;
-      button.textContent = 'Atualizar senha';
+    console.error('Password reset update error:', error);
+    const reused = /same password|should be different|different from the old/i.test(error?.message || '');
+    const weak = /password|characters|weak/i.test(error?.message || '');
+    if (reused) message.textContent = 'Escolha uma senha diferente da anterior.';
+    else if (weak) message.textContent = 'A senha não atende aos requisitos de segurança.';
+    else message.textContent = 'Não foi possível atualizar a senha. Solicite um novo link se o problema continuar.';
+    button.disabled = false;
+    button.textContent = 'Atualizar senha';
+    return;
+  }
+
+  // Sucesso: mesmo se o signOut falhar, a senha já foi redefinida.
+  try { await cloudDb.auth.signOut({ scope: 'local' }); } catch (error) { console.error('Sign out after reset:', error); }
+  recoveryMode = false;
+  recoverySessionReady = false;
+  cloudUser = null;
+  history.replaceState({}, document.title, location.pathname);
+  document.getElementById('new-password').value = '';
+  document.getElementById('confirm-password').value = '';
+  setLoginScreenVisible(true, passwordUpdated
+    ? 'Senha atualizada com sucesso. Entre com a nova senha.'
+    : 'Senha atualizada. Entre usando a nova senha.');
+  const loginMessage = document.getElementById('login-message');
+  if (loginMessage) loginMessage.style.color = '#15803d';
+}
+
+async function initializeCloud() {
+  if (!cloudDb) {
+    refreshCloudUI('Nuvem indisponível');
+    setLoginScreenVisible(true, 'O serviço de acesso está indisponível. Recarregue a página.');
+    return;
+  }
+  cloudDb.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY') {
+      cloudUser = session?.user || null;
+      recoveryMode = true;
+      recoverySessionReady = !!session;
+      showResetScreen(!!session, session ? '' : 'Não foi possível validar este link. Solicite outro.');
+      return;
     }
+    if (event === 'SIGNED_OUT') {
+      if (recoveryMode) return;
+      cloudUser = null;
+      setLoginScreenVisible(true);
+      return;
+    }
+    if (event === 'SIGNED_IN' && session?.user && !recoveryMode) {
+      setTimeout(() => handleAuthenticatedSession(session.user), 0);
+    }
+  });
+  try {
+    if (recoveryMode) {
+      showResetScreen(false, 'Validando link de redefinição...', { validating: true });
+      const ready = await establishRecoverySession();
+      showResetScreen(
+        ready,
+        ready ? '' : 'Este link é inválido, expirou ou já foi usado. Solicite outro abaixo.'
+      );
+      return;
+    }
+    const { data, error } = await cloudDb.auth.getSession();
+    if (error) throw error;
+    cloudUser = data.session ? data.session.user : null;
+    if (cloudUser) await handleAuthenticatedSession(cloudUser);
+    else setLoginScreenVisible(true);
+  } catch (error) {
+    console.error('Auth initialization error:', error);
+    setLoginScreenVisible(true, 'Não foi possível verificar o acesso. Tente novamente.');
   }
 }
 
@@ -2654,44 +2783,6 @@ async function signOutCloud() {
   closeAuthModal();
   setLoginScreenVisible(true);
   showToast('👋', 'Você saiu da conta.');
-}
-
-async function initializeCloud() {
-  if (!cloudDb) {
-    refreshCloudUI('Nuvem indisponível');
-    setLoginScreenVisible(true, 'O serviço de acesso está indisponível. Recarregue a página.');
-    return;
-  }
-  cloudDb.auth.onAuthStateChange((event, session) => {
-    if (event === 'PASSWORD_RECOVERY') {
-      cloudUser = session?.user || null;
-      showResetScreen(!!session, session ? '' : 'Não foi possível validar este link. Solicite outro.');
-      return;
-    }
-    if (event === 'SIGNED_OUT') {
-      cloudUser = null;
-      setLoginScreenVisible(true);
-      return;
-    }
-    if (event === 'SIGNED_IN' && session?.user && !recoveryMode) {
-      setTimeout(() => handleAuthenticatedSession(session.user), 0);
-    }
-  });
-  try {
-    if (recoveryMode) {
-      const ready = await establishRecoverySession();
-      showResetScreen(ready, ready ? '' : 'Este link é inválido ou já foi utilizado. Solicite outro abaixo.');
-      return;
-    }
-    const { data, error } = await cloudDb.auth.getSession();
-    if (error) throw error;
-    cloudUser = data.session ? data.session.user : null;
-    if (cloudUser) await handleAuthenticatedSession(cloudUser);
-    else setLoginScreenVisible(true);
-  } catch (error) {
-    console.error('Auth initialization error:', error);
-    setLoginScreenVisible(true, 'Não foi possível verificar o acesso. Tente novamente.');
-  }
 }
 
 window.addEventListener('beforeinstallprompt', event => {
