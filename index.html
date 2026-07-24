@@ -3425,24 +3425,43 @@ function openContestCreateFromApp() {
   openContestCreateForm();
 }
 
+async function resolvePreferredContestId() {
+  await fetchContests();
+  const { data } = await cloudDb.from('profiles').select('active_contest_id').eq('user_id', cloudUser.id).maybeSingle();
+  dbActiveContestId = data?.active_contest_id || null;
+  const active = activeContests();
+  if (dbActiveContestId && active.some(c => c.id === dbActiveContestId)) return dbActiveContestId;
+  if (active.length === 1) return active[0].id;
+  return null;
+}
+
 async function enterContestFlow() {
   document.getElementById('login-screen')?.classList.add('hidden');
   document.getElementById('mfa-screen')?.classList.add('hidden');
   document.getElementById('reset-screen')?.classList.add('hidden');
   refreshCloudUI();
+  try {
+    const preferredId = await resolvePreferredContestId();
+    if (preferredId) {
+      const opened = await openContestSession(preferredId, { silent: true });
+      if (opened) return;
+    }
+  } catch (error) {
+    console.error('enterContestFlow error:', error);
+  }
   await showContestPicker('login');
 }
 
-async function selectContest(id) {
+async function openContestSession(id, options = {}) {
   const existing = activeContests().find(c => c.id === id);
-  if (!existing) return;
+  if (!existing) return false;
   try {
     const { error } = await cloudDb.rpc('set_active_contest', { p_contest_id: id });
     if (error) throw error;
   } catch (error) {
     console.error('set_active_contest error:', error);
-    showToast('⚠️', 'Não foi possível selecionar o concurso.');
-    return;
+    if (!options.silent) showToast('⚠️', 'Não foi possível selecionar o concurso.');
+    return false;
   }
   const contest = await ensureSeedSyllabus(existing);
   applyContestLocal(contest);
@@ -3450,7 +3469,12 @@ async function selectContest(id) {
   hideContestScreens();
   renderAllData();
   await loadCloudData();
-  showToast('📚', 'Concurso "' + (contest.name || '') + '" carregado!');
+  if (!options.silent) showToast('📚', 'Concurso "' + (contest.name || '') + '" carregado!');
+  return true;
+}
+
+async function selectContest(id) {
+  await openContestSession(id);
 }
 
 async function deleteContestPrompt(id) {
