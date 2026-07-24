@@ -609,7 +609,60 @@ select{min-width:0;max-width:100%;}
 .cf-select{min-width:0;max-width:100%;text-overflow:ellipsis;}
 #chart-disc{flex:1 1 150px;width:min(220px,100%);}
 #chart-period{flex:0 1 140px;width:min(160px,100%);}
-@media(max-width:760px){.stats-panel-header > div:last-child{width:100%;}.cf-select,#chart-disc,#chart-period{flex:1 1 100%;width:100%;}}</style>
+@media(max-width:760px){.stats-panel-header > div:last-child{width:100%;}.cf-select,#chart-disc,#chart-period{flex:1 1 100%;width:100%;}}
+
+/* ── CONTEST SCREEN (seleção/edição de concurso) ── */
+.contest-screen{position:fixed;inset:0;z-index:1900;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(145deg,#090e3b 0%,var(--navy) 55%,#171d62 100%);overflow-y:auto;}
+.contest-screen.hidden{display:none;}
+.contest-card{width:min(560px,100%);max-height:calc(100dvh - 48px);background:rgba(255,255,255,.98);border-radius:24px;box-shadow:0 28px 80px rgba(0,0,0,.35);display:flex;flex-direction:column;overflow:hidden;}
+.contest-card.contest-card-wide{width:min(760px,100%);}
+.contest-card-hdr{padding:30px 30px 16px;flex-shrink:0;}
+.contest-title{font:900 24px/1.2 'Nunito',sans-serif;color:var(--navy);}
+.contest-sub{margin-top:8px;color:var(--text-soft);font-size:12.5px;line-height:1.55;}
+.contest-card-body{padding:4px 30px 10px;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;flex:1;min-height:0;display:flex;flex-direction:column;gap:16px;}
+.contest-card-actions{padding:16px 30px 26px;display:flex;flex-direction:column;gap:10px;flex-shrink:0;border-top:1px solid var(--border);}
+.contest-list{display:flex;flex-direction:column;gap:10px;}
+.contest-empty{text-align:center;padding:28px 10px;color:var(--text-soft);font-size:13px;line-height:1.6;}
+.contest-item{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;border:1.5px solid var(--border);background:white;transition:border-color .18s,box-shadow .18s;cursor:pointer;}
+.contest-item:hover{border-color:var(--navy);box-shadow:0 6px 18px rgba(13,19,76,.1);}
+.contest-item.is-active{border-color:var(--rust);background:#fff8f8;}
+.contest-item-dot{width:11px;height:11px;border-radius:50%;background:var(--rust);flex-shrink:0;}
+.contest-item-main{flex:1;min-width:0;}
+.contest-item-name{font:800 14px/1.3 'Nunito',sans-serif;color:var(--navy);overflow-wrap:anywhere;}
+.contest-item-meta{margin-top:3px;font-size:11px;color:var(--text-soft);display:flex;flex-wrap:wrap;gap:6px;}
+.contest-item-badge{background:var(--bg);border-radius:99px;padding:2px 9px;font-weight:600;}
+.contest-item-active-badge{background:var(--rust);color:white;border-radius:99px;padding:2px 9px;font-weight:700;font-size:10px;letter-spacing:.4px;text-transform:uppercase;}
+.contest-item-actions{display:flex;gap:4px;flex-shrink:0;}
+.contest-item-actions button{background:transparent;border:none;cursor:pointer;color:var(--text-soft);font-size:15px;padding:6px 8px;border-radius:8px;transition:all .15s;}
+.contest-item-actions button:hover{background:var(--bg);color:var(--navy);}
+.contest-item-actions button.contest-del:hover{color:var(--red);background:var(--red-bg);}
+.editor-meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding-top:8px;}
+.editor-syllabus-hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;}
+.editor-disc-list{display:flex;flex-direction:column;gap:14px;}
+.editor-disc{background:var(--bg);border:1.5px solid var(--border);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.editor-disc-hdr{display:flex;gap:8px;align-items:center;}
+.editor-disc-hdr input{flex:1;}
+.editor-disc-id{font-size:10px;color:var(--text-soft);font-family:monospace;padding-left:2px;}
+.editor-group-list{display:flex;flex-direction:column;gap:10px;padding-left:12px;border-left:3px solid var(--rust);}
+.editor-group{background:white;border:1.5px solid var(--border);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;}
+.editor-group-hdr{display:flex;gap:8px;align-items:center;}
+.editor-group-hdr input{flex:1;}
+.editor-topics{width:100%;min-height:88px;padding:9px 11px;border-radius:9px;border:1.5px solid var(--border);font-size:12.5px;font-family:'Inter',sans-serif;color:var(--navy);outline:none;background:var(--bg);resize:vertical;line-height:1.5;transition:border-color .18s,background .18s;}
+.editor-topics:focus{border-color:var(--navy);background:white;}
+.editor-add-btn{padding:7px 13px;border-radius:9px;border:1.5px dashed var(--border);background:transparent;color:var(--text-mid);font-size:11px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:all .18s;white-space:nowrap;}
+.editor-add-btn:hover{border-color:var(--navy);color:var(--navy);background:var(--bg);}
+.editor-del-btn{background:none;border:none;cursor:pointer;color:var(--text-soft);font-size:14px;padding:5px 7px;border-radius:7px;transition:all .15s;flex-shrink:0;}
+.editor-del-btn:hover{color:var(--red);background:var(--red-bg);}
+.contest-link{border:0;background:transparent;color:rgba(255,255,255,.7);font:700 12px 'Inter',sans-serif;cursor:pointer;padding:0;text-decoration:underline;text-decoration-color:rgba(255,255,255,.35);}
+.contest-link:hover{color:white;}
+@media(max-width:600px){
+  .contest-card-hdr{padding:24px 20px 14px;}
+  .contest-card-body{padding:4px 20px 10px;}
+  .contest-card-actions{padding:14px 20px 22px;}
+  .editor-meta-grid{grid-template-columns:minmax(0,1fr);}
+  .contest-item{flex-wrap:wrap;}
+}
+</style>
 </head>
 <body>
 
@@ -697,6 +750,69 @@ select{min-width:0;max-width:100%;}
   </div>
 </section>
 
+<!-- SELEÇÃO DE CONCURSO -->
+<section class="contest-screen hidden" id="contest-screen" aria-labelledby="contest-title">
+  <div class="contest-card">
+    <div class="contest-card-hdr">
+      <h1 class="contest-title" id="contest-title">Escolha seu concurso</h1>
+      <p class="contest-sub">Selecione um concurso para continuar estudando ou crie um novo edital verticalizado.</p>
+    </div>
+    <div class="contest-card-body">
+      <div id="contest-list" class="contest-list"></div>
+    </div>
+    <div class="contest-card-actions">
+      <button class="login-button" type="button" onclick="openContestCreateForm()">➕ Criar novo concurso</button>
+      <button class="contest-link" type="button" id="contest-continue-btn" style="display:none" onclick="closeContestPicker()">Continuar no concurso ativo</button>
+      <button class="contest-link" type="button" onclick="signOutCloud()">Sair da conta</button>
+    </div>
+  </div>
+</section>
+
+<!-- EDITOR DE CONCURSO / EDITAL -->
+<section class="contest-screen hidden" id="contest-editor-screen" aria-labelledby="contest-editor-title">
+  <div class="contest-card contest-card-wide">
+    <div class="contest-card-hdr">
+      <h1 class="contest-title" id="contest-editor-title">Novo concurso</h1>
+      <p class="contest-sub">Preencha os dados do concurso e monte o edital verticalizado por disciplinas, grupos e tópicos.</p>
+    </div>
+    <div class="contest-card-body">
+      <div class="editor-meta-grid">
+        <div class="login-field">
+          <label for="editor-name">Nome do concurso</label>
+          <input class="login-input" id="editor-name" placeholder="Ex: PC PR - Polícia Civil do Paraná">
+        </div>
+        <div class="login-field">
+          <label for="editor-cargo">Cargo</label>
+          <input class="login-input" id="editor-cargo" placeholder="Ex: Agente de Polícia Judiciária">
+        </div>
+        <div class="login-field">
+          <label for="editor-banca">Banca</label>
+          <input class="login-input" id="editor-banca" placeholder="Ex: FGV">
+        </div>
+        <div class="login-field">
+          <label for="editor-data">Data da prova</label>
+          <input class="login-input" id="editor-data" type="date">
+        </div>
+      </div>
+      <div>
+        <div class="editor-syllabus-hdr">
+          <span class="profile-section-title">Disciplinas do edital</span>
+          <button class="editor-add-btn" type="button" onclick="addEditorDiscipline()">➕ Adicionar disciplina</button>
+        </div>
+        <div id="editor-disc-list" class="editor-disc-list" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <div class="contest-card-actions">
+      <button class="login-button" type="button" onclick="saveContestEditor()">💾 Salvar concurso</button>
+      <div style="display:flex;gap:8px">
+        <button class="backup-btn-imp" type="button" style="flex:1" onclick="backToContestPicker()">← Voltar aos concursos</button>
+        <button class="backup-btn-imp" type="button" style="flex:1;display:none" id="editor-open-plano-btn" onclick="openPlanoFromEditor()">Abrir plano →</button>
+      </div>
+      <div class="login-message" id="contest-editor-message" role="alert" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sb-info" id="sb-info"></div>
@@ -720,6 +836,7 @@ select{min-width:0;max-width:100%;}
       <button class="btn-backup" onclick="openBackupModal()" style="flex:1">⬆️ Exportar backup</button>
       <button class="btn-backup" onclick="triggerImport()" style="flex:1">⬇️ Restaurar</button>
     </div>
+    <button class="btn-backup" onclick="openContestPickerFromApp()" style="width:100%;margin-top:8px">🔀 Trocar concurso</button>
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="importBackup(this)">
   </div>
 </aside>
@@ -1114,6 +1231,17 @@ select{min-width:0;max-width:100%;}
       </div>
 
       <div class="profile-section">
+        <div class="profile-section-title">Concurso</div>
+        <div class="profile-sync">
+          <span>Ativo: <strong id="profile-contest-name">—</strong></span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="backup-btn-imp" type="button" style="flex:1" onclick="openContestPickerFromApp()">🔀 Trocar concurso</button>
+          <button class="backup-btn-imp" type="button" style="flex:1" onclick="openContestEditorFromApp()">✏️ Editar edital</button>
+        </div>
+      </div>
+
+      <div class="profile-section">
         <div class="profile-section-title">Segurança</div>
         <button class="backup-btn-imp" type="button" id="toggle-password-form" onclick="toggleProfilePasswordForm()">🔑 Alterar senha</button>
         <form class="profile-password" id="profile-password-form" onsubmit="changePasswordFromProfile(event)">
@@ -1166,7 +1294,8 @@ select{min-width:0;max-width:100%;}
 // ═══════════════════════════════════════════════════════
 //  CONFIGURAÇÃO DO CONCURSO — EDITE AQUI
 // ═══════════════════════════════════════════════════════
-const CONCURSO_INFO={concurso:"PC PR - Polícia Civil do Estado do Paraná",cargo:"Agente de Polícia Judiciária",banca:"FGV",dataProva:"2026-10-11"};
+const DEFAULT_CONCURSO_INFO={concurso:"PC PR - Polícia Civil do Estado do Paraná",cargo:"Agente de Polícia Judiciária",banca:"FGV",dataProva:"2026-10-11"};
+let CONCURSO_INFO = { ...DEFAULT_CONCURSO_INFO };
 const DISC_CORES = ['#C8102E','#0D134C','#E255BE','#A7C3BB','#EFBD7B','#AFE8D0','#7c3aed','#BAFF38','#0d9488','#ea580c'];
 const SUPABASE_URL = 'https://cepffdlfxjggkjzkkjlh.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_MplCfLiIJFUfoX7Krhl2Cw_bEMAJyZE';
@@ -1196,8 +1325,51 @@ let deferredInstallPrompt = null;
 // ═══════════════════════════════════════════════════════
 //  DADOS DO EDITAL — EDITE AQUI
 // ═══════════════════════════════════════════════════════
-const EDITAL=[{"id":"lingua-portuguesa","nome":"LÍNGUA PORTUGUESA","grupos":[{"nome":"Leitura, Compreensão e Análise Textual","topicos":["1.1 Interpretação e compreensão de texto.","1.2 Organização estrutural dos textos.","1.3 Marcas de textualidade: coesão, coerência e intertextualidade.","1.4 Modos de organização discursiva: descrição, narração, exposição, argumentação e injunção; características específicas de cada modo.","1.5 Tipos textuais: informativo, publicitário, propagandístico, normativo, didático e divinatório; characteristics específicas de cada tipo.","1.6 Textos literários e não literários.","1.14 Tipos de discurso.","1.15 Registros de linguagem.","1.16 Funções da linguagem.","1.17 Elementos dos atos de comunicação."]},{"nome":"Estrutura Sintática, Organização Frasal e Pontuação","topicos":["1.7 Tipologia da frase portuguesa.","1.8 Estrutura da frase portuguesa: operações de deslocamento, substituição, modificação e correção.","1.9 Problemas estruturais das frases.","1.11 Pontuação e sinais gráficos.","1.12 Organização sintática das frases: termos e orações.","1.13 Ordem direta e inversa.","1.26 A crase."]},{"nome":"Morfologia e Classes de Palavras","topicos":["1.18 Estrutura e formação de palavras.","1.19 Formas de abreviação.","1.20 Classes de palavras; aspectos morfológicos, sintáticos, semânticos e textuais de substantivos, adjetivos, artigos, numerais, pronomes, verbos, advérbios, conjunções e interjeições; modalizadores."]},{"nome":"Semântica, Vocabulário e Lexicografia","topicos":["1.21 Semântica: sentido próprio e figurado; antônimos, sinônimos, parônimos e hiperônimos.","1.22 Polissemia e ambiguidade.","1.23 Os dicionários: tipos e organização de verbetes.","1.24 Vocabulário: neologismos, arcaísmos, estrangeirismos e latinismos."]},{"nome":"Norma Culta, Ortografia e Acentuação","topicos":["1.10 Norma culta.","1.25 Ortografia e acentuação gráfica."]}]},{"id":"raciocinio-logico-matematico","nome":"RACIOCÍNIO LÓGICO-MATEMÁTICO","grupos":[{"nome":"Lógica Proposicional e Estruturas Lógicas","topicos":["2.1 Lógica: proposições, conectivos, equivalências lógicas, quantificadores e predicados.","2.6 Estrutura lógica de relações arbitrárias entre pessoas, lugares, objetos ou eventos fictícios; dedução de informações e avaliação de condições.","2.7 Compreensão e análise lógica de situações: raciocínio verbal, matemático e sequencial; orientação espacial e temporal; formação de conceitos; discriminação de elementos.","2.13 Problemas de lógica e raciocínio."]},{"nome":"Matemática Básica, Conjuntos e Proporcionalidade","topicos":["2.2 Conjuntos e suas operações; diagramas.","2.3 Números inteiros, racionais e reais; operações; porcentagem; juros.","2.4 Proporcionalidade direta e inversa.","2.5 Medidas de comprimento, área, volume, massa e tempo."]},{"nome":"Geometria, Espaço e Análise de Dados","topicos":["2.8 Interpretação de dados apresentados em gráficos e tabelas.","2.9 Raciocínio lógico envolvendo problemas aritméticos, geométricos e matriciais.","2.10 Problemas de contagem e noções de probabilidade.","2.11 Geometria básica: ângulos, triângulos, polígonos, distâncias, proporcionalidade, perímetro e área.","2.12 Plano cartesiano: sistema de coordenadas e distância."]}]},{"id":"realidade-etnica-social-historica-geografica-cultural-politica-e-economica-do-estado-do-parana","nome":"REALIDADE ÉTNICA, SOCIAL, HISTÓRICA, GEOGRÁFICA, CULTURAL, POLÍTICA E ECONÔMICA DO ESTADO DO PARANÁ","grupos":[{"nome":"História, Geografia e Organização Política do Paraná","topicos":["3.1 Aspectos históricos do Estado do Paraná: formação territorial; processos coloniais; movimentos sociais e desenvolvimento histórico.","3.2 Geografia física e humana: relevo; clima; hidrografia; vegetação; população; densidade demográfica; atividades econômicas.","3.3 Divisão político-administrativa: organização territorial; municípios; regiões de desenvolvimento."]},{"nome":"Cultura e Aspectos Sociais, Econômicos e Políticos","topicos":["3.4 Cultura paranaense: manifestações culturais; patrimônio material e imaterial; festas populares; artes; literatura; música; tradições.","3.5 Indicadores sociais e econômicos: Índice de Desenvolvimento Humano (IDH); segurança pública; saúde; educação; mobilidade; desenvolvimento regional.","3.6 Estrutura do governo estadual; políticas públicas; programas sociais; desafios contemporâneos.","3.7 Temas atuais do Estado do Paraná: segurança pública; economia; meio ambiente; inclusão social; sustentabilidade."]}]},{"id":"tecnologia-e-sistemas-de-informacao-e-de-comunicacao-seguranca-cibernetica-e-crimes-digitais","nome":"TECNOLOGIA E SISTEMAS DE INFORMAÇÃO E DE COMUNICAÇÃO, SEGURANÇA CIBERNÉTICA E CRIMES DIGITAIS","grupos":[{"nome":"Fundamentos de Informática, Sistemas Operacionais e Redes","topicos":["1.1. Fundamentos de informática: hardware, software, periféricos, dispositivos móveis, armazenamento de dados, backup, BIOS, UEFI, drivers e firmware.","1.2. Sistemas operacionais e aplicativos: Microsoft Windows 11(BR); Android; iOS; Microsoft 365 (BR); LibreOffice/BrOffice; Google Workspace; instalação, atualização, configuração e segurança de sistemas e aplicativos.","1.3. Internet, redes e tecnologias digitais: internet e intranet; navegadores; correio eletrônico; computação em nuvem; compartilhamento de arquivos; redes de computadores; IP; DNS; VPN; firewall; redes sociais; plataformas digitais; registros eletrônicos; cookies; cache; metadados; noções de lógica de programação, aplicações web, HTML, CSS, JavaScript, bancos de dados e APIs."]},{"nome":"Segurança da Informação e Cibernética","topicos":["1.4. Segurança da informação e segurança cibernética: confidencialidade, integridade, disponibilidade, autenticidade e rastreabilidade das informações; controle de acesso; autenticação; logs; auditoria; criptografia; certificados digitais; backup; recuperação de dados; vulnerabilidades; malware; ransomware; phishing; engenharia social; segurança em redes, dispositivos e serviços em nuvem; políticas de segurança; proteção de dados pessoais; prevenção e resposta a incidentes de segurança."]},{"nome":"Investigação Digital, Legislação e Crimes Cibernéticos","topicos":["1.5. Crimes cibernéticos, investigação digital e evidências eletrônicas: crimes digitais; fraudes eletrônicas; invasão de dispositivos; crimes em redes sociais e na internet; coleta, preservação, rastreabilidade e cadeia de custódia de evidências digitais; rastreamento e recuperação de informações; inteligência cibernética; fontes abertas (OSINT).","1.6. Legislação e ética digital: Marco Civil da Internet (Lei Federal n.º 12.965/2014); Lei Geral de Proteção de Dados Pessoais – LGPD (Lei Federal n.º 13.709/2018); Lei dos Crimes Informáticos (Lei Federal n.º 12.737/2012); Lei Federal n.º 14.155/2021); sigilo funcional; uso ético e responsável da tecnologia e das informações institucionais."]}]},{"id":"ciencias-forenses","nome":"CIÊNCIAS FORENSES","grupos":[{"nome":"Medicina Legal","topicos":["2.1. Medicina Legal: conceito, divisões e importância; perícia médico-legal; antropologia forense; identificação humana; papiloscopia; odontologia legal; identificação por DNA; reconhecimento facial; inteligência artificial aplicada à identificação pericial; sexologia forense; traumatologia forense; lesões corporais; instrumentos lesivos; asfixiologia; balística forense; tanatologia; morte; fenômenos cadavéricos; necropsia; toxicologia forense; intoxicações e exames toxicológicos; psicopatologia forense; imputabilidade penal; perícia psiquiátrica."]},{"nome":"Criminalística e Documentoscopia","topicos":["2.2. Criminalística e Documentoscopia: criminalística; vestígios, indícios e evidências; local de crime; cadeia de custódia; preservação de local de crime; documentoscopia; grafoscopia; análise documental; análise de assinaturas; falsificações."]},{"nome":"Criminologia e Vitimologia","topicos":["2.3. Criminologia e Vitimologia: conceito, objeto e métodos da criminologia; escolas criminológicas; criminologia crítica; teorias criminológicas; vitimologia; classificação das vítimas; vitimização; controle social; prevenção do delito; criminologia e política criminal; criminologia aplicada à atuação policial; perfil criminal; análise de indicadores de criminalidade."]},{"nome":"Criminologia Digital e Investigação Tecnológica","topicos":["2.4. Criminologia Digital e Investigação Tecnológica: crimes digitais; perfil do criminoso cibernético; deep web; dark web; ambientes digitais criminógenos; vitimização digital; rastreamento de informações; evidências eletrônicas; logs; metadados; redes sociais; preservação de evidências digitais; inteligência cibernética e fontes abertas (OSINT)."]}]},{"id":"contabilidade-geral","nome":"CONTABILIDADE GERAL","grupos":[{"nome":"Teoria Geral, Patrimônio e Operações Contábeis","topicos":["3.1 Teoria e princípios básicos da contabilidade.","3.2 Patrimônio, contas e escrituração contábil.","3.3 Operações comerciais e bancárias; estoques; tributos sobre compras e vendas; folha de pagamento; provisões."]},{"nome":"Demonstrações, Custos e Normatização","topicos":["3.4 Demonstrações contábeis and análise das demonstrações contábeis.","3.5 Custos: conceitos e classificações.","3.6 Sistemas de informações contábeis (SIC).","3.7 Normas do Comitê de Pronunciamentos Contábeis (CPC), do Conselho Federal de Contabilidade (CFC) e legislação societária aplicável."]},{"nome":"Análise Financeira e Prevenção a Fraudes","topicos":["3.8 Noções de análise financeira, controle patrimonial e identificação de irregularidades contábeis, fraudes, inconsistências em registros financeiros e indícios de ocultação patrimonial."]}]},{"id":"estatistica","nome":"ESTATÍSTICA","grupos":[{"nome":"Estatística Descritiva e Amostragem","topicos":["4.1. Conceitos básicos de estatística e estatística descritiva.","4.2. Organização, interpretação e apresentação de dados; tabelas e gráficos.","4.3. Variáveis qualitativas e quantitativas; média, mediana, moda e medidas de dispersão.","4.4. Porcentagem, probabilidade básica e noções de amostragem."]},{"nome":"Análise de Dados, Detecção de Anomalias e Atuação Policial","topicos":["4.5. Leitura e interpretação de indicadores estatísticos.","4.6. Identificação de padrões, inconsistências e anomalias em dados estatísticos.","4.7 Métodos de detecção de outliers.","4.8. Aplicação da estatística na análise de informações, indicadores de criminalidade e atividade policial."]}]},{"id":"legislacao-estadual-e-institucional","nome":"LEGISLAÇÃO ESTADUAL E INSTITUCIONAL","grupos":[{"nome":"Legislação Orgânica e Estrutura da Polícia Civil do Paraná","topicos":["5.1 Constituição do Estado do Paraná: disposições relativas à Administração Pública, servidores públicos, segurança pública e Polícia Civil.","5.2 Estruturação das carreiras da Polícia Civil do Estado do Paraná: Lei Complementar Estadual n.º 259, de 21 de julho de 2023, e suas alterações posteriores.","5.3 Lei Orgânica Nacional das Polícias Civis: Lei Federal n.º 14.735/2023.","5.4 Lei Orgânica da Polícia Civil do Estado do Paraná: Lei Estadual n.º 23.213/2026.","5.5 Código Disciplinar da Polícia Civil do Paraná: Lei Estadual n.º 21.894/2024."]},{"nome":"Regime Jurídico e Legislação Aplicada à Atividade Policial","topicos":["5.6 Regime jurídico dos servidores públicos do Estado do Paraná: Lei Estadual n.º 6.174/1970 e alterações posteriores; provimento; vacância; direitos; vantagens; deveres; proibições; responsabilidades; sindicância; processo administrativo disciplinar; responsabilidade civil, administrativa e penal do servidor público; ética no serviço público; sigilo funcional e proteção de informações institucionais.","5.7 Legislação aplicada à atividade institucional e policial: Lei de Abuso de Autoridade (Lei n.º 13.869/2019); Lei de Identificação Criminal (Lei n.º 12.037/2009); Lei Geral de Proteção de Dados Pessoais – LGPD (Lei n.º 13.709/2018); Lei de Acesso à Informação (Lei n.º 12.527/2011)."]}]},{"id":"direito-penal-e-legislacao-penal-extravagante","nome":"DIREITO PENAL E LEGISLAÇÃO PENAL EXTRAVAGANTE","grupos":[{"nome":"Direito Penal (Parte Geral e Parte Especial)","topicos":["6.1 Direito Penal: princípios básicos; aplicação da lei penal; lei penal no tempo e no espaço; tempo e lugar do crime; territorialidade e extraterritorialidade; teoria do crime; fato típico; crime consumado e tentado; desistência voluntária; arrependimento eficaz; crime impossível; dolo e culpa; erro; ilicitude; causas de exclusão; culpabilidade; concurso de pessoas; concurso de crimes; penas; aplicação da pena; extinção da punibilidade; crimes contra a pessoa; crimes contra o patrimônio; crimes contra a dignidade sexual; crimes contra a fé pública; crimes contra a administração pública."]},{"nome":"Direito Processual Penal Aplicado","topicos":["6.2 Direito Processual Penal aplicado: inquérito policial; notitia criminis; delatio criminis; indiciamento; garantias do investigado; provas; cadeia de custódia; preservação de local de crime; reconhecimento de pessoas e coisas; busca e apreensão; prisão em flagrante; prisão preventiva; liberdade provória; medidas cautelares diversas da prisão."]},{"nome":"Legislação Penal Extravagante","topicos":["6.3 Legislação Penal e Processual Penal Extravagante: Lei de Execução Penal (Lei n.º 7.210/1984); Lei dos Crimes Hediondos (Lei n.º 8.072/1990); Lei dos Crimes contra a Ordem Tributária, Econômica e Relações de Consumo (Lei n.º 8.137/1990); Lei de Interceptação Telefônica (Lei n.º 9.296/1996); Código de Trânsito Brasileiro – CTB (Lei n.º 9.503/1997); Estatuto do Desarmamento (Lei n.º 10.826/2003); Lei Maria da Penha (Lei n.º 11.340/2006); Lei de Drogas (Lei n.º 11.343/2006); Lei das Organizações Criminosas (Lei n.º 12.850/2013); Lei de Abuso de Autoridade (Lei n.º 13.869/2019); Pacote Anticrime (Lei n.º 13.964/2019); Estatuto da Advocacia e Ordem dos Advogados do Brasil (Lei n.º 8.906/1994 - aspectos penais)."]}]},{"id":"direito-processual-penal-e-legislacao-processual-penal-extravagante","nome":"DIREITO PROCESSUAL PENAL E LEGISLAÇÃO PROCESSUAL PENAL EXTRAVAGANTE","grupos":[{"nome":"Direito Processual Penal","topicos":["7.1 Direito Processual Penal: princípios do processo penal; aplicação da lei processual penal; sistemas processuais; persecução penal; inquérito policial; notícia do crime; ação penal; jurisdição e competência; sujeitos processuais; provas; cadeia de custódia; preservação de local de crime; busca e apreensão; reconhecimento de pessoas e coisas; interceptação telefônica; sigilo de dados; prisão em flagrante; prisão preventiva; prisão temporária; liberdade provisória; medidas cautelares diversas da prisão; procedimentos investigativos; direitos e garantias do investigado; juiz das garantias; acordo de não persecução penal."]},{"nome":"Legislação Processual Penal Extravagante","topicos":["7.2 Legislação Processual Penal Extravagante: Lei de Interceptação Telefônica (Lei n.º 9.296/1996); Lei de Lavagem de Dinheiro (Lei n.º 9.613/1998); Estatuto do Desarmamento (Lei n.º 10.826/2003); Lei Maria da Penha (Lei n.º 11.340/2006); Lei de Drogas (Lei n.º 11.343/2006); Lei das Organizações Criminosas (Lei n.º 12.850/2013); Lei de Abuso de Autoridade (Lei n.º 13.869/2019); Pacote Anticrime (Lei n.º 13.964/2019); disposições processuais penais da Lei dos Crimes Hediondos (Lei n.º 8.072/1990). Marco Legal do Combate ao Crime Organizado no Brasil (Lei n.º 15.358/2026); Estatuto da Advocacia e Ordem dos Advogados do Brasil (Lei n.º 8.906/1994 - aspectos processuais penais)."]}]},{"id":"direito-constitucional","nome":"DIREITO CONSTITUCIONAL","grupos":[{"nome":"Teoria Geral, Direitos Fundamentais e Remédios","topicos":["8.1 Princípios fundamentais da Constituição da República Federativa do Brasil de 1988.","8.2 Direitos e garantias fundamentais: direitos individuais e coletivos; direitos sociais; nacionalidade; direitos políticos; garantias constitucionais; devido processo legal; inviolabilidade de domicílio; sigilo de dados e comunicações; prisão e liberdade.","8.3 Remédios constitucionais: habeas corpus; habeas data; mandado de segurança; mandado de injunção; ação popular."]},{"nome":"Organização do Estado e dos Poderes","topicos":["8.4 Organização do Estado: União; Estados; Municípios; Distrito Federal; competências constitucionais.","8.5 Poderes da União: Poder Executivo; Poder Legislativo; Poder Judiciário; funções, competências e limites constitucionais."]},{"nome":"Segurança Pública, Controle de Constitucionalidade e Legislação Estadual","topicos":["8.6 Segurança pública na Constituição Federal: disposições do art. 144 da Constituição Federal; organização, competências e atribuições das polícias; Polícia Civil; polícia judiciária e investigação criminal.","8.7 Controle de constitucionalidade: ação direta de inconstitucionalidade; ação declaratória de constitucionalidade.","8.8 Constituição do Estado do Paraná: disposições relativas à Administração Pública; servidores públicos; segurança pública; Polícia Civil do Estado do Paraná."]}]},{"id":"direito-administrativo","nome":"DIREITO ADMINISTRATIVO","grupos":[{"nome":"Fundamentos, Estrutura, Atos e Poderes","topicos":["9.1 Conceito, fontes e princípios do Direito Administrativo; princípios da Administração Pública; disposições da Lei de Introdução às Normas do Direito Brasileiro (LINDB) aplicáveis ao Direito Administrativo.","9.2 Administração Pública: administração direta e indireta; autarquias, fundações, empresas públicas e sociedades de economia mista.","9.3 Atos administrativos: requisitos, atributos, classificação, espécies, revogação, invalidação e convalidação.","9.4 Poderes administrativos: poder hierárquico, disciplinar, regulamentar e de polícia; abuso de poder; Lei de Abuso de Autoridade (Lei n.º 13.869/2019)."]},{"nome":"Serviços Públicos, Licitações, Contratos e Agentes","topicos":["9.5 Serviços públicos: conceito, características e formas de prestação.","9.6 Licitações e contratos administrativos: Lei n.º 14.133/2021 e disposições aplicáveis.","9.7 Agentes públicos: cargos, empregos e funções públicas; investidura; direitos; deveres; responsabilidades; processo administrativo disciplinar."]},{"nome":"Responsabilidade do Estado, Improbidade e Controle","topicos":["9.8 Responsabilidade civil do Estado: teoria do risco administrativo; responsabilidade por atos de agentes públicos; causas excludentes.","9.9 Improbidade administrativa: Lei n.º 8.429/1992 e alterações posteriores; atos de improbidade; penalidades e disposições aplicáveis.","9.10 Controle da Administração Pública: controle administrativo, judicial e legislativo; autotutela administrativa."]}]},{"id":"direitos-humanos","nome":"DIREITOS HUMANOS","grupos":[{"nome":"Teoria Geral, Sistemas de Proteção e Cidadania","topicos":["10.1 Teoria Geral dos Direitos Humanos: conceito, características, princípios e evolução histórica dos Direitos Humanos.","10.2 Sistemas de proteção dos Direitos Humanos: sistema global e sistema interamericano de proteção dos Direitos Humanos; tratados internacionais de proteção dos Direitos Humanos; Constituição da República Federativa do Brasil de 1988 e Direitos Humanos.","10.3 Democracia, cidadania e Direitos Humanos."]},{"nome":"Grupos Vulneráveis, Segurança Pública e Políticas Institucionais","topicos":["10.4 Direitos Humanos e grupos vulneráveis: mulheres, idosos, crianças e adolescentes, povos indígenas e comunidades tradicionais, pessoas com deficiência, população LGBTQIA+ e refugiados.","10.5 Segurança pública e Direitos Humanos: dignidade da pessoa humana; uso proporcional da força; prevenção da tortura; direitos da pessoa presa; atuação policial e Direitos Humanos.","10.6 Política Nacional de Direitos Humanos, educação em Direitos Humanos e cultura de proteção dos Direitos Humanos.","10.7 Agenda 2030 e Objetivos de Desenvolvimento Sustentável (ODS)."]}]}];
-const KEY="plano-pc-pr-policia-civil-do-estado-do-parana";
+const DEFAULT_EDITAL=[{"id":"lingua-portuguesa","nome":"LÍNGUA PORTUGUESA","grupos":[{"nome":"Leitura, Compreensão e Análise Textual","topicos":["1.1 Interpretação e compreensão de texto.","1.2 Organização estrutural dos textos.","1.3 Marcas de textualidade: coesão, coerência e intertextualidade.","1.4 Modos de organização discursiva: descrição, narração, exposição, argumentação e injunção; características específicas de cada modo.","1.5 Tipos textuais: informativo, publicitário, propagandístico, normativo, didático e divinatório; characteristics específicas de cada tipo.","1.6 Textos literários e não literários.","1.14 Tipos de discurso.","1.15 Registros de linguagem.","1.16 Funções da linguagem.","1.17 Elementos dos atos de comunicação."]},{"nome":"Estrutura Sintática, Organização Frasal e Pontuação","topicos":["1.7 Tipologia da frase portuguesa.","1.8 Estrutura da frase portuguesa: operações de deslocamento, substituição, modificação e correção.","1.9 Problemas estruturais das frases.","1.11 Pontuação e sinais gráficos.","1.12 Organização sintática das frases: termos e orações.","1.13 Ordem direta e inversa.","1.26 A crase."]},{"nome":"Morfologia e Classes de Palavras","topicos":["1.18 Estrutura e formação de palavras.","1.19 Formas de abreviação.","1.20 Classes de palavras; aspectos morfológicos, sintáticos, semânticos e textuais de substantivos, adjetivos, artigos, numerais, pronomes, verbos, advérbios, conjunções e interjeições; modalizadores."]},{"nome":"Semântica, Vocabulário e Lexicografia","topicos":["1.21 Semântica: sentido próprio e figurado; antônimos, sinônimos, parônimos e hiperônimos.","1.22 Polissemia e ambiguidade.","1.23 Os dicionários: tipos e organização de verbetes.","1.24 Vocabulário: neologismos, arcaísmos, estrangeirismos e latinismos."]},{"nome":"Norma Culta, Ortografia e Acentuação","topicos":["1.10 Norma culta.","1.25 Ortografia e acentuação gráfica."]}]},{"id":"raciocinio-logico-matematico","nome":"RACIOCÍNIO LÓGICO-MATEMÁTICO","grupos":[{"nome":"Lógica Proposicional e Estruturas Lógicas","topicos":["2.1 Lógica: proposições, conectivos, equivalências lógicas, quantificadores e predicados.","2.6 Estrutura lógica de relações arbitrárias entre pessoas, lugares, objetos ou eventos fictícios; dedução de informações e avaliação de condições.","2.7 Compreensão e análise lógica de situações: raciocínio verbal, matemático e sequencial; orientação espacial e temporal; formação de conceitos; discriminação de elementos.","2.13 Problemas de lógica e raciocínio."]},{"nome":"Matemática Básica, Conjuntos e Proporcionalidade","topicos":["2.2 Conjuntos e suas operações; diagramas.","2.3 Números inteiros, racionais e reais; operações; porcentagem; juros.","2.4 Proporcionalidade direta e inversa.","2.5 Medidas de comprimento, área, volume, massa e tempo."]},{"nome":"Geometria, Espaço e Análise de Dados","topicos":["2.8 Interpretação de dados apresentados em gráficos e tabelas.","2.9 Raciocínio lógico envolvendo problemas aritméticos, geométricos e matriciais.","2.10 Problemas de contagem e noções de probabilidade.","2.11 Geometria básica: ângulos, triângulos, polígonos, distâncias, proporcionalidade, perímetro e área.","2.12 Plano cartesiano: sistema de coordenadas e distância."]}]},{"id":"realidade-etnica-social-historica-geografica-cultural-politica-e-economica-do-estado-do-parana","nome":"REALIDADE ÉTNICA, SOCIAL, HISTÓRICA, GEOGRÁFICA, CULTURAL, POLÍTICA E ECONÔMICA DO ESTADO DO PARANÁ","grupos":[{"nome":"História, Geografia e Organização Política do Paraná","topicos":["3.1 Aspectos históricos do Estado do Paraná: formação territorial; processos coloniais; movimentos sociais e desenvolvimento histórico.","3.2 Geografia física e humana: relevo; clima; hidrografia; vegetação; população; densidade demográfica; atividades econômicas.","3.3 Divisão político-administrativa: organização territorial; municípios; regiões de desenvolvimento."]},{"nome":"Cultura e Aspectos Sociais, Econômicos e Políticos","topicos":["3.4 Cultura paranaense: manifestações culturais; patrimônio material e imaterial; festas populares; artes; literatura; música; tradições.","3.5 Indicadores sociais e econômicos: Índice de Desenvolvimento Humano (IDH); segurança pública; saúde; educação; mobilidade; desenvolvimento regional.","3.6 Estrutura do governo estadual; políticas públicas; programas sociais; desafios contemporâneos.","3.7 Temas atuais do Estado do Paraná: segurança pública; economia; meio ambiente; inclusão social; sustentabilidade."]}]},{"id":"tecnologia-e-sistemas-de-informacao-e-de-comunicacao-seguranca-cibernetica-e-crimes-digitais","nome":"TECNOLOGIA E SISTEMAS DE INFORMAÇÃO E DE COMUNICAÇÃO, SEGURANÇA CIBERNÉTICA E CRIMES DIGITAIS","grupos":[{"nome":"Fundamentos de Informática, Sistemas Operacionais e Redes","topicos":["1.1. Fundamentos de informática: hardware, software, periféricos, dispositivos móveis, armazenamento de dados, backup, BIOS, UEFI, drivers e firmware.","1.2. Sistemas operacionais e aplicativos: Microsoft Windows 11(BR); Android; iOS; Microsoft 365 (BR); LibreOffice/BrOffice; Google Workspace; instalação, atualização, configuração e segurança de sistemas e aplicativos.","1.3. Internet, redes e tecnologias digitais: internet e intranet; navegadores; correio eletrônico; computação em nuvem; compartilhamento de arquivos; redes de computadores; IP; DNS; VPN; firewall; redes sociais; plataformas digitais; registros eletrônicos; cookies; cache; metadados; noções de lógica de programação, aplicações web, HTML, CSS, JavaScript, bancos de dados e APIs."]},{"nome":"Segurança da Informação e Cibernética","topicos":["1.4. Segurança da informação e segurança cibernética: confidencialidade, integridade, disponibilidade, autenticidade e rastreabilidade das informações; controle de acesso; autenticação; logs; auditoria; criptografia; certificados digitais; backup; recuperação de dados; vulnerabilidades; malware; ransomware; phishing; engenharia social; segurança em redes, dispositivos e serviços em nuvem; políticas de segurança; proteção de dados pessoais; prevenção e resposta a incidentes de segurança."]},{"nome":"Investigação Digital, Legislação e Crimes Cibernéticos","topicos":["1.5. Crimes cibernéticos, investigação digital e evidências eletrônicas: crimes digitais; fraudes eletrônicas; invasão de dispositivos; crimes em redes sociais e na internet; coleta, preservação, rastreabilidade e cadeia de custódia de evidências digitais; rastreamento e recuperação de informações; inteligência cibernética; fontes abertas (OSINT).","1.6. Legislação e ética digital: Marco Civil da Internet (Lei Federal n.º 12.965/2014); Lei Geral de Proteção de Dados Pessoais – LGPD (Lei Federal n.º 13.709/2018); Lei dos Crimes Informáticos (Lei Federal n.º 12.737/2012); Lei Federal n.º 14.155/2021); sigilo funcional; uso ético e responsável da tecnologia e das informações institucionais."]}]},{"id":"ciencias-forenses","nome":"CIÊNCIAS FORENSES","grupos":[{"nome":"Medicina Legal","topicos":["2.1. Medicina Legal: conceito, divisões e importância; perícia médico-legal; antropologia forense; identificação humana; papiloscopia; odontologia legal; identificação por DNA; reconhecimento facial; inteligência artificial aplicada à identificação pericial; sexologia forense; traumatologia forense; lesões corporais; instrumentos lesivos; asfixiologia; balística forense; tanatologia; morte; fenômenos cadavéricos; necropsia; toxicologia forense; intoxicações e exames toxicológicos; psicopatologia forense; imputabilidade penal; perícia psiquiátrica."]},{"nome":"Criminalística e Documentoscopia","topicos":["2.2. Criminalística e Documentoscopia: criminalística; vestígios, indícios e evidências; local de crime; cadeia de custódia; preservação de local de crime; documentoscopia; grafoscopia; análise documental; análise de assinaturas; falsificações."]},{"nome":"Criminologia e Vitimologia","topicos":["2.3. Criminologia e Vitimologia: conceito, objeto e métodos da criminologia; escolas criminológicas; criminologia crítica; teorias criminológicas; vitimologia; classificação das vítimas; vitimização; controle social; prevenção do delito; criminologia e política criminal; criminologia aplicada à atuação policial; perfil criminal; análise de indicadores de criminalidade."]},{"nome":"Criminologia Digital e Investigação Tecnológica","topicos":["2.4. Criminologia Digital e Investigação Tecnológica: crimes digitais; perfil do criminoso cibernético; deep web; dark web; ambientes digitais criminógenos; vitimização digital; rastreamento de informações; evidências eletrônicas; logs; metadados; redes sociais; preservação de evidências digitais; inteligência cibernética e fontes abertas (OSINT)."]}]},{"id":"contabilidade-geral","nome":"CONTABILIDADE GERAL","grupos":[{"nome":"Teoria Geral, Patrimônio e Operações Contábeis","topicos":["3.1 Teoria e princípios básicos da contabilidade.","3.2 Patrimônio, contas e escrituração contábil.","3.3 Operações comerciais e bancárias; estoques; tributos sobre compras e vendas; folha de pagamento; provisões."]},{"nome":"Demonstrações, Custos e Normatização","topicos":["3.4 Demonstrações contábeis and análise das demonstrações contábeis.","3.5 Custos: conceitos e classificações.","3.6 Sistemas de informações contábeis (SIC).","3.7 Normas do Comitê de Pronunciamentos Contábeis (CPC), do Conselho Federal de Contabilidade (CFC) e legislação societária aplicável."]},{"nome":"Análise Financeira e Prevenção a Fraudes","topicos":["3.8 Noções de análise financeira, controle patrimonial e identificação de irregularidades contábeis, fraudes, inconsistências em registros financeiros e indícios de ocultação patrimonial."]}]},{"id":"estatistica","nome":"ESTATÍSTICA","grupos":[{"nome":"Estatística Descritiva e Amostragem","topicos":["4.1. Conceitos básicos de estatística e estatística descritiva.","4.2. Organização, interpretação e apresentação de dados; tabelas e gráficos.","4.3. Variáveis qualitativas e quantitativas; média, mediana, moda e medidas de dispersão.","4.4. Porcentagem, probabilidade básica e noções de amostragem."]},{"nome":"Análise de Dados, Detecção de Anomalias e Atuação Policial","topicos":["4.5. Leitura e interpretação de indicadores estatísticos.","4.6. Identificação de padrões, inconsistências e anomalias em dados estatísticos.","4.7 Métodos de detecção de outliers.","4.8. Aplicação da estatística na análise de informações, indicadores de criminalidade e atividade policial."]}]},{"id":"legislacao-estadual-e-institucional","nome":"LEGISLAÇÃO ESTADUAL E INSTITUCIONAL","grupos":[{"nome":"Legislação Orgânica e Estrutura da Polícia Civil do Paraná","topicos":["5.1 Constituição do Estado do Paraná: disposições relativas à Administração Pública, servidores públicos, segurança pública e Polícia Civil.","5.2 Estruturação das carreiras da Polícia Civil do Estado do Paraná: Lei Complementar Estadual n.º 259, de 21 de julho de 2023, e suas alterações posteriores.","5.3 Lei Orgânica Nacional das Polícias Civis: Lei Federal n.º 14.735/2023.","5.4 Lei Orgânica da Polícia Civil do Estado do Paraná: Lei Estadual n.º 23.213/2026.","5.5 Código Disciplinar da Polícia Civil do Paraná: Lei Estadual n.º 21.894/2024."]},{"nome":"Regime Jurídico e Legislação Aplicada à Atividade Policial","topicos":["5.6 Regime jurídico dos servidores públicos do Estado do Paraná: Lei Estadual n.º 6.174/1970 e alterações posteriores; provimento; vacância; direitos; vantagens; deveres; proibições; responsabilidades; sindicância; processo administrativo disciplinar; responsabilidade civil, administrativa e penal do servidor público; ética no serviço público; sigilo funcional e proteção de informações institucionais.","5.7 Legislação aplicada à atividade institucional e policial: Lei de Abuso de Autoridade (Lei n.º 13.869/2019); Lei de Identificação Criminal (Lei n.º 12.037/2009); Lei Geral de Proteção de Dados Pessoais – LGPD (Lei n.º 13.709/2018); Lei de Acesso à Informação (Lei n.º 12.527/2011)."]}]},{"id":"direito-penal-e-legislacao-penal-extravagante","nome":"DIREITO PENAL E LEGISLAÇÃO PENAL EXTRAVAGANTE","grupos":[{"nome":"Direito Penal (Parte Geral e Parte Especial)","topicos":["6.1 Direito Penal: princípios básicos; aplicação da lei penal; lei penal no tempo e no espaço; tempo e lugar do crime; territorialidade e extraterritorialidade; teoria do crime; fato típico; crime consumado e tentado; desistência voluntária; arrependimento eficaz; crime impossível; dolo e culpa; erro; ilicitude; causas de exclusão; culpabilidade; concurso de pessoas; concurso de crimes; penas; aplicação da pena; extinção da punibilidade; crimes contra a pessoa; crimes contra o patrimônio; crimes contra a dignidade sexual; crimes contra a fé pública; crimes contra a administração pública."]},{"nome":"Direito Processual Penal Aplicado","topicos":["6.2 Direito Processual Penal aplicado: inquérito policial; notitia criminis; delatio criminis; indiciamento; garantias do investigado; provas; cadeia de custódia; preservação de local de crime; reconhecimento de pessoas e coisas; busca e apreensão; prisão em flagrante; prisão preventiva; liberdade provória; medidas cautelares diversas da prisão."]},{"nome":"Legislação Penal Extravagante","topicos":["6.3 Legislação Penal e Processual Penal Extravagante: Lei de Execução Penal (Lei n.º 7.210/1984); Lei dos Crimes Hediondos (Lei n.º 8.072/1990); Lei dos Crimes contra a Ordem Tributária, Econômica e Relações de Consumo (Lei n.º 8.137/1990); Lei de Interceptação Telefônica (Lei n.º 9.296/1996); Código de Trânsito Brasileiro – CTB (Lei n.º 9.503/1997); Estatuto do Desarmamento (Lei n.º 10.826/2003); Lei Maria da Penha (Lei n.º 11.340/2006); Lei de Drogas (Lei n.º 11.343/2006); Lei das Organizações Criminosas (Lei n.º 12.850/2013); Lei de Abuso de Autoridade (Lei n.º 13.869/2019); Pacote Anticrime (Lei n.º 13.964/2019); Estatuto da Advocacia e Ordem dos Advogados do Brasil (Lei n.º 8.906/1994 - aspectos penais)."]}]},{"id":"direito-processual-penal-e-legislacao-processual-penal-extravagante","nome":"DIREITO PROCESSUAL PENAL E LEGISLAÇÃO PROCESSUAL PENAL EXTRAVAGANTE","grupos":[{"nome":"Direito Processual Penal","topicos":["7.1 Direito Processual Penal: princípios do processo penal; aplicação da lei processual penal; sistemas processuais; persecução penal; inquérito policial; notícia do crime; ação penal; jurisdição e competência; sujeitos processuais; provas; cadeia de custódia; preservação de local de crime; busca e apreensão; reconhecimento de pessoas e coisas; interceptação telefônica; sigilo de dados; prisão em flagrante; prisão preventiva; prisão temporária; liberdade provisória; medidas cautelares diversas da prisão; procedimentos investigativos; direitos e garantias do investigado; juiz das garantias; acordo de não persecução penal."]},{"nome":"Legislação Processual Penal Extravagante","topicos":["7.2 Legislação Processual Penal Extravagante: Lei de Interceptação Telefônica (Lei n.º 9.296/1996); Lei de Lavagem de Dinheiro (Lei n.º 9.613/1998); Estatuto do Desarmamento (Lei n.º 10.826/2003); Lei Maria da Penha (Lei n.º 11.340/2006); Lei de Drogas (Lei n.º 11.343/2006); Lei das Organizações Criminosas (Lei n.º 12.850/2013); Lei de Abuso de Autoridade (Lei n.º 13.869/2019); Pacote Anticrime (Lei n.º 13.964/2019); disposições processuais penais da Lei dos Crimes Hediondos (Lei n.º 8.072/1990). Marco Legal do Combate ao Crime Organizado no Brasil (Lei n.º 15.358/2026); Estatuto da Advocacia e Ordem dos Advogados do Brasil (Lei n.º 8.906/1994 - aspectos processuais penais)."]}]},{"id":"direito-constitucional","nome":"DIREITO CONSTITUCIONAL","grupos":[{"nome":"Teoria Geral, Direitos Fundamentais e Remédios","topicos":["8.1 Princípios fundamentais da Constituição da República Federativa do Brasil de 1988.","8.2 Direitos e garantias fundamentais: direitos individuais e coletivos; direitos sociais; nacionalidade; direitos políticos; garantias constitucionais; devido processo legal; inviolabilidade de domicílio; sigilo de dados e comunicações; prisão e liberdade.","8.3 Remédios constitucionais: habeas corpus; habeas data; mandado de segurança; mandado de injunção; ação popular."]},{"nome":"Organização do Estado e dos Poderes","topicos":["8.4 Organização do Estado: União; Estados; Municípios; Distrito Federal; competências constitucionais.","8.5 Poderes da União: Poder Executivo; Poder Legislativo; Poder Judiciário; funções, competências e limites constitucionais."]},{"nome":"Segurança Pública, Controle de Constitucionalidade e Legislação Estadual","topicos":["8.6 Segurança pública na Constituição Federal: disposições do art. 144 da Constituição Federal; organização, competências e atribuições das polícias; Polícia Civil; polícia judiciária e investigação criminal.","8.7 Controle de constitucionalidade: ação direta de inconstitucionalidade; ação declaratória de constitucionalidade.","8.8 Constituição do Estado do Paraná: disposições relativas à Administração Pública; servidores públicos; segurança pública; Polícia Civil do Estado do Paraná."]}]},{"id":"direito-administrativo","nome":"DIREITO ADMINISTRATIVO","grupos":[{"nome":"Fundamentos, Estrutura, Atos e Poderes","topicos":["9.1 Conceito, fontes e princípios do Direito Administrativo; princípios da Administração Pública; disposições da Lei de Introdução às Normas do Direito Brasileiro (LINDB) aplicáveis ao Direito Administrativo.","9.2 Administração Pública: administração direta e indireta; autarquias, fundações, empresas públicas e sociedades de economia mista.","9.3 Atos administrativos: requisitos, atributos, classificação, espécies, revogação, invalidação e convalidação.","9.4 Poderes administrativos: poder hierárquico, disciplinar, regulamentar e de polícia; abuso de poder; Lei de Abuso de Autoridade (Lei n.º 13.869/2019)."]},{"nome":"Serviços Públicos, Licitações, Contratos e Agentes","topicos":["9.5 Serviços públicos: conceito, características e formas de prestação.","9.6 Licitações e contratos administrativos: Lei n.º 14.133/2021 e disposições aplicáveis.","9.7 Agentes públicos: cargos, empregos e funções públicas; investidura; direitos; deveres; responsabilidades; processo administrativo disciplinar."]},{"nome":"Responsabilidade do Estado, Improbidade e Controle","topicos":["9.8 Responsabilidade civil do Estado: teoria do risco administrativo; responsabilidade por atos de agentes públicos; causas excludentes.","9.9 Improbidade administrativa: Lei n.º 8.429/1992 e alterações posteriores; atos de improbidade; penalidades e disposições aplicáveis.","9.10 Controle da Administração Pública: controle administrativo, judicial e legislativo; autotutela administrativa."]}]},{"id":"direitos-humanos","nome":"DIREITOS HUMANOS","grupos":[{"nome":"Teoria Geral, Sistemas de Proteção e Cidadania","topicos":["10.1 Teoria Geral dos Direitos Humanos: conceito, características, princípios e evolução histórica dos Direitos Humanos.","10.2 Sistemas de proteção dos Direitos Humanos: sistema global e sistema interamericano de proteção dos Direitos Humanos; tratados internacionais de proteção dos Direitos Humanos; Constituição da República Federativa do Brasil de 1988 e Direitos Humanos.","10.3 Democracia, cidadania e Direitos Humanos."]},{"nome":"Grupos Vulneráveis, Segurança Pública e Políticas Institucionais","topicos":["10.4 Direitos Humanos e grupos vulneráveis: mulheres, idosos, crianças e adolescentes, povos indígenas e comunidades tradicionais, pessoas com deficiência, população LGBTQIA+ e refugiados.","10.5 Segurança pública e Direitos Humanos: dignidade da pessoa humana; uso proporcional da força; prevenção da tortura; direitos da pessoa presa; atuação policial e Direitos Humanos.","10.6 Política Nacional de Direitos Humanos, educação em Direitos Humanos e cultura de proteção dos Direitos Humanos.","10.7 Agenda 2030 e Objetivos de Desenvolvimento Sustentável (ODS)."]}]}];
+let EDITAL = [];
+function storageKey(contestId = activeContestId) {
+  return contestId ? `plano-contest-${contestId}` : 'plano-legacy-local';
+}
+const LEGACY_STORAGE_KEYS = [
+  'plano-pc-pr-policia-civil-do-estado-do-parana',
+  'plano-legacy-local'
+];
+
+function readLocalProgressBlob() {
+  const keys = [storageKey(), ...LEGACY_STORAGE_KEYS];
+  const seen = new Set();
+  for (const key of keys) {
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) continue;
+      const parsed = JSON.parse(raw);
+      if (parsed && (parsed.state || parsed.historico || parsed.revisoes)) {
+        return { key, data: parsed };
+      }
+    } catch (e) {}
+  }
+  return null;
+}
+
+function applyLocalProgressBlob(data) {
+  if (!data) return;
+  state = data.state || {};
+  historico = data.historico || [];
+  revisoes = data.revisoes || [];
+  ['meta-horas','meta-questoes','meta-conclusao','meta-aprov'].forEach(id => {
+    if (data[id] !== undefined) {
+      const el = document.getElementById(id);
+      if (el) el.value = data[id];
+    }
+  });
+}
+let contestsList = [];
+let activeContestId = null;
+let contestPickerContext = 'login';
+let contestEditorContest = null;
+let contestEditorDisciplines = [];
 let state={};
 let historico=[];
 let revisoes=[];
@@ -1645,6 +1817,9 @@ function renderSidebar() {
     const diff = Math.ceil((p-h)/86400000);
     cd.textContent = p.toLocaleDateString('pt-BR');
     cn.textContent = diff > 0 ? diff : diff === 0 ? 'Hoje!' : 'Passou';
+  } else {
+    cd.textContent = '—';
+    cn.textContent = '—';
   }
   document.getElementById('nav-discs').innerHTML = EDITAL.map((d,i) =>
     `<a class="nav-item" href="#" onclick="switchTab('edital');goDisc('${d.id}');return false;" style="gap:8px"><div class="nav-dot" style="background:${DISC_CORES[i%DISC_CORES.length]}"></div><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px">${d.nome}</span></a>`
@@ -1794,14 +1969,9 @@ function getDiscStats(disc){
 // ── STORAGE ─────────────────────────────────────────────
 function loadStorage() {
   try {
-    const raw = localStorage.getItem(KEY); if (!raw) return;
-    const s = JSON.parse(raw);
-    state    = s.state    || {};
-    historico = s.historico || [];
-    revisoes  = s.revisoes  || [];
-    ['meta-horas','meta-questoes','meta-conclusao','meta-aprov'].forEach(id => {
-      if (s[id] !== undefined) { const el = document.getElementById(id); if (el) el.value = s[id]; }
-    });
+    const blob = readLocalProgressBlob();
+    if (!blob) return;
+    applyLocalProgressBlob(blob.data);
   } catch(e) {}
 }
 let saveTimer;
@@ -1813,7 +1983,7 @@ async function saveData() {
     ['meta-horas','meta-questoes','meta-conclusao','meta-aprov'].forEach(id => {
       const el = document.getElementById(id); if (el) data[id] = el.value;
     });
-    localStorage.setItem(KEY, JSON.stringify(data));
+    localStorage.setItem(storageKey(), JSON.stringify(data));
     showToast('📱', 'Salvo neste dispositivo. Entre para sincronizar.');
   } catch(e) { showToast('⚠️', 'Erro ao salvar.'); }
 }
@@ -1879,6 +2049,7 @@ function cloudPayload() {
   }));
 
   return {
+    p_contest_id: activeContestId,
     goals: {
       weekly_hours: getGoalValue('meta-horas'),
       weekly_questions: Math.round(getGoalValue('meta-questoes')),
@@ -1892,13 +2063,13 @@ function cloudPayload() {
 }
 
 async function saveCloudData(options = {}) {
-  if (!cloudDb || !cloudUser || cloudSyncing) return;
+  if (!cloudDb || !cloudUser || cloudSyncing || !activeContestId) return;
   cloudSyncing = true;
   refreshCloudUI('Sincronizando...');
   try {
     const { error } = await cloudDb.rpc('replace_study_data', cloudPayload());
     if (error) throw error;
-    localStorage.removeItem(KEY);
+    localStorage.removeItem(storageKey());
     refreshCloudUI('Sincronizado');
     if (!options.silent) showToast('☁️', 'Progresso sincronizado na nuvem!');
   } catch (error) {
@@ -1911,7 +2082,11 @@ async function saveCloudData(options = {}) {
 }
 
 function renderAllData() {
+  renderSidebar();
   renderDiscs();
+  populateDiscSelects();
+  populateHistFilterDisc();
+  populateChartDisc();
   renderCal();
   renderCharts();
   renderRevisoes();
@@ -1920,14 +2095,14 @@ function renderAllData() {
 }
 
 async function loadCloudData() {
-  if (!cloudDb || !cloudUser) return;
+  if (!cloudDb || !cloudUser || !activeContestId) return;
   refreshCloudUI('Carregando...');
   try {
     const [goalsResult, topicsResult, sessionsResult, reviewsResult] = await Promise.all([
-      cloudDb.from('study_goals').select('*').eq('user_id', cloudUser.id).maybeSingle(),
-      cloudDb.from('topic_progress').select('*').order('created_at'),
-      cloudDb.from('study_sessions').select('*').order('study_date'),
-      cloudDb.from('reviews').select('*').order('review_date')
+      cloudDb.from('study_goals').select('*').eq('user_id', cloudUser.id).eq('contest_id', activeContestId).maybeSingle(),
+      cloudDb.from('topic_progress').select('*').eq('contest_id', activeContestId).order('created_at'),
+      cloudDb.from('study_sessions').select('*').eq('contest_id', activeContestId).order('study_date'),
+      cloudDb.from('reviews').select('*').eq('contest_id', activeContestId).order('review_date')
     ]);
     const firstError = [goalsResult, topicsResult, sessionsResult, reviewsResult].find(result => result.error);
     if (firstError) throw firstError.error;
@@ -1940,12 +2115,18 @@ async function loadCloudData() {
       Number(goals.weekly_hours) > 0 || Number(goals.weekly_questions) > 0 ||
       Number(goals.completion_target) > 0 || Number(goals.accuracy_target) > 0;
 
-    if (!remoteHasProgress && localStorage.getItem(KEY)) {
-      await saveCloudData({ silent: true });
-      renderAllData();
-      refreshCloudUI('Sincronizado');
-      showToast('☁️', 'Progresso deste dispositivo enviado para a nuvem!');
-      return;
+    if (!remoteHasProgress) {
+      const localBlob = readLocalProgressBlob();
+      if (localBlob) {
+        applyLocalProgressBlob(localBlob.data);
+        await saveCloudData({ silent: true });
+        LEGACY_STORAGE_KEYS.forEach(k => localStorage.removeItem(k));
+        localStorage.removeItem(storageKey());
+        renderAllData();
+        refreshCloudUI('Sincronizado');
+        showToast('☁️', 'Progresso deste dispositivo enviado para a nuvem!');
+        return;
+      }
     }
 
     state = {};
@@ -1993,7 +2174,7 @@ async function loadCloudData() {
       const el = document.getElementById(id);
       if (el) el.value = Number(value) || '';
     });
-    localStorage.removeItem(KEY);
+    localStorage.removeItem(storageKey());
     renderAllData();
     refreshCloudUI('Sincronizado');
   } catch (error) {
@@ -2142,6 +2323,8 @@ function refreshAuthModal(syncLabel) {
   if (avatar) avatar.textContent = initials;
   if (headAvatar) headAvatar.textContent = initials;
   if (sync) sync.textContent = syncLabel || (cloudUser ? 'Conectada' : 'Offline');
+  const contestNameEl = document.getElementById('profile-contest-name');
+  if (contestNameEl) contestNameEl.textContent = (activeContestId && CONCURSO_INFO.concurso) ? CONCURSO_INFO.concurso : 'Nenhum selecionado';
   refreshMfaStatus();
 }
 
@@ -2777,7 +2960,370 @@ async function unlockApp() {
   document.getElementById('reset-screen')?.classList.add('hidden');
   document.body.style.overflow = '';
   refreshCloudUI();
+  await enterContestFlow();
+}
+
+// ═══════════════════════════════════════════════════════
+//  MULTI-CONCURSO — seleção, criação e edição de editais
+// ═══════════════════════════════════════════════════════
+let dbActiveContestId = null;
+
+function escapeHtml(str) {
+  return String(str == null ? '' : str).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+}
+function escapeAttr(str) {
+  return escapeHtml(str).replace(/"/g, '&quot;');
+}
+function slugifyName(name) {
+  const base = slug(name || '');
+  return base && base !== '-' ? base : ('disciplina-' + Math.random().toString(36).slice(2, 7));
+}
+
+function applyContestLocal(contest) {
+  activeContestId = contest.id;
+  CONCURSO_INFO = {
+    concurso: contest.name || '',
+    cargo: contest.cargo || '',
+    banca: contest.banca || '',
+    dataProva: contest.exam_date || ''
+  };
+  EDITAL = Array.isArray(contest.syllabus) ? contest.syllabus : [];
+}
+
+async function fetchContests() {
+  if (!cloudDb || !cloudUser) return [];
+  const { data, error } = await cloudDb.from('contests').select('*').order('updated_at', { ascending: false });
+  if (error) throw error;
+  contestsList = data || [];
+  return contestsList;
+}
+
+function looksLikeDefaultPcPr(contest) {
+  const name = (contest?.name || '').toLowerCase();
+  return name.includes('pc pr') || name.includes('policia civil do estado do parana') || name.includes('polícia civil do estado do paraná');
+}
+
+async function ensureSeedSyllabus(contest) {
+  if (!contest) return contest;
+  const hasSyllabus = Array.isArray(contest.syllabus) && contest.syllabus.length > 0;
+  if (hasSyllabus || !looksLikeDefaultPcPr(contest)) return contest;
+  const seeded = JSON.parse(JSON.stringify(DEFAULT_EDITAL));
+  try {
+    await cloudDb.rpc('upsert_contest', {
+      payload: { id: contest.id, name: contest.name, cargo: contest.cargo, banca: contest.banca, exam_date: contest.exam_date, syllabus: seeded }
+    });
+  } catch (error) {
+    console.error('Seed syllabus error:', error);
+  }
+  contest.syllabus = seeded;
+  const idx = contestsList.findIndex(c => c.id === contest.id);
+  if (idx >= 0) contestsList[idx] = contest;
+  return contest;
+}
+
+function hideContestScreens() {
+  document.getElementById('contest-screen')?.classList.add('hidden');
+  document.getElementById('contest-editor-screen')?.classList.add('hidden');
+  const loginHidden = document.getElementById('login-screen')?.classList.contains('hidden') !== false;
+  const mfaHidden = document.getElementById('mfa-screen')?.classList.contains('hidden') !== false;
+  const resetHidden = document.getElementById('reset-screen')?.classList.contains('hidden') !== false;
+  if (loginHidden && mfaHidden && resetHidden) document.body.style.overflow = '';
+}
+
+function renderContestList() {
+  const el = document.getElementById('contest-list');
+  if (!el) return;
+  const continueBtn = document.getElementById('contest-continue-btn');
+  if (!contestsList.length) {
+    el.innerHTML = '<div class="contest-empty">Você ainda não tem nenhum concurso cadastrado.<br>Crie o primeiro para montar seu edital verticalizado.</div>';
+    if (continueBtn) continueBtn.style.display = 'none';
+    return;
+  }
+  const highlightId = activeContestId || dbActiveContestId;
+  el.innerHTML = contestsList.map(c => {
+    const isActive = c.id === highlightId;
+    const dataFmt = c.exam_date ? new Date(c.exam_date + 'T00:00:00').toLocaleDateString('pt-BR') : null;
+    const discCount = Array.isArray(c.syllabus) ? c.syllabus.length : 0;
+    return `<div class="contest-item${isActive ? ' is-active' : ''}" onclick="selectContest('${c.id}')">
+      <div class="contest-item-dot"></div>
+      <div class="contest-item-main">
+        <div class="contest-item-name">${escapeHtml(c.name || 'Sem nome')}</div>
+        <div class="contest-item-meta">
+          ${isActive ? '<span class="contest-item-active-badge">Ativo</span>' : ''}
+          ${c.cargo ? `<span class="contest-item-badge">${escapeHtml(c.cargo)}</span>` : ''}
+          ${c.banca ? `<span class="contest-item-badge">${escapeHtml(c.banca)}</span>` : ''}
+          ${dataFmt ? `<span class="contest-item-badge">📅 ${dataFmt}</span>` : ''}
+          <span class="contest-item-badge">${discCount} disciplina${discCount !== 1 ? 's' : ''}</span>
+        </div>
+      </div>
+      <div class="contest-item-actions">
+        <button type="button" onclick="event.stopPropagation();openContestEditor('${c.id}')" title="Editar concurso">✏️</button>
+        <button type="button" class="contest-del" onclick="event.stopPropagation();deleteContestPrompt('${c.id}')" title="Excluir concurso">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+  if (continueBtn) continueBtn.style.display = (contestPickerContext === 'switch' && activeContestId) ? '' : 'none';
+}
+
+async function showContestPicker(context = 'login') {
+  contestPickerContext = context;
+  document.getElementById('login-screen')?.classList.add('hidden');
+  document.getElementById('mfa-screen')?.classList.add('hidden');
+  document.getElementById('reset-screen')?.classList.add('hidden');
+  document.getElementById('contest-editor-screen')?.classList.add('hidden');
+  try {
+    await fetchContests();
+    const { data } = await cloudDb.from('profiles').select('active_contest_id').eq('user_id', cloudUser.id).maybeSingle();
+    dbActiveContestId = data?.active_contest_id || dbActiveContestId;
+  } catch (error) {
+    console.error('showContestPicker error:', error);
+    showToast('⚠️', 'Não foi possível carregar seus concursos.');
+  }
+  renderContestList();
+  document.getElementById('contest-screen')?.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeContestPicker() {
+  hideContestScreens();
+}
+
+function openContestPickerFromApp() {
+  closeAuthModal();
+  showContestPicker('switch');
+}
+
+async function enterContestFlow() {
+  document.getElementById('login-screen')?.classList.add('hidden');
+  document.getElementById('mfa-screen')?.classList.add('hidden');
+  document.getElementById('reset-screen')?.classList.add('hidden');
+  refreshCloudUI();
+  await showContestPicker('login');
+}
+
+async function selectContest(id) {
+  const existing = contestsList.find(c => c.id === id);
+  if (!existing) return;
+  try {
+    const { error } = await cloudDb.rpc('set_active_contest', { p_contest_id: id });
+    if (error) throw error;
+  } catch (error) {
+    console.error('set_active_contest error:', error);
+    showToast('⚠️', 'Não foi possível selecionar o concurso.');
+    return;
+  }
+  const contest = await ensureSeedSyllabus(existing);
+  applyContestLocal(contest);
+  dbActiveContestId = id;
+  hideContestScreens();
+  renderAllData();
   await loadCloudData();
+  showToast('📚', 'Concurso "' + (contest.name || '') + '" carregado!');
+}
+
+async function deleteContestPrompt(id) {
+  const contest = contestsList.find(c => c.id === id);
+  if (!contest) return;
+  if (!confirm('Excluir o concurso "' + (contest.name || '') + '" e todo o progresso associado? Esta ação não pode ser desfeita.')) return;
+  try {
+    const { error } = await cloudDb.rpc('delete_contest', { p_contest_id: id });
+    if (error) throw error;
+    if (activeContestId === id) {
+      activeContestId = null;
+      EDITAL = [];
+      CONCURSO_INFO = { concurso: '', cargo: '', banca: '', dataProva: '' };
+      renderAllData();
+    }
+    await fetchContests();
+    renderContestList();
+    showToast('🗑', 'Concurso removido.');
+  } catch (error) {
+    console.error('delete_contest error:', error);
+    showToast('⚠️', 'Não foi possível excluir o concurso.');
+  }
+}
+
+// ── EDITOR DE CONCURSO (meta + edital verticalizado) ──
+function renderEditorDisciplines() {
+  const el = document.getElementById('editor-disc-list');
+  if (!el) return;
+  if (!contestEditorDisciplines.length) {
+    el.innerHTML = '<div class="contest-empty">Nenhuma disciplina ainda. Clique em "Adicionar disciplina" para começar.</div>';
+    return;
+  }
+  el.innerHTML = contestEditorDisciplines.map((d, di) => {
+    const groupsHtml = (d.grupos || []).map((g, gi) => `
+      <div class="editor-group">
+        <div class="editor-group-hdr">
+          <input class="login-input" style="height:38px" placeholder="Nome do grupo" value="${escapeAttr(g.nome)}" oninput="updateEditorGroupName(${di},${gi},this.value)">
+          <button class="editor-del-btn" type="button" onclick="deleteEditorGroup(${di},${gi})" title="Remover grupo">🗑</button>
+        </div>
+        <textarea class="editor-topics" placeholder="Um tópico por linha. Ex: 1.1 Interpretação de texto." oninput="updateEditorGroupTopics(${di},${gi},this.value)">${escapeHtml(g.topicosText)}</textarea>
+      </div>`).join('');
+    return `<div class="editor-disc">
+      <div class="editor-disc-hdr">
+        <input class="login-input" style="height:40px" placeholder="Nome da disciplina" value="${escapeAttr(d.nome)}" oninput="updateEditorDiscName(${di},this.value)">
+        <button class="editor-del-btn" type="button" onclick="deleteEditorDiscipline(${di})" title="Remover disciplina">🗑</button>
+      </div>
+      <div class="editor-disc-id" data-disc-id-label="${di}">id: ${escapeHtml(d.id || slugifyName(d.nome) || '—')}</div>
+      <div class="editor-group-list">${groupsHtml || '<div class="contest-empty" style="padding:12px">Sem grupos ainda.</div>'}</div>
+      <button class="editor-add-btn" type="button" onclick="addEditorGroup(${di})">➕ Adicionar grupo</button>
+    </div>`;
+  }).join('');
+}
+
+function addEditorDiscipline() {
+  contestEditorDisciplines.push({ id: '', nome: '', grupos: [{ nome: '', topicosText: '' }] });
+  renderEditorDisciplines();
+}
+function deleteEditorDiscipline(idx) {
+  if (!confirm('Remover esta disciplina e todos os seus grupos/tópicos?')) return;
+  contestEditorDisciplines.splice(idx, 1);
+  renderEditorDisciplines();
+}
+function updateEditorDiscName(idx, value) {
+  const d = contestEditorDisciplines[idx];
+  if (!d) return;
+  d.nome = value;
+  const label = document.querySelector(`[data-disc-id-label="${idx}"]`);
+  if (label) label.textContent = 'id: ' + (d.id || slugifyName(value) || '—');
+}
+function addEditorGroup(discIdx) {
+  const d = contestEditorDisciplines[discIdx]; if (!d) return;
+  d.grupos.push({ nome: '', topicosText: '' });
+  renderEditorDisciplines();
+}
+function deleteEditorGroup(discIdx, groupIdx) {
+  const d = contestEditorDisciplines[discIdx]; if (!d) return;
+  if (!confirm('Remover este grupo e seus tópicos?')) return;
+  d.grupos.splice(groupIdx, 1);
+  renderEditorDisciplines();
+}
+function updateEditorGroupName(discIdx, groupIdx, value) {
+  const g = contestEditorDisciplines[discIdx]?.grupos?.[groupIdx];
+  if (g) g.nome = value;
+}
+function updateEditorGroupTopics(discIdx, groupIdx, value) {
+  const g = contestEditorDisciplines[discIdx]?.grupos?.[groupIdx];
+  if (g) g.topicosText = value;
+}
+
+function openContestCreateForm() {
+  contestEditorContest = null;
+  const title = document.getElementById('contest-editor-title'); if (title) title.textContent = 'Novo concurso';
+  document.getElementById('editor-name').value = '';
+  document.getElementById('editor-cargo').value = '';
+  document.getElementById('editor-banca').value = '';
+  document.getElementById('editor-data').value = '';
+  contestEditorDisciplines = [];
+  renderEditorDisciplines();
+  const openBtn = document.getElementById('editor-open-plano-btn'); if (openBtn) openBtn.style.display = 'none';
+  const message = document.getElementById('contest-editor-message'); if (message) message.textContent = '';
+  document.getElementById('contest-screen')?.classList.add('hidden');
+  document.getElementById('contest-editor-screen')?.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function openContestEditor(id) {
+  const contest = contestsList.find(c => c.id === id);
+  if (!contest) return;
+  contestEditorContest = contest;
+  const title = document.getElementById('contest-editor-title'); if (title) title.textContent = 'Editar concurso';
+  document.getElementById('editor-name').value = contest.name || '';
+  document.getElementById('editor-cargo').value = contest.cargo || '';
+  document.getElementById('editor-banca').value = contest.banca || '';
+  document.getElementById('editor-data').value = contest.exam_date || '';
+  contestEditorDisciplines = (Array.isArray(contest.syllabus) ? contest.syllabus : []).map(d => ({
+    id: d.id || '',
+    nome: d.nome || '',
+    grupos: (d.grupos || []).map(g => ({ nome: g.nome || '', topicosText: (g.topicos || []).join('\n') }))
+  }));
+  renderEditorDisciplines();
+  const openBtn = document.getElementById('editor-open-plano-btn'); if (openBtn) openBtn.style.display = contest.id === activeContestId ? '' : 'none';
+  const message = document.getElementById('contest-editor-message'); if (message) message.textContent = '';
+  document.getElementById('contest-screen')?.classList.add('hidden');
+  document.getElementById('contest-editor-screen')?.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+async function openContestEditorFromApp() {
+  closeAuthModal();
+  if (!activeContestId) { openContestPickerFromApp(); return; }
+  try {
+    await fetchContests();
+  } catch (error) {
+    console.error('fetchContests error:', error);
+    if (!contestsList.some(c => c.id === activeContestId)) {
+      contestsList = [{ id: activeContestId, name: CONCURSO_INFO.concurso, cargo: CONCURSO_INFO.cargo, banca: CONCURSO_INFO.banca, exam_date: CONCURSO_INFO.dataProva, syllabus: EDITAL }];
+    }
+  }
+  openContestEditor(activeContestId);
+}
+
+function backToContestPicker() {
+  document.getElementById('contest-editor-screen')?.classList.add('hidden');
+  showContestPicker(contestPickerContext);
+}
+
+function openPlanoFromEditor() {
+  hideContestScreens();
+  renderAllData();
+}
+
+function buildSyllabusFromEditor() {
+  return contestEditorDisciplines
+    .map(d => {
+      const nome = (d.nome || '').trim();
+      if (!nome) return null;
+      const grupos = (d.grupos || [])
+        .map(g => ({
+          nome: (g.nome || '').trim(),
+          topicos: (g.topicosText || '').split('\n').map(t => t.trim()).filter(Boolean)
+        }))
+        .filter(g => g.nome && g.topicos.length);
+      return { id: d.id || slugifyName(nome), nome, grupos };
+    })
+    .filter(Boolean);
+}
+
+async function saveContestEditor() {
+  const message = document.getElementById('contest-editor-message');
+  const nameInput = document.getElementById('editor-name');
+  const name = (nameInput?.value || '').trim();
+  if (!name) {
+    if (message) message.textContent = 'Informe o nome do concurso.';
+    return;
+  }
+  const payload = {
+    name,
+    cargo: (document.getElementById('editor-cargo')?.value || '').trim(),
+    banca: (document.getElementById('editor-banca')?.value || '').trim(),
+    exam_date: document.getElementById('editor-data')?.value || null,
+    syllabus: buildSyllabusFromEditor()
+  };
+  if (contestEditorContest?.id) payload.id = contestEditorContest.id;
+  const btn = document.querySelector('#contest-editor-screen .login-button');
+  if (btn) { btn.disabled = true; btn.textContent = 'Salvando...'; }
+  try {
+    const { data: newId, error } = await cloudDb.rpc('upsert_contest', { payload });
+    if (error) throw error;
+    await fetchContests();
+    const saved = contestsList.find(c => c.id === newId) || { id: newId, ...payload };
+    contestEditorContest = saved;
+    applyContestLocal(saved);
+    dbActiveContestId = saved.id;
+    renderAllData();
+    const openBtn = document.getElementById('editor-open-plano-btn'); if (openBtn) openBtn.style.display = '';
+    if (message) message.textContent = '';
+    showToast('✅', 'Concurso salvo com sucesso!');
+    await loadCloudData();
+  } catch (error) {
+    console.error('saveContestEditor error:', error);
+    if (message) message.textContent = 'Não foi possível salvar o concurso agora. Tente novamente.';
+    showToast('⚠️', 'Erro ao salvar o concurso.');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar concurso'; }
+  }
 }
 
 let authFlowPromise = null;
@@ -2820,12 +3366,20 @@ async function signOutCloud() {
   cloudUser = null;
   mfaFactorId = null;
   mfaEnrollmentPending = false;
+  activeContestId = null;
+  dbActiveContestId = null;
+  contestsList = [];
+  contestEditorContest = null;
+  contestEditorDisciplines = [];
+  EDITAL = [];
+  CONCURSO_INFO = { concurso: '', cargo: '', banca: '', dataProva: '' };
   state = {};
   historico = [];
   revisoes = [];
   ['meta-horas','meta-questoes','meta-conclusao','meta-aprov'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
+  hideContestScreens();
   renderAllData();
   refreshCloudUI();
   closeAuthModal();
@@ -2915,7 +3469,7 @@ function importBackup(input) {
         if (data[id] !== undefined) { const el = document.getElementById(id); if (el) el.value = data[id]; }
       });
       if (cloudUser) saveCloudData();
-      else localStorage.setItem(KEY, JSON.stringify({ state, historico, revisoes, 'meta-horas': data['meta-horas'], 'meta-questoes': data['meta-questoes'], 'meta-conclusao': data['meta-conclusao'], 'meta-aprov': data['meta-aprov'] }));
+      else localStorage.setItem(storageKey(), JSON.stringify({ state, historico, revisoes, 'meta-horas': data['meta-horas'], 'meta-questoes': data['meta-questoes'], 'meta-conclusao': data['meta-conclusao'], 'meta-aprov': data['meta-aprov'] }));
       renderDiscs();
       renderCal();
       renderCharts();
