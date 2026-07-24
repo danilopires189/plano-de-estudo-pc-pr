@@ -96,25 +96,39 @@ button,input,select,textarea{font:inherit;}
   padding:22px 22px 18px;background:linear-gradient(145deg,#141B48 0%,var(--navy) 70%,#2E3A7A 100%);
   color:white;display:flex;align-items:center;gap:14px;flex-shrink:0;
 }
-.profile-head-avatar-wrap{position:relative;flex-shrink:0;}
+.profile-head-avatar-wrap{position:relative;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;}
 .profile-head-avatar{
-  width:56px;height:56px;border-radius:50%;
+  position:relative;width:64px;height:64px;border-radius:50%;
   background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.22);
-  display:grid;place-items:center;font:800 18px/1 'Nunito',sans-serif;color:white;
+  display:grid;place-items:center;font:800 20px/1 'Nunito',sans-serif;color:white;
   background-size:cover;background-position:center;overflow:hidden;
+  cursor:pointer;padding:0;appearance:none;-webkit-appearance:none;
+  transition:border-color .15s,transform .15s,box-shadow .15s;
+}
+.profile-head-avatar:hover,.profile-head-avatar:focus-visible{
+  border-color:rgba(255,255,255,.65);transform:scale(1.03);
+  box-shadow:0 0 0 3px rgba(255,255,255,.16);outline:none;
 }
 .profile-head-avatar.has-photo{font-size:0;color:transparent;border-color:rgba(255,255,255,.45);}
-.profile-photo-btn{
-  position:absolute;right:-2px;bottom:-2px;width:24px;height:24px;border-radius:50%;
-  border:2px solid var(--navy);background:white;color:var(--navy);cursor:pointer;
-  display:grid;place-items:center;font-size:12px;padding:0;line-height:1;
-  box-shadow:0 2px 8px rgba(0,0,0,.25);
+.profile-head-avatar.has-photo .profile-head-avatar-overlay{font-size:10px;color:white;}
+.profile-head-avatar-overlay{
+  position:absolute;inset:0;border-radius:50%;
+  background:rgba(15,22,55,.55);color:white;
+  display:grid;place-items:center;align-content:center;gap:2px;
+  font:700 10px/1.1 'Inter',sans-serif;letter-spacing:.02em;text-align:center;
+  opacity:0;transition:opacity .15s;pointer-events:none;
 }
-.profile-photo-btn:hover{background:var(--bg);}
-.profile-photo-actions{display:flex;gap:8px;flex-wrap:wrap;}
-.profile-photo-actions .backup-btn-imp,
-.profile-photo-actions .backup-btn-exp{padding:8px 10px;font-size:12px;width:auto;flex:1;min-width:120px;}
-.profile-photo-hint{font-size:11px;color:var(--text-soft);line-height:1.4;}
+.profile-head-avatar:hover .profile-head-avatar-overlay,
+.profile-head-avatar:focus-visible .profile-head-avatar-overlay{opacity:1;}
+.profile-photo-remove{
+  position:absolute;top:-2px;right:-2px;width:22px;height:22px;border-radius:50%;
+  border:2px solid var(--navy);background:white;color:var(--rust);cursor:pointer;
+  display:none;place-items:center;font-size:14px;font-weight:700;padding:0;line-height:1;
+  box-shadow:0 2px 8px rgba(0,0,0,.22);z-index:2;
+}
+.profile-photo-remove.show{display:grid;}
+.profile-photo-remove:hover{background:var(--red-bg);border-color:var(--rust);}
+.profile-photo-caption{font-size:10px;color:rgba(255,255,255,.55);line-height:1.3;text-align:center;max-width:72px;}
 .profile-head-meta{min-width:0;flex:1;}
 .profile-head-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:4px;}
 .profile-head-name{font:800 18px/1.2 'Nunito',sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -1304,8 +1318,13 @@ select{min-width:0;max-width:100%;}
   <div class="backup-box profile-panel" onclick="event.stopPropagation()">
     <div class="profile-head">
       <div class="profile-head-avatar-wrap">
-        <div class="profile-head-avatar" id="profile-head-avatar">DP</div>
-        <button class="profile-photo-btn" type="button" onclick="triggerProfilePhotoPick()" title="Alterar foto" aria-label="Alterar foto de perfil">📷</button>
+        <button type="button" class="profile-head-avatar" id="profile-head-avatar" onclick="triggerProfilePhotoPick()" title="Alterar foto" aria-label="Alterar foto de perfil">
+          DP
+          <span class="profile-head-avatar-overlay" aria-hidden="true">Alterar<br>foto</span>
+        </button>
+        <button type="button" class="profile-photo-remove" id="profile-photo-remove-btn" onclick="event.stopPropagation();removeProfilePhoto()" title="Remover foto" aria-label="Remover foto de perfil">×</button>
+        <div class="profile-photo-caption" id="profile-photo-caption">Toque para alterar</div>
+        <input type="file" id="profile-photo-input" accept="image/jpeg,image/png,image/webp,image/gif" hidden onchange="onProfilePhotoSelected(event)">
       </div>
       <div class="profile-head-meta">
         <div class="profile-head-label">Minha conta</div>
@@ -1314,16 +1333,6 @@ select{min-width:0;max-width:100%;}
       </div>
     </div>
     <div class="profile-body">
-      <div class="profile-section">
-        <div class="profile-section-title">Foto de perfil</div>
-        <div class="profile-photo-actions">
-          <button class="backup-btn-exp" type="button" id="profile-photo-upload-btn" onclick="triggerProfilePhotoPick()">📷 Escolher foto</button>
-          <button class="backup-btn-imp" type="button" id="profile-photo-remove-btn" onclick="removeProfilePhoto()" style="display:none">🗑 Remover</button>
-        </div>
-        <div class="profile-photo-hint">JPG, PNG ou WebP até 2&nbsp;MB. A foto aparece no menu e na conta.</div>
-        <input type="file" id="profile-photo-input" accept="image/jpeg,image/png,image/webp,image/gif" hidden onchange="onProfilePhotoSelected(event)">
-      </div>
-
       <div class="profile-section">
         <div class="profile-section-title">Nuvem</div>
         <div class="profile-sync">
@@ -2458,14 +2467,28 @@ let profileAvatarUrl = null;
 
 function applyAvatarToEl(el, url, initials) {
   if (!el) return;
+  const overlay = el.querySelector('.profile-head-avatar-overlay');
   if (url) {
     el.classList.add('has-photo');
     el.style.backgroundImage = `url("${url}")`;
-    el.textContent = '';
+    if (overlay) {
+      Array.from(el.childNodes).forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) node.remove();
+      });
+    } else {
+      el.textContent = '';
+    }
   } else {
     el.classList.remove('has-photo');
     el.style.backgroundImage = '';
-    el.textContent = initials;
+    if (overlay) {
+      Array.from(el.childNodes).forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) node.remove();
+      });
+      el.insertBefore(document.createTextNode(initials), overlay);
+    } else {
+      el.textContent = initials;
+    }
   }
 }
 
@@ -2475,7 +2498,9 @@ function refreshAvatarUI() {
   applyAvatarToEl(document.getElementById('profile-avatar'), profileAvatarUrl, initials);
   applyAvatarToEl(document.getElementById('profile-head-avatar'), profileAvatarUrl, initials);
   const removeBtn = document.getElementById('profile-photo-remove-btn');
-  if (removeBtn) removeBtn.style.display = profileAvatarUrl ? '' : 'none';
+  if (removeBtn) removeBtn.classList.toggle('show', !!profileAvatarUrl);
+  const caption = document.getElementById('profile-photo-caption');
+  if (caption) caption.textContent = profileAvatarUrl ? 'Toque para alterar' : 'Adicionar foto';
 }
 
 async function loadProfileAvatar() {
@@ -2525,11 +2550,8 @@ async function onProfilePhotoSelected(event) {
     return;
   }
 
-  const uploadBtn = document.getElementById('profile-photo-upload-btn');
-  if (uploadBtn) {
-    uploadBtn.disabled = true;
-    uploadBtn.textContent = 'Enviando...';
-  }
+  const avatarBtn = document.getElementById('profile-head-avatar');
+  if (avatarBtn) avatarBtn.disabled = true;
 
   const ext = file.type === 'image/png' ? 'png'
     : file.type === 'image/webp' ? 'webp'
@@ -2554,15 +2576,12 @@ async function onProfilePhotoSelected(event) {
 
     profileAvatarUrl = publicUrl;
     refreshAvatarUI();
-    showToast('📷', 'Foto de perfil atualizada.');
+    showToast('✓', 'Foto de perfil atualizada.');
   } catch (error) {
     console.error('Avatar upload error:', error);
     showToast('⚠️', 'Não foi possível enviar a foto. Tente novamente.');
   } finally {
-    if (uploadBtn) {
-      uploadBtn.disabled = false;
-      uploadBtn.textContent = '📷 Escolher foto';
-    }
+    if (avatarBtn) avatarBtn.disabled = false;
   }
 }
 
@@ -2571,10 +2590,7 @@ async function removeProfilePhoto() {
   if (!confirm('Remover a foto de perfil?')) return;
 
   const removeBtn = document.getElementById('profile-photo-remove-btn');
-  if (removeBtn) {
-    removeBtn.disabled = true;
-    removeBtn.textContent = 'Removendo...';
-  }
+  if (removeBtn) removeBtn.disabled = true;
 
   try {
     const { data: listed } = await cloudDb.storage.from('avatars').list(cloudUser.id);
@@ -2589,15 +2605,12 @@ async function removeProfilePhoto() {
     if (error) throw error;
     profileAvatarUrl = null;
     refreshAvatarUI();
-    showToast('🗑', 'Foto removida.');
+    showToast('✓', 'Foto removida.');
   } catch (error) {
     console.error('Avatar remove error:', error);
     showToast('⚠️', 'Não foi possível remover a foto.');
   } finally {
-    if (removeBtn) {
-      removeBtn.disabled = false;
-      removeBtn.textContent = '🗑 Remover';
-    }
+    if (removeBtn) removeBtn.disabled = false;
   }
 }
 
