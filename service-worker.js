@@ -1,4 +1,4 @@
-const CACHE_NAME = 'plano-pc-pr-v12';
+const CACHE_NAME = 'plano-pc-pr-v13';
 const APP_SHELL = ['/', '/index.html', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png'];
 
 self.addEventListener('install', event => {

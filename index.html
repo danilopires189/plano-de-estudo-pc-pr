@@ -434,6 +434,8 @@ html.modal-scroll-lock{overflow:hidden !important;overscroll-behavior:none;}
 .disc-card.open .dc-chevron{transform:rotate(180deg);}
 .disc-body{display:none;padding:0 18px 16px;}
 .disc-card.open .disc-body{display:block;}
+.ctable tbody tr.is-filtered-out,
+.disc-card.is-filtered-out{display:none!important;}
 .ctable{width:100%;border-collapse:collapse;font-size:13px;}
 .ctable thead tr{background:var(--bg);}
 .ctable th{padding:8px 10px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-soft);text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
@@ -1993,18 +1995,20 @@ function renderDiscs() {
     tbl.innerHTML = `<thead><tr><th class="c">✓</th><th>Tópico / Conteúdo</th><th>Concluído em</th><th class="c">Questões (Acertos × Erros)</th><th class="c">Total</th><th class="c">% Acerto</th></tr></thead><tbody id="tb-${disc.id}"></tbody>`;
     const tbody = tbl.querySelector('tbody');
     disc.grupos.forEach(g => {
-      const gr = document.createElement('tr'); gr.className = 'grow'; gr.style.setProperty('--dc', cor);
+      const groupKey = disc.id + '_' + slug(g.nome);
+      const gr = document.createElement('tr'); gr.className = 'grow'; gr.dataset.group = groupKey; gr.style.setProperty('--dc', cor);
       gr.innerHTML = `<td colspan="6">${g.nome}</td>`; tbody.appendChild(gr);
       g.topicos.forEach((tp, ti) => {
-        const tid = disc.id + '_' + slug(g.nome) + '_' + ti, ts = getTS(tid);
+        const tid = groupKey + '_' + ti, ts = getTS(tid);
         const answered = (ts.acertos||0) + (ts.erros||0), tot = Math.max(answered, parseInt(ts.questoes)||0), tpct = tot > 0 && answered > 0 ? Math.round((ts.acertos||0)/tot*100) : null;
-        const tr = document.createElement('tr'); tr.id = 'row-' + tid; if (ts.done) tr.classList.add('done');
+        const tr = document.createElement('tr'); tr.id = 'row-' + tid; tr.dataset.group = groupKey; if (ts.done) tr.classList.add('done');
         tr.innerHTML = `<td class="td-ck"><input class="cbx" type="checkbox" ${ts.done?'checked':''} onchange="toggleT('${tid}',this)"></td><td class="td-topic"><div class="topic-nm">${tp}</div><div class="topic-dt" id="tdt-${tid}">${ts.datetime||''}</div></td><td class="td-dt" id="dt-${tid}">${ts.done&&ts.datetime?ts.datetime:'<span style="color:var(--border)">—</span>'}</td><td class="td-q"><div class="q-row"><div class="qwrap ac"><label>Acertos</label><input class="qinp" type="number" min="0" value="${ts.acertos||''}" placeholder="0" oninput="updateQ('${tid}','acertos',this.value)"></div><span class="qsep">×</span><div class="qwrap er"><label>Erros</label><input class="qinp" type="number" min="0" value="${ts.erros||''}" placeholder="0" oninput="updateQ('${tid}','erros',this.value)"></div></div></td><td class="td-tot"><span class="tot-v" id="tot-${tid}">${tot>0?tot:'—'}</span></td><td class="td-pct"><span class="pct-pill ${pc(tpct,tot)}" id="pct-${tid}">${tpct!==null?tpct+'%':'—'}</span></td>`;
         tbody.appendChild(tr);
       });
     });
     body.appendChild(tbl); card.appendChild(hdr); card.appendChild(body); list.appendChild(card);
   });
+  applyFilter();
 }
 
 function toggleT(tid, cb) {
@@ -2017,6 +2021,7 @@ function toggleT(tid, cb) {
   if (cb.checked) { row.classList.add('done'); dtc.innerHTML=now; if(tdt)tdt.textContent=now; }
   else { row.classList.remove('done'); dtc.innerHTML='<span style="color:var(--border)">—</span>'; if(tdt)tdt.textContent=''; }
   updateAll(); debouncedSave();
+  if (curFilter !== 'todos') applyFilter();
 }
 function updateQ(tid, field, val) {
   setTS(tid,field,parseInt(val)||0);
@@ -2024,12 +2029,66 @@ function updateQ(tid, field, val) {
   if (answered > (parseInt(ts.questoes)||0)) setTS(tid,'questoes',answered);
   const totalForDisplay=Math.max(answered,parseInt(getTS(tid).questoes)||0),tpct=totalForDisplay>0&&answered>0?Math.round((ts.acertos||0)/totalForDisplay*100):null;
   document.getElementById('tot-'+tid).textContent=totalForDisplay>0?totalForDisplay:'—';
-  const p=document.getElementById('pct-'+tid); p.textContent=tpct!==null?tpct+'%':'—'; p.className='pct-pill '+pc(tpct,tot);
+  const p=document.getElementById('pct-'+tid); p.textContent=tpct!==null?tpct+'%':'—'; p.className='pct-pill '+pc(tpct,totalForDisplay);
   updateAll(); debouncedSave();
+  if (curFilter !== 'todos') applyFilter();
 }
-function setFilter(f,btn){curFilter=f;document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyFilter();}
-function applyFilter(){EDITAL.forEach(d=>d.grupos.forEach(g=>g.topicos.forEach((t,i)=>{const tid=d.id+'_'+slug(g.nome)+'_'+i,row=document.getElementById('row-'+tid);if(!row)return;const ts=getTS(tid);let show=true;if(curFilter==='pendentes')show=!ts.done;else if(curFilter==='concluidos')show=!!ts.done;else if(curFilter==='questoes')show=Math.max((ts.acertos||0)+(ts.erros||0),parseInt(ts.questoes)||0)>0;row.style.display=show?'':'none';})));}
-function expandAll(){document.querySelectorAll('.disc-card').forEach(c=>c.classList.add('open'));}
+function topicMatchesFilter(ts) {
+  if (curFilter === 'pendentes') return !ts.done;
+  if (curFilter === 'concluidos') return !!ts.done;
+  if (curFilter === 'questoes') {
+    return Math.max((ts.acertos || 0) + (ts.erros || 0), parseInt(ts.questoes) || 0) > 0;
+  }
+  return true;
+}
+
+function setFilter(f, btn) {
+  curFilter = f;
+  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  applyFilter();
+}
+
+function applyFilter() {
+  let anyVisible = false;
+  EDITAL.forEach(disc => {
+    const card = document.getElementById('disc-' + disc.id);
+    let cardVisible = 0;
+    disc.grupos.forEach(g => {
+      const groupKey = disc.id + '_' + slug(g.nome);
+      let groupVisible = 0;
+      g.topicos.forEach((t, i) => {
+        const tid = groupKey + '_' + i;
+        const row = document.getElementById('row-' + tid);
+        if (!row) return;
+        const show = topicMatchesFilter(getTS(tid));
+        row.classList.toggle('is-filtered-out', !show);
+        if (show) groupVisible++;
+      });
+      const grow = document.querySelector('tr.grow[data-group="' + groupKey + '"]');
+      if (grow) grow.classList.toggle('is-filtered-out', groupVisible === 0);
+      cardVisible += groupVisible;
+    });
+    if (card) {
+      card.classList.toggle('is-filtered-out', cardVisible === 0);
+      if (cardVisible > 0 && curFilter !== 'todos') card.classList.add('open');
+    }
+    if (cardVisible > 0) anyVisible = true;
+  });
+
+  let empty = document.getElementById('edital-filter-empty');
+  if (!empty) {
+    empty = document.createElement('div');
+    empty.id = 'edital-filter-empty';
+    empty.className = 'hist-empty';
+    empty.style.display = 'none';
+    document.getElementById('disc-list')?.after(empty);
+  }
+  empty.style.display = anyVisible || !EDITAL.length ? 'none' : 'block';
+  empty.textContent = 'Nenhum tópico corresponde a este filtro.';
+}
+
+function expandAll(){document.querySelectorAll('.disc-card:not(.is-filtered-out)').forEach(c=>c.classList.add('open'));}
 function collapseAll(){document.querySelectorAll('.disc-card').forEach(c=>c.classList.remove('open'));}
 
 // ── UPDATE ALL ──────────────────────────────────────────
