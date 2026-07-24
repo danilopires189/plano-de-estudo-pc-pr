@@ -48,9 +48,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .btn-save:hover{background:var(--mint-d);}
 .btn-backup{width:100%;padding:8px;background:transparent;border:1px solid rgba(255,255,255,.2);border-radius:8px;font-family:'Inter',sans-serif;font-weight:600;font-size:11px;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:5px;color:rgba(255,255,255,.6);}
 .btn-backup:hover{background:rgba(255,255,255,.08);color:white;border-color:rgba(255,255,255,.4);}
-.backup-modal{position:fixed;inset:0;background:rgba(13,19,76,.4);z-index:600;display:none;align-items:center;justify-content:center;}
+.backup-modal{position:fixed;inset:0;background:rgba(13,19,76,.4);z-index:600;display:none;align-items:center;justify-content:center;overscroll-behavior:none;touch-action:none;}
 .backup-modal.open{display:flex;}
-.backup-box{background:white;border-radius:16px;padding:24px;width:min(360px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow-y:auto;box-shadow:0 20px 60px rgba(13,19,76,.25);display:flex;flex-direction:column;gap:14px;}
+.backup-box{background:white;border-radius:16px;padding:24px;width:min(360px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;box-shadow:0 20px 60px rgba(13,19,76,.25);display:flex;flex-direction:column;gap:14px;}
 .backup-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;color:var(--navy);}
 .backup-sub{font-size:12px;color:var(--text-soft);margin-top:-8px;line-height:1.5;}
 .backup-actions{display:flex;flex-direction:column;gap:8px;}
@@ -86,10 +86,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   background:var(--text-soft);border:2px solid white;box-sizing:border-box;
 }
 .profile-btn.online .profile-dot{background:var(--green);}
-.profile-panel{width:min(400px,calc(100vw - 24px));padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:calc(100dvh - 24px);}
+.profile-panel{width:min(400px,calc(100vw - 24px));padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:calc(100dvh - 24px);touch-action:pan-y;overscroll-behavior:contain;}
 .profile-head{
   padding:22px 22px 18px;background:linear-gradient(145deg,#090e3b 0%,var(--navy) 70%,#1a2060 100%);
-  color:white;display:flex;align-items:center;gap:14px;
+  color:white;display:flex;align-items:center;gap:14px;flex-shrink:0;
 }
 .profile-head-avatar{
   width:56px;height:56px;border-radius:50%;flex-shrink:0;
@@ -100,7 +100,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .profile-head-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:4px;}
 .profile-head-name{font:800 18px/1.2 'Nunito',sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .profile-head-email{margin-top:4px;font-size:12px;color:rgba(255,255,255,.62);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.profile-body{padding:16px 18px 10px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;}
+.profile-body{padding:16px 18px 10px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;min-height:0;flex:1;}
 .profile-section{display:flex;flex-direction:column;gap:8px;}
 .profile-section-title{font-size:10px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--text-soft);}
 .profile-sync{
@@ -117,7 +117,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .profile-msg.ok{color:#15803d;}
 .profile-signout{color:#b91c1c !important;border-color:#fecaca !important;background:#fff5f5 !important;}
 .profile-signout:hover{border-color:#f87171 !important;background:#fee2e2 !important;}
-.profile-foot{padding:4px 18px 14px;display:flex;justify-content:center;}
+.profile-foot{padding:4px 18px 14px;display:flex;justify-content:center;flex-shrink:0;}
+body.modal-scroll-lock{overflow:hidden !important;overscroll-behavior:none;touch-action:none;}
+html.modal-scroll-lock{overflow:hidden !important;overscroll-behavior:none;}
 #auth-modal .install-help{color:var(--text-soft);text-align:left;padding:0 2px;}
 #auth-modal .security-row{border-top:0;padding:8px 2px;}
 #auth-modal .backup-btn-imp,#auth-modal .backup-btn-exp{justify-content:flex-start;}
@@ -347,7 +349,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .cal-leg-dot{width:8px;height:8px;border-radius:50%;}
 
 /* ── MODAL ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(13,19,76,.35);z-index:500;display:none;align-items:center;justify-content:center;}
+.modal-overlay{position:fixed;inset:0;background:rgba(13,19,76,.35);z-index:500;display:none;align-items:center;justify-content:center;overscroll-behavior:none;touch-action:none;}
 .modal-overlay.open{display:flex;}
 .modal-box{background:white;border-radius:16px;padding:24px;width:min(380px,calc(100vw - 32px));max-width:100%;box-shadow:0 20px 60px rgba(13,19,76,.25);display:flex;flex-direction:column;gap:14px;}
 .modal-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;color:var(--navy);}
@@ -1515,12 +1517,14 @@ function openModal(key) {
   document.getElementById('modal-topic').value = '';
   document.getElementById('modal-topic-field').classList.remove('visible');
   document.getElementById('modal-overlay').classList.add('open');
+  lockBodyScroll();
 }
 
 function closeModal(e) {
   if (!e || e.target === document.getElementById('modal-overlay')) {
     document.getElementById('modal-overlay').classList.remove('open');
     modalDay = null;
+    unlockBodyScroll();
   }
 }
 
@@ -1535,6 +1539,7 @@ function saveModalDay() {
   if (horas > 0 || questoes > 0) addRegistro({ date: modalDay, disc, topic, horas, questoes, origem: 'modal' });
   document.getElementById('modal-overlay').classList.remove('open');
   modalDay = null;
+  unlockBodyScroll();
   showToast('✅', 'Dia atualizado!');
 }
 
@@ -1998,6 +2003,42 @@ async function loadCloudData() {
   }
 }
 
+function isAnyOverlayOpen() {
+  return !!(
+    document.getElementById('auth-modal')?.classList.contains('open')
+    || document.getElementById('backup-modal')?.classList.contains('open')
+    || document.getElementById('modal-overlay')?.classList.contains('open')
+  );
+}
+
+function lockBodyScroll() {
+  const scrollY = window.scrollY || window.pageYOffset || 0;
+  document.documentElement.classList.add('modal-scroll-lock');
+  document.body.classList.add('modal-scroll-lock');
+  if (!document.body.dataset.scrollLockY) {
+    document.body.dataset.scrollLockY = String(scrollY);
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+  }
+}
+
+function unlockBodyScroll() {
+  if (isAnyOverlayOpen()) return;
+  const loginVisible = !document.getElementById('login-screen')?.classList.contains('hidden');
+  const mfaVisible = !document.getElementById('mfa-screen')?.classList.contains('hidden');
+  const resetVisible = !document.getElementById('reset-screen')?.classList.contains('hidden');
+  if (loginVisible || mfaVisible || resetVisible) return;
+  const scrollY = Number(document.body.dataset.scrollLockY || 0);
+  document.documentElement.classList.remove('modal-scroll-lock');
+  document.body.classList.remove('modal-scroll-lock');
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.width = '';
+  delete document.body.dataset.scrollLockY;
+  window.scrollTo(0, scrollY);
+}
+
 function openAuthModal() {
   if (!cloudUser) {
     setLoginScreenVisible(true);
@@ -2005,6 +2046,7 @@ function openAuthModal() {
   }
   refreshAuthModal();
   document.getElementById('auth-modal').classList.add('open');
+  lockBodyScroll();
 }
 
 function closeAuthModal(event) {
@@ -2020,6 +2062,7 @@ function closeAuthModal(event) {
     message.textContent = '';
     message.classList.remove('ok');
   }
+  unlockBodyScroll();
 }
 
 function getProfileInitials(name) {
@@ -2163,7 +2206,9 @@ async function submitLogin(event) {
     message.textContent = 'O serviço de acesso está indisponível. Tente novamente em instantes.';
     return;
   }
-  if (username !== LOGIN_USERNAME || !password) {
+  const validUser = username === LOGIN_USERNAME
+    || username.toLowerCase() === LOGIN_EMAIL.toLowerCase();
+  if (!validUser || !password) {
     message.textContent = 'Usuário ou senha incorretos.';
     return;
   }
@@ -2206,10 +2251,13 @@ async function requestPasswordReset(fromAccount = false) {
   } catch (error) {
     const emailLimitReached = error?.status === 429 || error?.code === 'over_email_send_rate_limit';
     const errorMessage = emailLimitReached
-      ? 'Limite temporário de e-mails atingido. Aguarde cerca de 1 hora antes de solicitar outro link.'
+      ? 'Limite de e-mails do Supabase atingido (2/hora no plano padrão). Se você já redefiniu a senha, tente entrar agora. Ou aguarde cerca de 1 hora para outro link.'
       : 'Não foi possível enviar o link agora. Tente novamente mais tarde.';
     if (fromAccount) showToast(emailLimitReached ? '⏳' : '⚠️', errorMessage);
-    else message.textContent = errorMessage;
+    else {
+      message.style.color = '';
+      message.textContent = errorMessage;
+    }
   }
 }
 
@@ -2812,10 +2860,12 @@ async function installPwa() {
 // ── BACKUP / RESTORE ──────────────────────────────────
 function openBackupModal() {
   document.getElementById('backup-modal').classList.add('open');
+  lockBodyScroll();
 }
 function closeBackupModal(e) {
   if (!e || e.target === document.getElementById('backup-modal')) {
     document.getElementById('backup-modal').classList.remove('open');
+    unlockBodyScroll();
   }
 }
 function exportBackup() {
@@ -2839,6 +2889,7 @@ function exportBackup() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     document.getElementById('backup-modal').classList.remove('open');
+    unlockBodyScroll();
     showToast('✅', 'Backup exportado com sucesso!');
   } catch(e) {
     console.error('exportBackup error:', e);
@@ -2847,6 +2898,7 @@ function exportBackup() {
 }
 function triggerImport() {
   document.getElementById('backup-modal').classList.remove('open');
+  unlockBodyScroll();
   document.getElementById('import-file').click();
 }
 function importBackup(input) {
